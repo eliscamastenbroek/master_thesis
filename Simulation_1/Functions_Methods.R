@@ -12,7 +12,7 @@
 ##    - impute_value_step2                                                                      ##
 ##    - get_ME                                                                                  ##
 ##    - get_ME_help                                                                             ##
-## Note that in this file, the term 'clusters' is used for the term 'latent class'.             ##
+## Note that in this file, the term 'clusters' is used instead of the term 'latent class'.      ##
 ##################################################################################################
 
 ## Load required packages
@@ -445,7 +445,6 @@ fix_cluster_assignment = function(type = NULL, results) {
   }
 }
 
-
 ##################################################################################################
 ## Fix cluster assignments per bootstrap sample in tree-MILC                                     ## 
 ## @param boot_results (data.frame): Results of one bootstrap sample                            ##
@@ -484,7 +483,6 @@ fix_cluster_bootstrap = function(boot_results) {
   
   return(boot_results)
 }
-
 
 ##################################################################################################
 ## Fix number notation in Latent GOLD output (i.e. convert '1e-02' to '.001')                   ##
@@ -532,7 +530,6 @@ fix_number_notation = function(vector) {
     return(return_vec)
   }
 }
-
 
 ##################################################################################################
 ## Perform LC analysis                                                                          ##
@@ -651,7 +648,6 @@ perform_lct = function(iteration, ind, cov, N, ME, folder) {
   to_return = c(to_return, combined_output)
   return(to_return)
 }
-
 
 ##################################################################################################
 ## Perform tree-MILC analysis                                                                   ##
@@ -800,7 +796,6 @@ perform_treeMILC = function(iteration, ind, cov, N, ME, M=5, folder) {
   return(to_return)
 }
 
-
 ##################################################################################################
 ## Obtain first round of imputations in tree-MILC analysis                                      ##
 ## @param x (vector): Vector that contains the posterior probabilities p1, p2, and p3           ##
@@ -810,7 +805,6 @@ perform_treeMILC = function(iteration, ind, cov, N, ME, M=5, folder) {
 impute_value_step1 = function(x) {
   return(which(rmultinom(1, 1, c(as.numeric(x["p1"]) + as.numeric(x["p3"]), as.numeric(x["p2"]))) == 1))
 }
-
 
 ##################################################################################################
 ## Obtain second round of imputations in tree-MILC analysis                                     ##
@@ -825,7 +819,6 @@ impute_value_step2 = function(x) {
     return(which(rmultinom(1, 1, c(as.numeric(x["Cluster#1"]), as.numeric(x["Cluster#2"]))) == 1))
   }
 }
-
 
 ##################################################################################################
 ## Compute measurement error matrices (one per indicator) for an LC, LCT or tree-MILC model     ##
@@ -899,6 +892,3 @@ get_ME_help = function(results, ind_vec) {
   
   return(indicator_matrix)
 }
-
-
-
