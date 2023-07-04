@@ -19,7 +19,7 @@ library(scales)
 
 options(dplyr.summarise.inform = FALSE)
 
-load("F:/Documents/Thesis/Simulatie/Simulatie_1_zonder_cov/Simulatie_1_zonder_cov_1_25.RData")
+load("F:/Documents/Thesis/Simulatie/Simulatie_1_zonder_cov/Simulatie_1_zonder_cov.RData")
 
 load("Y:/Combineren/Projecten/Stage_Elisca/RData/Simulatie_1_zonder_cov.RData")
 
@@ -326,7 +326,7 @@ generate_script = function(type, ind, cov, N, ME, model_name, filepath_input, fi
     latent_var_eq = "\tCluster <- 1;\n"
   }
   
-  if((type=="LCT")&ME==4&ind==4){
+  if((type == "LCT") & ME == 4 & ind == 4){
     restrictions = "\n\tx[1,1] = 0; y[1,1] = 0;"
   } else { 
     restrictions = ""
@@ -340,6 +340,8 @@ generate_script = function(type, ind, cov, N, ME, model_name, filepath_input, fi
 
 #standarderrors profile reorderclasses iterationdetails
 
+
+t=perform_lct(1,4,0,1000,4)
 ```
 
 
