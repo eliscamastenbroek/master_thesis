@@ -1,0 +1,1794 @@
+---
+title: "Simulatie"
+output: html_document
+date: '2023-02-24'
+---
+
+## Initializations
+
+```{r, eval=FALSE}
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(data.table)
+library(ExPosition)
+library(ggplot2)
+library(gridExtra)
+library(RColorBrewer)
+library(scales)
+
+options(dplyr.summarise.inform = FALSE)
+
+load("F:/Documents/Thesis/Simulatie/Simulatie_1_zonder_cov/Simulatie_1_zonder_cov_1_25.RData")
+
+load("Y:/Combineren/Projecten/Stage_Elisca/RData/Simulatie_1_zonder_cov.RData")
+
+library(gdata)
+keep(LC_models_poging2,LCT_models_poging2,LC_results_poging2,LCT_results_poging2,LC_summary_poging2,LCT_summary_poging2, sure = TRUE)
+
+setwd("F:/Documents/Thesis/Simulatie/Simulatie_1_zonder_cov/")
+
+```
+
+
+## Compute and show true proportions in simulated data
+
+```{r eval = FALSE}
+#Parameter estimates from real data
+data_a2 = -0.9662
+data_a3 = -1.6260
+data_b22 = 0.22
+data_b32 = 0.2607
+
+#Proportions per category of covariate in real data
+p_cov1 = 0.5 
+p_cov2 = 0.5 
+
+#Compute true proportions in simulated data
+permanent_cov1 = 1/(1+exp(data_a2)+exp(data_a3))
+permanent_cov2 = 1/(1+exp(data_a2+data_b22)+exp(data_a3+data_b32))
+other_cov1 = exp(data_a2)/(1+exp(data_a2)+exp(data_a3))
+other_cov2 = exp(data_a2+data_b22)/(1+exp(data_a2+data_b22)+exp(data_a3+data_b32))
+flex_cov1 = exp(data_a3)/((1+exp(data_a2)+exp(data_a3)))
+flex_cov2 = exp(data_a3+data_b32)/(1+exp(data_a2+data_b22)+exp(data_a3+data_b32))
+
+true_proportions = c(permanent_cov1*p_cov1+permanent_cov2*p_cov2,other_cov1*p_cov1+other_cov2*p_cov2,flex_cov1*p_cov1+flex_cov2*p_cov2)
+names(true_proportions) = c("Vast","Overig","Flex")
+true_proportions
+```
+
+
+## Function to create a matrix with the (real) measurement error probabilities used to simulate data
+
+@param a2,...b32 (int): Logit parameters used to simulate the data
+
+@returns matrix (matrix): Matrix with measurement error probabilities
+
+```{r}
+create_ME_matrix = function(a2,a3,b22,b33,b23,b32){
+  row1 = c(1/(1+exp(a2)+exp(a3)),exp(a2)/(1+exp(a2)+exp(a3)),exp(a3)/(1+exp(a2)+exp(a3)))
+  row2 = c(1/(1+exp(a2+b22)+exp(a3+b32)),exp(a2+b22)/(1+exp(a2+b22)+exp(a3+b32)),exp(a3+b32)/(1+exp(a2+b22)+exp(a3+b32)))
+  row3 = c(1/(1+exp(a2+b23)+exp(a3+b33)),exp(a2+b23)/(1+exp(a2+b23)+exp(a3+b33)),exp(a3+b33)/(1+exp(a2+b23)+exp(a3+b33)))
+  matrix = matrix(c(row1,row2,row3),nrow=3,ncol=3,byrow=TRUE)
+  return(matrix)
+}
+```
+
+```{r}
+#Create ME matrices in global environment
+ME_matrix1 = create_ME_matrix(-log(18),-log(18),log(324),log(324),log(18),log(18)) #10% measurement error
+ME_matrix2 = create_ME_matrix(-3*log(2),-3*log(2),6*log(2),6*log(2),3*log(2),3*log(2)) #20% measurement error
+ME_matrix3 = create_ME_matrix(-1.54045,-1.54045,3.0809,3.0809,1.54045,1.54045) #30% measurement error
+ME_matrix4a = create_ME_matrix(-4.4917,-4.94368,7.64123,5.6678,3.09876,4.55064)
+ME_matrix4b = create_ME_matrix(-6.14311,-2.63157,11.9482,5.03275,1.72427,1.53296)
+ME_matrix4 = list(ME_matrix4a,ME_matrix4b)
+```
+
+
+## Function to generate a data set
+
+@param seed (int): Seed for generating the data set
+@param ME (int): Factor representing the degree of measurement error (1=0.2, 2=0.3, 3=0.5, 4=realistic)
+@param folder (string): Folder to save files in
+
+@returns (data.frame): A simulated data set of size N=20,000 with the indicated degree of measurement error
+
+```{r}
+simulate_data = function(seed, ME, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\"){
+  
+  #Create Latent Gold script for LC
+  filepath_input = paste0(folder,"exampleData.dat")
+  
+  exampleData = paste0("id q Y1 Y2 Y3 Y4 w20000
+1 1 1 1 1 1 2500
+2 2 2 2 2 2 2500
+3 1 3 3 3 3 2500
+4 2 3 3 3 3 2500")
+
+  writeLines(exampleData, filepath_input)
+
+  script_part1 = paste0("version = 6.0\ninfile '",filepath_input,"' \n\nmodel
+    title 'simulation",ME,"';
+    options
+    algorithm
+        tolerance=1e-08 emtolerance=0.01 emiteration=1000 nriterations=1000;
+    startvalues
+        seed=1 sets=100 tolerance=1e-05 iterations=100;
+    montecarlo
+        seed=1 replicates=500 tolerance=1e-008;
+    bayes
+        categorical=1 variances=1 latent=1 poisson=1;
+    missing includeall;
+    output       
+    	parameters=first standarderrors profile reorderclasses iterationdetails;\n")
+
+  #Parameter estimates from real data
+  data_a2 = -0.9662
+  data_a3 = -1.6260
+  data_b22 = 0.22
+  data_b32 = 0.2607
+  data_param = paste(data_a2,data_a3,data_b22,data_b32)
+  
+  outfile_path = paste0(folder, "simDat",ME,"_iteration",seed,".dat")
+  
+  #Parameters for 10% measurement error
+  if(ME==1){
+    a2=a3=-log(18)  #Coefficients for measurement error matrix
+    b22=b33=log(324)
+    b32=b23=log(18)
+    ME_coefs = c(a2,a3,b22,b32,b23,b33,"\n")
+    ME_coefs = gsub(",","",toString(rep(ME_coefs,4)))
+    parameters = paste("\n",data_param,"\n",ME_coefs,"}\nend model")
+  }
+
+  #Parameters for 20% measurement error
+  else if(ME==2){
+    a2=a3=-3*log(2) #Coefficients for measurement error matrix
+    b22=b33=6*log(2)
+    b32=b23=3*log(2)
+    ME_coefs = c(a2,a3,b22,b32,b23,b33,"\n")
+    ME_coefs = gsub(",","",toString(rep(ME_coefs,4)))
+    parameters = paste("\n",data_param,"\n",ME_coefs,"}\nend model")
+  }
+  
+  #Parameters for 30% measurement error
+  else if(ME==3){
+    a2=a3=-1.54045 #Coefficients for measurement error matrix
+    b22=b33=3.0809
+    b32=b23=1.54045
+    ME_coefs = c(a2,a3,b22,b32,b23,b33,"\n")
+    ME_coefs = gsub(",","",toString(rep(ME_coefs,4)))
+    parameters = paste("\n",data_param,"\n",ME_coefs,"}\nend model")
+  }
+
+  #Parameters for realistic amount of measurement error
+  else if(ME==4){
+    Y1_a2= -4.4917 #Coefficients for indicator 1 (and 3)
+    Y1_a3= -4.94368
+    Y1_b22=7.64123
+    Y1_b32=4.55064
+    Y1_b23=3.09876
+    Y1_b33=5.6678
+    Y2_a2=-6.14311 #Coefficients for indicator 2 (and 4)
+    Y2_a3=-2.63157
+    Y2_b22=11.9482
+    Y2_b32=1.53296
+    Y2_b23=1.72427
+    Y2_b33=5.03275
+    ME_coefs_Y1 = c(Y1_a2,Y1_a3,Y1_b22,Y1_b32,Y1_b23,Y1_b33,"\n")
+    ME_coefs_Y2 = c(Y2_a2,Y2_a3,Y2_b22,Y2_b32,Y2_b23,Y2_b33,"\n")
+    ME_coefs = gsub(",","",toString(rep(c(ME_coefs_Y1,ME_coefs_Y2),2))) 
+    parameters = paste(data_param,"\n",ME_coefs,"}\nend model")
+  }
+  
+  script_part2 = paste0("\toutfile '",outfile_path, "' simulation=1 seed=",seed,";
+    variables
+         caseid id;
+         caseweight w20000;
+         dependent Y1 nominal 3, Y2 nominal 3, Y3 nominal 3, Y4 nominal 3;
+         independent q nominal;
+         latent cluster nominal 3;
+     equations
+         cluster <- 1 + q;			
+         Y1      <- 1 + cluster;	
+         Y2      <- 1 + cluster;
+         Y3      <- 1 + cluster;
+         Y4      <- 1 + cluster;
+{ ")
+  
+  #Combine parts of script
+  script = paste0(script_part1,script_part2,parameters)
+  script_path = paste0(folder,"simDat",ME,"_iteration",seed,"_script.lgs")
+  writeLines(script, script_path)
+  
+  #Execute Latent Gold script
+  shell(paste0('"C:/Program Files/LatentGOLDnet6.0/lg60.exe" ', script_path, ' /b'))
+
+  #Import simulated data set
+  simDat = read.delim(outfile_path,sep="\t",dec=",")
+  return(simDat)
+}
+
+simDat = simulate_data(1,1)
+fwrite(simDat,file="F:/Documents/Thesis/Simulatie/Voorbeeld/simDat.dat",sep="\t")
+```
+
+
+## Helpfunction to create a subset of the right size and with the correct amount of measurement error for each analysis
+
+@param iteration (int): Iteration number (to get a different data set for each of the 10 iterations per model)
+@param ind (int): Number of indicators
+@param cov (int): Number of covariates
+@param N (int): Size of the data set
+@param ME (int): Factor representing the degree of measurement error (1=0.2, 2=0.3, 3=0.5, 4=realistic)
+
+@returns (data.frame): A subset of the right size and with the correct amount of measurement error as indicated
+
+```{r}
+create_subset = function(iteration, ind, cov, N, ME){
+  
+  #If a certain data set does not exist, create it  
+  if(!exists(paste0("simDat",ME,"_iteration",iteration))){
+    assign(paste0("simDat",ME,"_iteration",iteration),simulate_data(iteration,ME),envir=globalenv())
+  }
+  
+  data = get(paste0("simDat",ME,"_iteration",iteration))
+  
+  #Set seed to get the same data set for every model within each iteration
+  set.seed(iteration) 
+  select_cases = sample(1:nrow(data),N,replace=FALSE)
+  
+  #Select columns to return (i.e. remove some redundant columns)
+  if(cov==1){
+    subset = data[select_cases,c(2:(3+ind))]
+  } else {
+    subset = data[select_cases,c(2,4:(3+ind))]
+  }
+  
+  return(subset)
+}
+```
+
+
+## Helpfunction to generate a Latent Gold script 
+
+@param type (string): String indicating what type of script is generated (e.g. "LC" for regular LC and "LCT" for LCT step 2) 
+@param ind (int): Number of indicators
+@param cov (int): Number of covariates
+@param N (int): Size of data set
+@param model_name (string): Name of the model
+@param filepath_input (string):
+@param filepath_output (string):
+
+@returns (string): A string containing a Latent Gold script
+
+```{r}
+generate_script = function(type, ind, cov, N, ME, model_name, filepath_input, filepath_output){
+
+  script_part1 = paste0("version = 6.0\ninfile '",filepath_input,"' \n\nmodel title '")
+
+  #Let the number of sets of starting values depend on the size of the data set
+  if(N<10000){
+    sets = 3200
+  } else {
+    sets = 100
+  }
+  
+  script_part2 = paste0("';
+    options
+    algorithm
+        tolerance=1e-08 emtolerance=0.01 emiterations=1000 nriterations=1000;
+    startvalues
+        seed=1 sets=",sets," tolerance=1e-05 iterations=100;
+    bayes
+        categorical=1 variances=1 latent=1 poisson=1;
+    missing includeall;
+    output
+    	parameters=")
+
+  script_part3 = paste0("first profile standarderrors reorderclasses;
+    	outfile '",filepath_output,"' classification keep=id;
+    variables\n") 
+     
+  #Adjust some parameters depending on what type of analysis is performed
+  if(type=="LC"){
+    latent_var = paste0("\n\tlatent Cluster nominal 3;
+    equations\n")
+  } else {
+    latent_var = paste0("\n\tlatent Cluster nominal 2;
+    equations\n")
+  }
+  if(type=="LCT"){
+    caseweight = "caseweight p1;\n"
+  } else {
+    caseweight = ""
+  }
+  
+  #Adjust equations depending on the number of indicators
+  if(ind==2){
+    dep_ind = "\tdependent Y1 nominal, Y2 nominal;"
+    dep_ind_eq = "\tY1 <- 1 + Cluster;\n\tY2 <- 1 + (x) Cluster;"
+  } else if(ind==3){
+    dep_ind = "\tdependent Y1 nominal, Y2 nominal, Y3 nominal;"
+    dep_ind_eq = "\tY1 <- 1 + Cluster;\n\tY2 <- 1 + (x) Cluster;\n\tY3 <- 1 + Cluster;"
+  } else if(ind==4){
+    dep_ind = "\tdependent Y1 nominal, Y2 nominal, Y3 nominal, Y4 nominal;"
+    dep_ind_eq = "\tY1 <- 1 + Cluster;\n\tY2 <- 1 + (x) Cluster;\n\tY3 <- 1 + Cluster;\n\tY4 <- 1 + (y) Cluster;"
+  }
+  
+  #Adjust equations depending on whether to include a covariate or not
+  if(cov==1){
+    dep_cov = "\n\tindependent q nominal;"
+    latent_var_eq = "\tCluster <- 1 + q;\n"
+  }
+  else if(cov==0){
+    dep_cov = ""
+    latent_var_eq = "\tCluster <- 1;\n"
+  }
+  
+  if((type=="LCT")&ME==4&ind==4){
+    restrictions = "\n\tx[1,1] = 0; y[1,1] = 0;"
+  } else { 
+    restrictions = ""
+  }
+
+  #Combine all parts of the script
+  script=paste0(script_part1,model_name,script_part2,script_part3,caseweight,dep_ind,dep_cov,
+                latent_var,latent_var_eq,dep_ind_eq,restrictions,"\nend model")
+  return(script)
+}
+
+#standarderrors profile reorderclasses iterationdetails
+
+```
+
+
+```{r}
+generate_script_treeMILC_step1 = function(type, ind, cov, N, ME, model_name, filepath_input, filepath_output, par){
+
+  script_part1 = paste0("version = 6.0\ninfile '",filepath_input,"' \n\nmodel title '")
+
+  #Let the number of sets of starting values depend on the size of the data set
+  if(N<10000){
+    sets = 3200
+  } else {
+    sets = 100
+  }
+  
+  script_part2 = paste0("';
+    options
+    algorithm
+        tolerance=1e-08 emtolerance=0.01 emiterations=0 nriterations=0;
+    startvalues
+        seed=1 sets=",sets," tolerance=1e-05 iterations=100;
+    bayes
+        categorical=1 variances=1 latent=1 poisson=1;
+    missing includeall;
+    output
+    	parameters=")
+
+  script_part3 = paste0("first profile;
+    	outfile '",filepath_output,"' classification keep=id;
+    variables\n") 
+     
+  #Adjust some parameters depending on what type of analysis is performed
+  latent_var = paste0("\n\tlatent Cluster nominal 3;\nequations\n")
+
+  #Adjust equations depending on the number of indicators
+  if(ind==2){
+    dep_ind = "\tdependent Y1 nominal, Y2 nominal;"
+    dep_ind_eq = "\tY1 <- (c) 1 + (d) Cluster;\n\tY2 <- (e) 1 + (f) Cluster;"
+  } else if(ind==3){
+    dep_ind = "\tdependent Y1 nominal, Y2 nominal, Y3 nominal;"
+    dep_ind_eq = "\tY1 <- (c) 1 + (d) Cluster;\n\tY2 <- (e) 1 + (f) Cluster;\n\tY3 <- (g) 1 + (h) Cluster;"
+  } else if(ind==4){
+    dep_ind = "\tdependent Y1 nominal, Y2 nominal, Y3 nominal, Y4 nominal;"
+    dep_ind_eq = "\tY1 <- (c) 1 + (d) Cluster;\n\tY2 <- (e) 1 + (f) Cluster;\n\tY3 <- (g) 1 + (h) Cluster;\n\tY4 <- (i) 1 + (j) Cluster;"
+  }
+  
+  restrictions="\n"
+  #Adjust equations depending on whether to include a covariate or not
+  if(cov==1){
+    dep_cov = "\n\tindependent q nominal;"
+    latent_var_eq = "\tCluster <- (a) 1 + (b) q;\n"
+    restrictions = paste0(restrictions,"\tb[1,1] ~= ",par[3,]$coef,";\n")
+    restrictions = paste0(restrictions,"\tb[1,2] ~= ",par[4,]$coef,";\n")
+  }
+  else if(cov==0){
+    dep_cov = ""
+    latent_var_eq = "\tCluster <- (a) 1;\n"
+  }
+  
+  restrictions = paste0(restrictions,"\ta[1,1] ~= ",par[1,]$coef,";\n")
+  restrictions = paste0(restrictions,"\ta[1,2] ~= ",par[2,]$coef,";\n")
+  
+  restrictions = paste0(restrictions,"\tc[1,1] ~= ",par[4+cov+cov,]$coef,";\n")
+  restrictions = paste0(restrictions,"\tc[1,2] ~= ",par[5+cov+cov,]$coef,";\n")
+  restrictions = paste0(restrictions,"\td[1,1] ~= ",par[6+cov+cov,]$coef,";\n")
+  restrictions = paste0(restrictions,"\td[1,2] ~= ",par[7+cov+cov,]$coef,";\n")
+  restrictions = paste0(restrictions,"\td[1,3] ~= ",par[8+cov+cov,]$coef,";\n")
+  restrictions = paste0(restrictions,"\td[1,4] ~= ",par[9+cov+cov,]$coef,";\n")
+  
+  restrictions = paste0(restrictions,"\te[1,1] ~= ",par[11+cov+cov,]$coef,";\n")
+  restrictions = paste0(restrictions,"\te[1,2] ~= ",par[12+cov+cov,]$coef,";\n")
+  restrictions = paste0(restrictions,"\tf[1,1] ~= ",par[13+cov+cov,]$coef,";\n")
+  restrictions = paste0(restrictions,"\tf[1,2] ~= ",par[14+cov+cov,]$coef,";\n")
+  restrictions = paste0(restrictions,"\tf[1,3] ~= ",par[15+cov+cov,]$coef,";\n")
+  restrictions = paste0(restrictions,"\tf[1,4] ~= ",par[16+cov+cov,]$coef,";\n")
+
+
+  if(ind>=3){
+    restrictions = paste0(restrictions,"\tg[1,1] ~= ",par[18+cov+cov,]$coef,";\n")
+    restrictions = paste0(restrictions,"\tg[1,2] ~= ",par[19+cov+cov,]$coef,";\n")
+    restrictions = paste0(restrictions,"\th[1,1] ~= ",par[20+cov+cov,]$coef,";\n")
+    restrictions = paste0(restrictions,"\th[1,2] ~= ",par[21+cov+cov,]$coef,";\n")
+    restrictions = paste0(restrictions,"\th[1,3] ~= ",par[22+cov+cov,]$coef,";\n")
+    restrictions = paste0(restrictions,"\th[1,4] ~= ",par[23+cov+cov,]$coef,";\n")
+ } 
+  if(ind==4){
+    restrictions = paste0(restrictions,"\ti[1,1] ~= ",par[25+cov+cov,]$coef,";\n")
+    restrictions = paste0(restrictions,"\ti[1,2] ~= ",par[26+cov+cov,]$coef,";\n")
+    restrictions = paste0(restrictions,"\tj[1,1] ~= ",par[27+cov+cov,]$coef,";\n")
+    restrictions = paste0(restrictions,"\tj[1,2] ~= ",par[28+cov+cov,]$coef,";\n")
+    restrictions = paste0(restrictions,"\tj[1,3] ~= ",par[29+cov+cov,]$coef,";\n")
+    restrictions = paste0(restrictions,"\tj[1,4] ~= ",par[30+cov+cov,]$coef,";\n")
+  }
+  
+  #Combine all parts of the script
+  script=paste0(script_part1,model_name,script_part2,script_part3,dep_ind,dep_cov,
+                latent_var,latent_var_eq,dep_ind_eq,restrictions,"\nend model")
+  return(script)
+}
+
+# t = generate_script_treeMILC("LC", 3,0,1000,1, "model_name", "F:/Documents/Thesis/Simulatie/Voorbeeld/simDat_onlyRemoved.dat", "filepath_output.dat",par=test.dat_withoutdummy)
+# writeLines(t,"F:/Documents/Thesis/Simulatie/Voorbeeld/script.lgs")
+# 
+# fwrite(simDat_onlyRemoved,file="F:/Documents/Thesis/Simulatie/Voorbeeld/simDat_onlyRemoved.dat",sep="\t")
+
+```
+
+
+## Helpfunction to assign the right cluster names to the right clusters 
+
+@param results (list): Results of one particular LC, LCT or tree-MILC model
+
+@returns (list): Same object as input, but with corrected cluster assignment if necessary 
+
+```{r}
+fix_cluster_assignment = function(type=NULL,results){
+  
+  #Get a list of matrices with measurement error per indicator
+  ME_list = get_ME(results)
+  
+  #Create one matrix that contains the average values of all matrices
+  summed_matrices = ME_list[[1]]
+  for(j in 2:length(ME_list)){
+    summed_matrices = summed_matrices + ME_list[[j]]
+  }
+  mean_matrix = summed_matrices/length(ME_list)
+  
+  #Find diagonal combinations of cluster names and store them in a data frame
+  all_diagonals=data.frame()
+  
+  if(type=="LC"){ #Find all possible diagonal combinations
+    for(i in 1:3){
+      for(j in 1:3){
+       for(k in 1:3)
+        if(length(unique(c(i,j,k)))==3){
+          all_diagonals=rbind(all_diagonals,c(i,j,k,mean_matrix[i,1],mean_matrix[j,2],mean_matrix[k,3],
+                                              sum(mean_matrix[i,1],mean_matrix[j,2],mean_matrix[k,3])))
+        }
+      }
+    }
+  }
+  else { #For non-LC models: only find combinations for switched 1 and 3's, because 2 is already correct
+    all_diagonals = rbind(all_diagonals,c(1,2,3,mean_matrix[1,1],mean_matrix[2,2],mean_matrix[3,3],sum(mean_matrix[1,1],mean_matrix[2,2],mean_matrix[3,3])))
+  all_diagonals = rbind(all_diagonals,c(3,2,1,mean_matrix[3,1],mean_matrix[2,2],mean_matrix[1,3],sum(mean_matrix[3,1],mean_matrix[2,2],mean_matrix[1,3])))
+  }
+  
+  colnames(all_diagonals)=c("1","2","3","d1","d2","d3","sum")
+  
+  #Find out which combination of diagonals yields the highest sum of diagonal values
+  which_max = which.max(as.vector(all_diagonals[,7]))
+
+  #Find out how to reassign clusters
+  max_1=all_diagonals[which_max,1]
+  max_2=all_diagonals[which_max,2]
+  max_3=all_diagonals[which_max,3]
+  reassignment = c(as.numeric(max_1),as.numeric(max_2),as.numeric(max_3))
+
+  #If clusters need not to be reassigned, return original results
+  if(identical(reassignment,c(1,2,3))){
+     return(results)
+  } 
+  else {
+    #Create a list to store the corrected results in (same format as input)
+    to_return = list(results[[1]])
+    results = results[[2]]
+    
+    #Store the original posterior probabilities temporarily in a data frame 
+    posteriors = data.frame(p1=results$p1,p2=results$p2,p3=results$p3)
+    results$p1=posteriors[,max_1]
+    results$p2=posteriors[,max_2]
+    results$p3=posteriors[,max_3]
+    to_return = append(to_return,list(results))
+    return(to_return)
+  }
+}
+
+```
+
+
+#Fix cluster bootstrap
+
+```{r}
+fix_cluster_bootstrap = function(boot_results) {
+  table = table(boot_results$Y2,boot_results$cluster)
+  prop_table = prop.table(table, margin = 1)
+  
+  all_diagonals = data.frame()
+  all_diagonals = rbind(all_diagonals,c(1,2,3,prop_table[1,1],prop_table[2,2],prop_table[3,3],sum(prop_table[1,1],prop_table[2,2],prop_table[3,3])))
+  all_diagonals = rbind(all_diagonals,c(3,2,1,prop_table[3,1],prop_table[2,2],prop_table[1,3],sum(prop_table[3,1],prop_table[2,2],prop_table[1,3])))
+  
+  colnames(all_diagonals)=c("1","2","3","d1","d2","d3","sum")
+
+  #Find out which combination of diagonals yields the highest sum of diagonal values
+  which_max = which.max(as.vector(all_diagonals[,7]))
+
+  #Find out how to reassign clusters
+  max_1=all_diagonals[which_max,1]
+  max_3=all_diagonals[which_max,3]
+  reassignment = c(max_1,max_3)
+  
+  if(identical(reassignment,c(1,3))){
+     return(boot_results)
+  } else {
+     boot_results$new_cluster = NA
+     boot_results[boot_results$cluster==max_1,]$new_cluster = 1
+     boot_results[boot_results$cluster==2,]$new_cluster = 2
+     boot_results[boot_results$cluster==max_3,]$new_cluster = 3
+     boot_results$cluster = boot_results$new_cluster
+     boot_results = boot_results[,-which(colnames(boot_results)=="new_cluster")]
+  }
+  
+  return(boot_results)
+}
+```
+
+
+## Helpfunction to fix number notation in Latent GOLD output of the form e-02
+
+```{r}
+fix_number_notation = function(vector){
+  
+  if(is.numeric(vector)){
+    return(vector)
+  }
+  else {
+
+    return_vec = rep(NA,length(vector))
+    for(i in 1:length(vector)){
+      removed_spaces = gsub(" ", "", vector[i])
+      split_vec = str_split(removed_spaces, "e-")
+      
+      if(length(split_vec[[1]])>1){
+        nominator = as.numeric(gsub(",", ".", split_vec[[1]][1]))
+        denominator = as.numeric(split_vec[[1]][2])
+        final_number = nominator/(10^denominator)
+        return_vec[i] = final_number
+      } else {
+        temp_string = gsub(",", ".", split_vec[[1]][1])
+        if(temp_string=="."){
+          return_vec[i] = 0
+        } else { 
+           return_vec[i] = as.numeric(gsub(",", ".", split_vec[[1]][1]))
+        }
+      }
+    }
+    return(return_vec)
+  }
+}
+
+```
+
+
+## Function to perform LC
+
+@param iteration (int): Iteration number 
+@param ind (int): Number of indicators
+@param cov (int): Number of covariates
+@param N (int): Size of data set
+@param ME (int): Factor representing the degree of measurement error probabilities (1=0.2, 2=0.3, 3=0.5, 4=realistic)
+@param folder (string): Folder to save files in
+
+@returns (list): A list that consists of:
+[[1]] Data frame with an overview of model parameters (iteration, ind, cov, N, ME)
+[[2]] Data frame with model results (posterior probabilities and cluster classification for each observation)
+
+```{r}
+perform_lc = function(iteration, ind, cov, N, ME, dat = NULL,folder="F:\\Documents\\Thesis\\Simulatie\\Voorbeeld\\"){
+
+  #Store information about the model 
+  model_name = paste(iteration,ind,cov,N,ME,sep="-")
+  model_info = data.frame(iteration=iteration,ind=ind,cov=cov,N=N,ME=ME,id=model_name)
+  to_return = list(model_info) 
+  
+  #Write data set to use to file
+  if(is.null(dat)){
+    dat = create_subset(iteration,ind,cov,N,ME)
+  }
+  else{
+    dat = dat
+  }
+  
+  filepath_input = paste0(folder,"LC_",model_name,"_data.dat")
+  write.table(x=dat, file = filepath_input, row.names=FALSE, quote=FALSE)
+  
+  #Create Latent Gold script for LC
+  filepath_output = paste0(folder,paste0("LC_",model_name,"_output.dat"))
+  script = generate_script("LC", ind, cov, N, ME, model_name, filepath_input, filepath_output)
+  script_path = paste0(folder,"LC_",model_name,"_script.lgs")
+  writeLines(script, script_path)
+  
+  #Execute Latent Gold script
+  shell(paste0('"C:/Program Files/LatentGOLDnet6.0/lg60.exe" ',script_path,' /b'))
+
+  #Read model output
+  model_output = read.delim(filepath_output,sep="\t",dec=",")
+  
+  #Check if no warning was given
+  model_lst = paste(readLines(paste0(folder,"LC_",model_name,"_script.lst")), collapse="\n")
+  if(grepl("WARNING", model_lst, fixed = TRUE)){
+    stop("Error")
+  } 
+
+  #Rename some columns and add data frame to return list
+  setnames(model_output,old=c("Cluster.1","Cluster.2","Cluster.3","Cluster."),new=c("p1","p2","p3","cluster"))
+  to_return = append(to_return,list(model_output))
+  
+  #Make sure clusters are assigned the right names
+  to_return = fix_cluster_assignment(type="LC",results=to_return)
+  return(to_return)
+}
+
+```
+
+
+## Function to perform LCT 
+
+@param iteration (int): Iteration number 
+@param ind (int): Number of indicators
+@param cov (int): Number of covariates
+@param N (int): Size of data set
+@param ME (int): Factor representing the degree of measurement error probabilities (1=0.2, 2=0.3, 3=0.5, 4=realistic)
+@param folder (string): Folder to save (intermediate) files in
+
+@returns: A list that consists of:
+[[1]] Data frame with an overview of model parameters (iteration, ind, cov, N, ME)
+[[2]] Data frame with model results
+
+```{r}
+perform_lct = function(iteration, ind, cov, N, ME, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\LCT\\"){
+
+  #Store information about the model 
+  model_name = paste(iteration,ind,cov,N,ME,sep="-")
+  model_info = data.frame(iteration=iteration,ind=ind,cov=cov,N=N,ME=ME,id=model_name)
+  to_return = list(model_info) 
+  
+  #Write data set to use to file
+  dat = create_subset(iteration,ind,cov,N,ME)
+  dat_name = paste0("LCT_",model_name,"_step1_data.dat")
+  write.table(x=dat, file = paste0(folder,dat_name),row.names=FALSE,quote=FALSE)
+
+  #Perform LC with 3 classes and combine posterior probabilities for permanent & flexible
+  model1_output = perform_lc(iteration,ind,cov,N,ME,folder=folder)[[2]]
+  model1_output$p1 = 1-model1_output$p2 #This is actually p1 + p3, but call it p1 for generate_script function 
+  dat_name = paste0("LCT_",model_name,"_step1_output.dat")
+  write.table(x=model1_output, file = paste0(folder,dat_name),row.names=FALSE,quote=FALSE)
+  
+  #Create Latent Gold script for second LC model
+  filepath_input = paste0(folder,dat_name)
+  filepath_output = paste0(folder,"LCT_",model_name,"_step2_output.dat")
+  script = generate_script("LCT", ind, cov, N, ME,model_name, filepath_input, filepath_output)
+  script_path = paste0(folder,"LCT_",model_name,"_step2_script.lgs")
+  writeLines(script, script_path)
+   
+  #Execute script in Latent Gold and read model output
+  shell(paste0('"C:/Program Files/LatentGOLDnet6.0/lg60.exe" ', script_path, ' /b'))
+  model2_output = read.delim(filepath_output,sep="\t",dec=",")
+  #Check if model is valid (i.e. does not contain a warning)
+  model_lst = paste(readLines(paste0(folder,"LCT_",model_name,"_step2_script.lst")), collapse="\n")
+  if(grepl("WARNING", model_lst, fixed = TRUE)){
+    stop("Error in Model 2")
+  }
+  
+  #Combine results from both models to compute final posterior probabilities and fix column names
+  combined_output = left_join(x=model1_output,y=model2_output,by=c("id","Y1","Y2"))
+  possible_colnames = c("Y1","Y2","id","cluster","q.y","Y3.y","Y4.y","p1.y","Cluster.1","Cluster.2","Cluster.")
+  neat_colnames = c("Y1","Y2","id","cluster.1","q","Y3","Y4","p1.1","p2.1","p2.2","cluster.2")
+  real_colnames = names(combined_output)
+  select_cols = which(real_colnames %in% possible_colnames)
+  combined_output = combined_output[,select_cols]
+  select_neatcolnames = which(possible_colnames %in% real_colnames)
+  names(combined_output) = neat_colnames[select_neatcolnames]
+  combined_output$p2.2 = fix_number_notation(combined_output$p2.2)
+  combined_output$p2.1 = fix_number_notation(combined_output$p2.1)
+  if(!is.numeric(combined_output$cluster.2)){
+    combined_output[combined_output$cluster.2==".",]$cluster.2 = 2
+    combined_output$cluster.2 = as.numeric(combined_output$cluster.2)
+  }
+  
+  #Compute posterior probabilities and combine cluster assignments from step 1 and step 2
+  combined_output$p1 = combined_output$p2 = combined_output$p3 = combined_output$cluster = NA
+  combined_output$p2 = 1-as.numeric(combined_output$p1.1)
+  combined_output$p1 = as.numeric(combined_output$p1.1)*as.numeric(combined_output$p2.1)
+  combined_output$p3 = as.numeric(combined_output$p1.1)*as.numeric(combined_output$p2.2)
+
+  #Remove redundant columns
+  remove_cols = c("cluster.1","cluster.2","p2.1","p2.2","p1.1")
+  combined_output = combined_output[,-which(names(combined_output) %in% remove_cols)]
+  to_return = append(to_return,list(combined_output))
+  
+  #Make sure clusters are assigned the right names
+  to_return = fix_cluster_assignment(type="LCT",results=to_return)
+  return(to_return)
+}
+
+```
+
+
+## Function to perform tree-MILC 
+
+```{r}
+#Function to obtain first round of imputations
+impute_value_step1 = function(x){
+  return(which(rmultinom(1,1,c(as.numeric(x["p1"])+as.numeric(x["p3"]),as.numeric(x["p2"])))== 1))
+}
+
+#Function to obtain second round of imputations 
+impute_value_step2 = function(x){
+  if(is.na(x["Cluster#1"])){
+    return(NA)
+  } else {
+    return(which(rmultinom(1,1,c(as.numeric(x["Cluster#1"]),as.numeric(x["Cluster#2"])))== 1))
+  }
+}
+
+perform_treeMILC = function(iteration, ind, cov, N, ME, folder="F:\\Documents\\Thesis\\Simulatie\\Voorbeeld\\"){
+
+  #Store information about model 
+  model_name = paste(iteration,ind,cov,N,ME,sep="-")
+  model_info = data.frame(iteration=iteration,ind=ind,cov=cov,N=N,ME=ME,id=model_name)
+  to_return = list(model_info) 
+  
+  #Number of bootstrap samples 
+  M=5
+  
+  #Create original data set and write to file
+  dat_org = create_subset(iteration,ind,cov,N,ME) 
+  dat_org_path = paste0(folder,"tree_MILC_",model_name,"_dat_org.dat")
+  fwrite(dat_org,file=dat_org_path,sep="\t")
+  
+  #Count combinations of indicators (+covariate) in the original data set
+  count_dat = as.data.frame(dat_org[,-which(colnames(dat_org) %in% c("id"))] %>% group_by_all() %>% summarise(COUNT = n()))
+  count_dat = count_dat[,-ncol(count_dat)]
+  
+  #Create help vector to combine results later
+  all_indicators = c("Y1","Y2","Y3","Y4")
+  by_vector = c(all_indicators[1:ind])
+  if(cov==1){
+    by_vector = c(by_vector,"q")
+  }
+
+  #Create list to store the results for each bootstrap sample in
+  bootstrap_results = list()
+
+  #For each bootstrap sample
+  for(i in 1:M){
+    dat = dat_org
+    set.seed(i) #Set seed to get different bootstrap samples
+    sample_ids = sample(1:N,N,replace=TRUE)
+    sample = dat[sample_ids,]
+    sample$id = row.names(sample) #Change id to make sure it captures duplicates
+    boot_name = paste0("tree_MILC_",model_name,"_boot",i)
+
+    #Perform LC with 3 classes 
+    boot_output_step1 = perform_lc(iteration,ind,cov,N,ME,dat = sample,folder=folder)[[2]]
+
+    #Count combinations of indicators (+covariate) in the bootstrap sample
+    count_boot = as.data.frame(boot_output_step1[,-which(colnames(boot_output_step1) %in% c("id","cluster"))] 
+                          %>% group_by_all() %>% summarise(COUNT = n()))
+    count_boot = count_boot[,-ncol(count_boot)]
+
+    #If not all combinations are present in the bootstrap sample
+    if(nrow(count_boot)!=nrow(count_dat)){
+      
+      #Get data frame with parameters
+      filename_lc = paste0(folder,"LC_",iteration,"-",ind,"-",cov,"-",N,"-",ME,"_script.lst")
+      lc_lst = readChar(filename_lc,file.info(filename_lc)$size)
+      lc_lst = strsplit(lc_lst,split="Regression Parameters")
+      lc_lst = strsplit(lc_lst[[1]][2],split="Paired Comparisons")
+      parameters_path = paste0(folder,"tree_MILC_",model_name,"_boot", i,"_parameters.dat")
+      writeLines(lc_lst[[1]][1],parameters_path)
+      parameters = suppressWarnings(fread(parameters_path,sep="\t",dec=",")[,1:4])
+      names(parameters) = c("term1","term2","term3","coef")
+      parameters$coef = as.numeric(parameters$coef)
+      remove = which(grepl("(1)",parameters$term1,fixed=TRUE)|grepl("(1)",parameters$term3,fixed=TRUE)) #Remove dummies that are 0
+      parameters = parameters[-remove,]
+      
+      #Estimate extra LC model with obtained parameters as starting values
+      output_path = paste0(folder,"tree_MILC_",model_name,"_boot", i,"_dat_org_posteriors.dat")
+      script = generate_script_treeMILC_step1("LC",ind,cov,N,ME,model_name,filepath_input=dat_org_path,filepath_output=output_path,parameters)
+      script_path = paste0(folder,"tree_MILC_",model_name,"_boot", i,"_dat_org_posteriors.lgs")
+      writeLines(script,script_path)
+      shell(paste0('"C:/Program Files/LatentGOLDnet6.0/lg60.exe" ', script_path, ' /b'))
+      
+      model_lst = paste(readLines(script_path), collapse="\n")
+      if(grepl("WARNING", model_lst, fixed = TRUE)){
+        stop("Error in Posterior Model")
+      }
+  
+      #Read output of extra LC model that contains posterior probabilities for every observation in the original data set
+      dat = as.data.frame(fread(output_path,sep="\t",dec=","))
+      setnames(dat,old=c("Cluster#1","Cluster#2","Cluster#3","Cluster#"),new=c("p1","p2","p3","cluster"))
+      dat = dat[,-which(colnames(dat)=="cluster")] 
+      
+    } else {
+      #If all combinations are present in the bootstrap sample, add the obtained posterior probabilities to the observations in the original data set
+      dat = left_join(x=dat,y=count_boot,by=by_vector)
+    }
+
+    #Sample from obtained posterior membership probabilities
+    dat$imp1 = apply(dat,1,impute_value_step1)
+
+    #Create subsets of cases with imputed values of 1 and write to file
+    subset_ids = dat[dat$imp1==1,]$id
+    subset = dat[dat$id %in% subset_ids,]
+    filepath_subset = paste0(folder,"tree_MILC_",model_name,"_boot", i, "_subset.dat")
+    fwrite(subset,file=filepath_subset,sep="\t")
+
+    #Create and execute Latent Gold script for second model
+    filepath_output = paste0(folder,boot_name,"_step2_output.dat")
+    script = generate_script("treeMILC",ind,cov,N,ME,model_name,filepath_subset,filepath_output)
+    script_path = paste0(folder,boot_name,"_step2_script.lgs",sep="")
+    writeLines(script, script_path)
+    shell(paste0('"C:/Program Files/LatentGOLDnet6.0/lg60.exe" ', script_path, ' /b'))
+    
+    #Import model output
+    model2_output = as.data.frame(fread(paste0(folder,boot_name,"_step2_output.dat",sep=""),dec=","))
+
+    #Check if model is valid (i.e. does not contain a warning)
+    model_lst = paste(readLines(paste0(folder,boot_name,"_step2_script.lst")), collapse="\n")
+    if(grepl("WARNING", model_lst, fixed = TRUE)){
+      stop("Error in Model 2")
+    }
+    
+    return(model2_output)
+    
+    #Add the results from the second model to the results from the first model
+    count_step2 = as.data.frame(model2_output[,-which(colnames(model2_output) %in% c("id","Cluster#"))] 
+                          %>% group_by_all() %>% summarise(COUNT = n()))
+    count_step2 = count_step2[,-ncol(count_step2)]
+    dat = left_join(x=dat,y=count_step2,by=c(by_vector))
+    
+    #Sample again from obtained posterior membership probabilities
+    dat$imp2 = apply(dat,1,impute_value_step2)
+
+    #Combine imputations from both models 
+    dat$cluster = dat$imp1
+    dat[dat$imp1==1 & ((!is.na(dat$imp2) & dat$imp2 == 1)),]$cluster = 1
+    dat[dat$imp1==1 & ((!is.na(dat$imp2) & dat$imp2 == 2)),]$cluster = 3
+
+    #Select and rename columns
+    new_names = c("step2_p1","step2_p3")
+    setnames(dat,old=c("Cluster#1","Cluster#2"),new=new_names)
+    dat = dat[,-which(colnames(dat)=="Cluster#")]
+    
+    #Fix cluster assignment (if necessary)
+    dat = fix_cluster_bootstrap(dat)
+    bootstrap_results = append(bootstrap_results,list(dat))
+  }
+  
+  #Add results to final output list
+  to_return = append(to_return,list(bootstrap_results))
+  return(to_return)
+}
+
+# boot_output_step1 = perform_treeMILC(1,3,0,1000,1)
+model2_output = perform_treeMILC(1,3,0,1000,1)
+
+# get_proportions(t)
+
+```
+
+
+## Function to calculate entropy squared
+
+@param results (list): Results of one particular LC or LCT model
+
+@returns (vector): A vector containing entropy R-squared and entropy
+
+```{r}
+get_entropy = function(results){
+  
+  #For LC and LCT
+  if(class(results[[2]])!="list"){ 
+    results = results[[2]] #Ignore first data frame with model information
+    lc1 = sum((results$p1)*log(results$p1))
+    lc1 = replace(lc1,lc1 =="NaN", 0) #In case some p's are 0
+    lc2= sum((results$p2)*log(results$p2))
+    lc2 = replace(lc1,lc1 =="NaN", 0)
+    lc3 = sum((results$p3)*log(results$p3))
+    lc3 = replace(lc1,lc1 =="NaN", 0)
+    N=nrow(results)
+    entropy = -(lc1+lc2+lc3)
+    entropy_squared = 1-(entropy/(N*log(3)))
+  }
+  
+  #For tree-MILC
+  else { 
+    entropy = entropy_squared = 0
+  }
+  
+  entropy_vector = c(entropy_squared, entropy)
+  names(entropy_vector) = c("Entropy R-squared","Entropy")
+  
+  return(entropy_vector)
+}
+```
+
+
+## Function to calculate estimated proportions per cluster 
+
+@param results (list): Results of one particular LC or LCT model
+
+@returns (vector): A vector containing the estimated proportions per cluster
+
+```{r}
+get_proportions = function(results){
+  results = results[[2]]   #Ignore first data frame with model information
+
+  #For LC or LCT: Compute proportions based on posterior probabilities
+  if(class(results)!="list"){        
+    prop1 = sum(results$p1)
+    prop2 = sum(results$p2)
+    prop3 = sum(results$p3)
+    proportions_vector = c(prop1,prop2,prop3)/nrow(results)
+    names(proportions_vector) = 1:3
+    return(proportions_vector)
+  } 
+  
+  #For tree-MILC: Compute proportions based on imputations
+  else {                    
+    
+    #Compute proportions per bootstrap
+    prop_per_bootstrap = list()
+    for(i in 1:length(results)){
+      prop_per_bootstrap = append(prop_per_bootstrap,list(summary(factor(results[[i]]$cluster))/nrow(results[[i]])))
+    }
+  
+    #Pool results
+    pooled_proportions = colMeans(bind_rows(prop_per_bootstrap))   
+    return(pooled_proportions)
+  }
+}
+```
+
+
+## Helpfunction to compute measurement error matrix for one indicator
+
+@param results (data.frame): Data frame with posterior probabilities
+@param ind_vec (vector): Vector containing values for one particular indicator
+
+@returns (matrix): Measurement error matrix for one indicator
+
+```{r}
+get_ME_help = function(results,ind_vec){
+  
+    results$yx = ind_vec
+    indicator_matrix = data.frame()
+    
+    for(i in 1:3){
+      indicator_matrix = rbind(indicator_matrix,sum(results[results$yx==i,]$p1))
+      indicator_matrix = rbind(indicator_matrix,sum(results[results$yx==i,]$p2))
+      indicator_matrix = rbind(indicator_matrix,sum(results[results$yx==i,]$p3))
+    }
+    
+    indicator_matrix = matrix(as.vector(indicator_matrix[,1]),nrow=3,ncol=3,byrow=FALSE)
+    indicator_matrix = prop.table(indicator_matrix, margin = 1)
+    return(indicator_matrix)
+}
+```
+
+
+## Function to compute measurement error matrix for all indicators
+
+@param results (data.frame): Data frame with posterior probabilities
+@param ind_vec (vector): Vector containing values for one particular indicator
+
+@returns (matrix): Measurement error matrix for one indicator
+
+```{r}
+get_ME = function(results){
+
+  #For LC and LCT: Compute ME for each indicator using the get_ME help function 
+  if(class(results[[2]])!="list"){
+    results = results[[2]] #Ignore first data frame with model information
+
+    which_ind = results[,colnames(results) %in% c("Y1","Y2","Y3","Y4")]
+    to_return = list()
+    for(i in 1:ncol(which_ind)){
+      to_return = append(to_return,list(get_ME_help(results,which_ind[,i])))
+    }
+    return(to_return)
+  }
+  
+  #For tree-MILC: Compute ME for each indicator based on classification
+  else {
+    
+    all_indicators = c("Y1","Y2","Y3","Y4")
+    num_of_ind = results[[1]]$ind
+    results_2 = results[[2]]
+    to_return = list()  #Create list that will contain the averages of all bootstrap sample matrices for each indicator 
+
+    for(i in 1:num_of_ind){
+      cluster_index = which(names(results_2[[1]])=="cluster")
+      ind_index = which(colnames(results_2[[1]])==all_indicators[i])
+      summed_matrix = prop.table(table(results_2[[1]][,cluster_index],results_2[[1]][,ind_index]),1)
+      for(j in 2:length(results_2)){
+        cluster_index = which(names(results_2[[j]])=="cluster")
+        ind_index = which(colnames(results_2[[j]])==all_indicators[i])
+        summed_matrix = summed_matrix + prop.table(table(results_2[[j]][,cluster_index],results_2[[j]][,ind_index]),1)
+      }
+      
+      mean_matrix = summed_matrix / length(results_2)
+      to_return = append(to_return, list(mean_matrix))
+    }
+    
+    return(to_return)
+  }
+}
+
+```
+
+
+## Perform LC, LCT and tree-MILC analyis for all simulation conditions
+
+```{r, eval = FALSE}
+ind = c(2:4)
+N = c(1000,10000)
+ME = c(1:4)
+iteration = c(150:200)
+#it 81 mist deed gek bij 2-1-1000-3
+
+#Create data frame for all combinations
+results_template = data.frame()
+for(l in iteration){
+  for(k in ME){
+    for(i in ind){
+      if(i==2){
+        cov=1
+      } else{
+        cov=0
+    }
+
+      for(j in N){
+        name = paste0(i,"-",cov,"-",j,"-",k)
+        row=c(l,i,cov,j,k,name)
+        results_template=rbind(results_template,row)
+      }
+    }
+  }
+}
+
+colnames(results_template) = c("iteration","indicator","covariate","N","ME","id")
+
+# treeMILC_models_poging4 = list()
+LC_models_poging4 = list()
+# LCT_models_poging3 = list()
+
+m = 0
+
+for(l in iteration){
+  for(k in ME){
+    for(i in ind){
+      if(i==2){
+        cov=1
+      } else{
+        cov=0
+    }
+
+      for(j in N){
+        m = m + 1
+        name = paste0(i,"-",cov,"-",j,"-",k)
+        row=c(l,i,cov,j,k,name)
+        results_template=rbind(results_template,row)
+
+        print(paste0("--------------", m ,"---------------"))
+        LC_models_poging4 = append(LC_models_poging4,list(perform_lc(l,i,cov,j,k,folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\LC_poging4\\")))
+      # print(paste0("LC model ",name," complete."))
+      # LCT_models_poging3 = append(LCT_models_poging3,list(perform_lct(l,i,cov,j,k,folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\LCT\\")))
+      # print(paste0("LCT model ",name," complete."))
+      # 
+      # treeMILC_models_poging3 = append(treeMILC_models_poging3,list(perform_treeMILC(l,i,cov,j,k,folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\treeMILC\\")))
+      # print(paste0("tree-MILC model ",name," complete."))
+       }
+    }
+    
+    # #If a certain data set does not exist, create it  
+    if(exists(paste0("simDat",k,"_iteration",l))){
+      rm(list=paste0("simDat",k,"_iteration",l))
+    }
+  }
+}
+
+```
+
+
+```{r}
+b = 1
+m = 0
+
+for(i in b:nrow(results_template)){
+  z = (results_template[i,])
+    m = m + 1
+    name = paste0(results_template[i,]$indicator,"-",results_template[i,]$covariate,results_template[i,]$N,"-",results_template[i,]$ME)
+    print(paste0("--------------", m ,"---------------"))
+
+    LC = perform_lc(results_template[i,]$iteration,results_template[i,]$indicator,results_template[i,]$covariate,results_template[i,]$N,results_template[i,]$ME,folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\LC\\")
+    LC_models = append(LC_models,list(LC))
+    print(paste0("LC model ",name," complete."))
+
+    treeMILC = perform_treeMILC(results_template[i,]$iteration,results_template[i,]$indicator,results_template[i,]$covariate,results_template[i,]$N,results_template[i,]$ME,folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\treeMILC\\")
+    treeMILC_models = append(treeMILC_models,list(treeMILC))
+    print(paste0("treeMILC model ",name," complete."))
+
+    # If a certain data set does not exist, create it
+    if(exists(paste0("simDat",results_template[i,]$ME,"_iteration",results_template[i,]$iteration))){
+      rm(list=paste0("simDat",results_template[i,]$ME,"_iteration",results_template[i,]$iteration))
+   }
+
+}
+
+```
+
+## ME en heatmap dingetjes
+
+```{r}
+# results_template = LC_results[,1:7]
+
+#Get one value that represents the difference between the true and estimated amount of measurement error  
+get_diff_ME = function(results){
+  
+  ME = results[[1]]$ME
+  ME_results = get_ME(results)
+  ME_matrix = get(paste0("ME_matrix",ME))
+  matrix = ME_results[[1]]
+  
+  for(i in 2:length(ME_results)){
+    matrix = matrix + ME_results[[i]]
+  }
+  
+  diff_ME = abs(mean((matrix/length(ME_results))-ME_matrix))
+  return(diff_ME)
+}
+
+get_diff_ME_diagonal_sum = function(results){
+  
+  ME = results[[1]]$ME
+  ME_results = get_ME(results)
+  ME_matrix = get(paste0("ME_matrix",ME))
+  
+  if(length(ME_matrix)==2){
+    matrix1 = ME_results[[1]]
+    
+    if(length(ME_results)>=3){
+      matrix1 = matrix1+ME_results[[3]]
+    }
+    
+    matrix2 = ME_results[[2]]
+    if(length(ME_results)==4){
+      matrix2 = matrix2 + ME_results[[4]]
+    }
+    
+    diff_sum = 0
+    
+    for(i in 1:3){
+      diff_sum = diff_sum + (matrix1[i,i]/ceiling(length(ME_results)/2)-ME_matrix[[1]][i,i])
+      diff_sum = diff_sum + (matrix2[i,i]/floor(length(ME_results)/2)-ME_matrix[[2]][i,i])
+
+    }
+    
+    return(diff_sum/6)
+  }
+  
+  else {
+    matrix = ME_results[[1]]
+    
+    for(i in 2:length(ME_results)){
+      matrix = matrix + ME_results[[i]]
+    }
+    
+    diff_diag_1 = ((matrix[1,1]/length(ME_results))-ME_matrix[1,1])
+    diff_diag_2 = ((matrix[2,2]/length(ME_results))-ME_matrix[2,2])
+    diff_diag_3 = ((matrix[3,3]/length(ME_results))-ME_matrix[3,3])
+    
+    mean_diff = mean(c(diff_diag_1,diff_diag_2,diff_diag_3))
+    return(mean_diff)
+  }
+}
+
+get_diff_ME_diagonal_noabs = function(results){
+  
+  ME = results[[1]]$ME
+  ME_results = get_ME(results)
+  ME_matrix = get(paste0("ME_matrix",ME))
+  
+  if(length(ME_matrix)==2){
+    matrix1 = ME_results[[1]]
+    if(length(ME_results)>=3){
+      matrix1 = matrix1+ME_results[[3]]
+    }
+    
+    matrix2 = ME_results[[2]]
+    if(length(ME_results)==4){
+      matrix2 = matrix2 + ME_results[[4]]
+    }
+    
+    diff_sum = 0
+    
+    for(i in 1:3){
+      diff_sum = diff_sum + (matrix1[i,i]/ceiling(length(ME_results)/2)-ME_matrix[[1]][i,i])
+      diff_sum = diff_sum + (matrix2[i,i]/floor(length(ME_results)/2)-ME_matrix[[2]][i,i])
+
+    }
+    
+    return(diff_sum/6)
+  }
+  
+  else {
+    matrix = ME_results[[1]]
+    
+    for(i in 2:length(ME_results)){
+      matrix = matrix + ME_results[[i]]
+    }
+    
+    diff_diag_1 = ((matrix[1,1]/length(ME_results))-ME_matrix[1,1])
+    diff_diag_2 = ((matrix[2,2]/length(ME_results))-ME_matrix[2,2])
+    diff_diag_3 = ((matrix[3,3]/length(ME_results))-ME_matrix[3,3])
+    
+    mean_diff = mean(c(diff_diag_1,diff_diag_2,diff_diag_3))
+    return(mean_diff)
+  }
+}
+
+
+
+#Get a list of matrices with for every indicator the differences between the input and estimated measurement error matrix
+get_diff_matrix = function(results){
+  
+  ME = results[[1]]$ME
+  ind = results[[1]]$ind
+  ME_results = get_ME(results)
+  ME_matrix = get(paste0("ME_matrix",ME))
+  to_return = list()
+  
+  if(ME!=4){
+    for(i in 1:ind){
+      to_return = append(to_return,list((ME_results[[i]]-ME_matrix)))
+      # to_return = append(to_return,list(abs(ME_results[[i]]-ME_matrix)))
+    }
+  }
+  
+  if(ME==4){
+
+  for(i in 1:2){
+    if(ME==4){
+      to_return = append(to_return,list((ME_results[[i]]-ME_matrix[[i]])))  
+    }
+  }
+      
+  #Add first
+  if((ME==4) & (ind>2)){
+    to_return = append(to_return,list((ME_results[[3]]-ME_matrix[[1]])))
+  }
+  if ((ME==4) & (ind>3)){
+    to_return = append(to_return,list((ME_results[[4]]-ME_matrix[[2]])))
+  }
+  }
+  return(to_return)
+}
+
+#Get a list of a list of matrices and return a list with the mean matrix of every sublist
+get_mean_matrix = function(list){
+  num_matrices = length(list)
+  num_ind = length(list[[1]])
+  
+  to_return = list()
+  for(i in 1:num_ind){
+    temp_matrix = list[[1]][[i]]
+    for(j in 2:num_matrices){
+      temp_matrix = temp_matrix + list[[j]][[i]]
+    }
+    temp_matrix = temp_matrix/num_matrices
+    to_return=append(to_return,list(temp_matrix))
+  }
+  return(to_return)
+}
+
+get_estimated_ME = function(model, contract){
+  
+  ME = model[[1]]$ME
+  
+  if(ME==4){
+    ME_estimated = get_ME(model)
+    ind = length(ME_estimated)
+    
+    first = ME_estimated[seq(1,ind,2)]
+    second = ME_estimated[seq(2,ind,2)]
+    
+    if(length(first)>1){
+      x = get_mean_matrix(first)
+      first = matrix(unlist(x), ncol = 3, byrow = TRUE)
+      first = first[contract,contract]
+    } else {
+      first = first[[1]][contract,contract]
+    }
+    
+    if(length(second)>1){
+      y = get_mean_matrix(second)
+      second = matrix(unlist(y), ncol = 3, byrow = TRUE)
+      second = second[contract,contract]
+    } else {
+      second = second[[1]][contract,contract]
+    }
+
+    return(c(first, second))
+    
+  } else {
+    
+    ME_estimated = get_mean_matrix(get_ME(model))
+    ME_estimated = matrix(unlist(ME_estimated), ncol = 3, byrow = TRUE)
+    return(ME_estimated[contract,contract])
+  }
+
+}
+
+```
+
+```{r}
+#Create a single heatmap for one partiular indicator
+get_ME_heatmap = function(type,ind,cov,N){
+  
+  results_template = LC_results[,1:7]
+  results_template$ME = as.factor(results_template$ME)
+  levels(results_template$ME)[1] = "10%"
+  levels(results_template$ME)[2] = "20%"
+  levels(results_template$ME)[3] = "30%"
+  levels(results_template$ME)[4] = "approx. 10% (realistic)"
+
+  df_to_plot = data.frame()
+  
+  for(k in levels(results_template$ME)[1:3]){
+    indexes = as.numeric(row.names(results_template[(results_template$ind == ind) & (results_template$cov == cov) & (results_template$N == N) & (results_template$ME == k) ,]))
+    
+    LC_diff_list = LCT_diff_list = treeMILC_diff_list = list()
+    N = as.numeric(N)
+    
+    if(type==1){
+      for(i in indexes){
+        LC_diff_list = append(LC_diff_list,list(get_diff_matrix(LC_models[[i]])))
+        LCT_diff_list = append(LCT_diff_list,list(get_diff_matrix(LC_models[[i]])))
+        treeMILC_diff_list = append(treeMILC_diff_list,list(get_diff_matrix(LC_models[[i]]))) 
+      }     
+      LC_mean_diff = get_mean_matrix(LC_diff_list)
+      LCT_mean_diff = get_mean_matrix(LCT_diff_list)
+      treeMILC_mean_diff = get_mean_matrix(treeMILC_diff_list)
+
+    } else if(type==2){
+        LC_mean_diff = get_var_ME(LC_models,ind,cov,N,which(levels(results_template$ME)==k))
+        LCT_mean_diff = get_var_ME(LC_models,ind,cov,N,which(levels(results_template$ME)==k))
+        treeMILC_mean_diff = get_var_ME(LC_models,ind,cov,N,which(levels(results_template$ME)==k)) 
+    }
+
+    LC_df_to_plot = as.matrix(LC_mean_diff[[1]])
+    LCT_df_to_plot = as.matrix(LCT_mean_diff[[1]])
+    treeMILC_df_to_plot = as.matrix(treeMILC_mean_diff[[1]])
+
+    for(i in 2:ind){
+      LC_df_to_plot = LC_df_to_plot + as.matrix(LC_mean_diff[[i]])
+      LCT_df_to_plot = LCT_df_to_plot + as.matrix(LCT_mean_diff[[i]])
+      treeMILC_df_to_plot = treeMILC_df_to_plot + as.matrix(treeMILC_mean_diff[[i]])
+    }
+    LC_df_to_plot = as.data.frame(as.table(LC_df_to_plot/ind))
+    LC_df_to_plot$type = "LC"
+    LCT_df_to_plot = as.data.frame(as.table(LCT_df_to_plot/ind))
+    LCT_df_to_plot$type = "LCT"
+    treeMILC_df_to_plot = as.data.frame(as.table(treeMILC_df_to_plot/ind))
+    treeMILC_df_to_plot$type = "tree-MILC"
+
+    temp = rbind(LC_df_to_plot,LCT_df_to_plot,treeMILC_df_to_plot)
+    temp$ME = k
+    colnames(temp) = c("Model","Indicator","Bias","type","ME")
+    df_to_plot = rbind(df_to_plot,temp)
+    colnames(df_to_plot) = c("Model","Indicator","Bias","type","ME")
+    
+    df_to_plot$Model = as.character(df_to_plot$Model)
+    df_to_plot$Indicator = as.character(df_to_plot$Indicator)
+
+    df_to_plot[df_to_plot$Model=="A"|df_to_plot$Model=="1",]$Model = "P"
+    df_to_plot[df_to_plot$Model=="B"|df_to_plot$Model=="2",]$Model = "O"
+    df_to_plot[df_to_plot$Model=="C"|df_to_plot$Model=="3",]$Model = "F"
+    df_to_plot[df_to_plot$Indicator=="A"|df_to_plot$Indicator=="1",]$Indicator = "P"
+    df_to_plot[df_to_plot$Indicator=="B"|df_to_plot$Indicator=="2",]$Indicator = "O"
+    df_to_plot[df_to_plot$Indicator=="C"|df_to_plot$Indicator=="3",]$Indicator = "F"
+    
+    df_to_plot$Model <- factor(df_to_plot$Model, levels = c("O", "F", "P"))
+    df_to_plot$Indicator <- factor(df_to_plot$Indicator, levels = c("P", "F", "O"))
+    
+  }
+  
+    # df_to_plot[df_to_plot$Model=="P"&df_to_plot$Indicator=="P",]$Bias = 0   
+    # df_to_plot[df_to_plot$Model=="F"&df_to_plot$Indicator=="F",]$Bias = 0
+    # df_to_plot[df_to_plot$Model=="O"&df_to_plot$Indicator=="O",]$Bias = 0
+
+    
+  if(type==1){
+        df_to_plot[df_to_plot$Model=="P"&df_to_plot$Indicator=="P",]$Bias =-df_to_plot[df_to_plot$Model=="P"&df_to_plot$Indicator=="P",]$Bias
+    df_to_plot[df_to_plot$Model=="O"&df_to_plot$Indicator=="O",]$Bias =-df_to_plot[df_to_plot$Model=="O"&df_to_plot$Indicator=="O",]$Bias
+    df_to_plot[df_to_plot$Model=="F"&df_to_plot$Indicator=="F",]$Bias =-df_to_plot[df_to_plot$Model=="F"&df_to_plot$Indicator=="F",]$Bias
+    
+
+    max_abs = max(abs(df_to_plot$Bias))
+    df_to_plot$Bias = round(df_to_plot$Bias,3)
+    rng = c(-max_abs,max_abs)
+
+    cc = rev(brewer.pal(9,"RdBu"))
+    g = ggplot(df_to_plot, aes(Indicator,Model))  + geom_tile(aes(fill=Bias))+ geom_text(aes(label=Bias))+ scale_fill_gradientn(colors=rev(brewer.pal(9,"RdBu")),values=rescale(c(rng[1],0,rng[2])),limits=c(rng[1],rng[2])) + facet_grid(rows = vars(type),cols=vars(ME),labeller=labeller(.rows = label_value, .cols = label_both)) + 
+  labs(fill="Bias")
+
+  } else { 
+    
+    rng = c(min(df_to_plot$Bias),max(df_to_plot$Bias))
+    df_to_plot$Variance=df_to_plot$Bias
+    g = ggplot(df_to_plot, aes(Indicator,Model))  + geom_tile(aes(fill=Variance))   +  scale_fill_gradientn(colors=brewer.pal(9,"Reds"),values=rescale(c(0,rng[2])),limits=c(0,rng[2])) + facet_grid(rows = vars(type),cols=vars(ME),labeller=labeller(.rows = label_value, .cols = label_both))  + 
+  labs(fill="Variance")
+  }
+
+    return(g)
+}
+
+heatmap=get_ME_heatmap(1,2,1,1000)
+
+```
+
+
+```{r}
+get_ME_heatmap_realistic = function(type,ind,cov,N){
+  
+  results_template = LC_results[,1:7]
+  
+  df_to_plot = data.frame()
+    
+  indexes = as.numeric(row.names(results_template[(results_template$ind == ind) & (results_template$cov == cov) & (results_template$N == N) & (results_template$ME == 4) ,]))
+  N = as.numeric(N)
+    
+    for(k in 1:2){
+      LC_diff_list = LCT_diff_list = treeMILC_diff_list = list()
+ 
+    if(type==1){
+       for(i in indexes){
+          LC_diff_list = append(LC_diff_list,list(get_diff_matrix(LC_models[[i]])[seq(k,ind,2)]))
+          LCT_diff_list = append(LCT_diff_list,list(get_diff_matrix(LCT_models[[i]])[seq(k,ind,2)]))
+          treeMILC_diff_list = append(treeMILC_diff_list,list(get_diff_matrix(treeMILC_models[[i]])[seq(k,ind,2)])) 
+        }
+
+        LC_mean_diff = get_mean_matrix(LC_diff_list)
+        LCT_mean_diff = get_mean_matrix(LCT_diff_list)
+        treeMILC_mean_diff = get_mean_matrix(treeMILC_diff_list)
+    } else if(type==2){
+        LC_mean_diff = get_var_ME(LC_models,ind,cov,ME=4,N,k)
+        LCT_mean_diff = get_var_ME(LCT_models,ind,cov,N,ME=4,k)
+        treeMILC_mean_diff = get_var_ME(treeMILC_models,ind,cov,N,ME=4,k) 
+    }
+
+     if(length(seq(k,ind,2))==1){
+            LC_df_to_plot = as.data.frame(matrix(unlist(LC_mean_diff), ncol = 3, byrow = FALSE))     
+            LCT_df_to_plot = as.data.frame(matrix(unlist(LCT_mean_diff), ncol = 3, byrow = FALSE))          
+            treeMILC_df_to_plot = as.data.frame(matrix(unlist(treeMILC_mean_diff), ncol = 3, byrow = FALSE))          
+
+      } else {
+            LC_df_to_plot = get_mean_matrix(LC_mean_diff)
+            LC_df_to_plot = as.data.frame(matrix(unlist(LC_df_to_plot), ncol = 3, byrow = FALSE))
+            LCT_df_to_plot = get_mean_matrix(LCT_mean_diff)
+            LCT_df_to_plot = as.data.frame(matrix(unlist(LCT_df_to_plot), ncol = 3, byrow = FALSE))
+            treeMILC_df_to_plot = get_mean_matrix(treeMILC_mean_diff)
+            treeMILC_df_to_plot = as.data.frame(matrix(unlist(treeMILC_df_to_plot), ncol = 3, byrow = FALSE))
+        }
+        
+        LC_df_to_plot$Model = rownames(LC_df_to_plot)
+        LC_df_to_plot <- melt(setDT(LC_df_to_plot), id.vars = c("Model"), variable.name = "Indicator")
+        LCT_df_to_plot$Model = rownames(LCT_df_to_plot)
+        LCT_df_to_plot <- melt(setDT(LCT_df_to_plot), id.vars = c("Model"), variable.name = "Indicator")
+        treeMILC_df_to_plot$Model = rownames(treeMILC_df_to_plot)
+        treeMILC_df_to_plot <- melt(setDT(treeMILC_df_to_plot), id.vars = c("Model"), variable.name = "Indicator")
+       
+        LC_df_to_plot$type = "LC"
+        LCT_df_to_plot$type = "LCT"
+        treeMILC_df_to_plot$type = "tree-MILC"
+       
+        temp = rbind(LC_df_to_plot,LCT_df_to_plot,treeMILC_df_to_plot)
+        temp$indicator = ifelse(k==1,"Ind. 1","Ind. 2")
+        colnames(temp) = c("Model","Indicator","Bias","type","ME")
+    
+        df_to_plot = rbind(df_to_plot,temp)
+    }
+        colnames(df_to_plot) = c("Model","Indicator","Bias","type","ME")
+        df_to_plot$Model = as.character(df_to_plot$Model)
+        df_to_plot$Indicator = as.character(df_to_plot$Indicator)
+        df_to_plot[df_to_plot$Model=="V1"|df_to_plot$Model=="1",]$Model = "P"
+        df_to_plot[df_to_plot$Model=="V2"|df_to_plot$Model=="2",]$Model = "O"
+        df_to_plot[df_to_plot$Model=="V3"|df_to_plot$Model=="3",]$Model = "F"
+        df_to_plot[df_to_plot$Indicator=="V1"|df_to_plot$Indicator=="1",]$Indicator = "P"
+        df_to_plot[df_to_plot$Indicator=="V2"|df_to_plot$Indicator=="2",]$Indicator = "O"
+        df_to_plot[df_to_plot$Indicator=="V3"|df_to_plot$Indicator=="3",]$Indicator = "F"
+        df_to_plot$Model <- factor(df_to_plot$Model, levels = c("O", "F", "P"))
+        df_to_plot$Indicator <- factor(df_to_plot$Indicator, levels = c("P", "F", "O"))
+        
+        df_to_plot$ME = as.factor(df_to_plot$ME)
+        df_to_plot$Variance = df_to_plot$Bias
+
+      if(type==1){
+        
+       df_to_plot[df_to_plot$Model=="P"&df_to_plot$Indicator=="P",]$Bias =-df_to_plot[df_to_plot$Model=="P"&df_to_plot$Indicator=="P",]$Bias 
+    df_to_plot[df_to_plot$Model=="O"&df_to_plot$Indicator=="O",]$Bias =-df_to_plot[df_to_plot$Model=="O"&df_to_plot$Indicator=="O",]$Bias 
+    df_to_plot[df_to_plot$Model=="F"&df_to_plot$Indicator=="F",]$Bias =-df_to_plot[df_to_plot$Model=="F"&df_to_plot$Indicator=="F",]$Bias 
+    
+    max_abs = max(abs(df_to_plot$Bias))
+    rng = c(-max_abs,max_abs)
+    
+      g = ggplot(df_to_plot, aes(Indicator,Model))  + geom_tile(aes(fill=Bias)) +  scale_fill_gradientn(colors=rev(brewer.pal(9,"RdBu")),values=rescale(c(rng[1],0,rng[2])),limits=c(rng[1],rng[2])) + facet_grid(rows = vars(type),cols=vars(ME),labeller=labeller(.rows = label_value, .cols = label_value))  + 
+  labs(fill="Bias")#facet_wrap(~ type)}
+      
+      } else if(type==2){
+      
+        rng = c(min(df_to_plot$Variance),max(df_to_plot$Variance))
+
+      g = ggplot(df_to_plot, aes(Indicator,Model))  + geom_tile(aes(fill=Variance)) +  scale_fill_gradientn(colors=brewer.pal(9,"Reds"),values=rescale(c(0,rng[2])),limits=c(0,rng[2])) + facet_grid(rows = vars(type),cols=vars(ME),labeller=labeller(.rows = label_value, .cols = label_value))  + 
+  labs(fill="Variance")#facet_wrap(~ type)}
+      }
+
+    return(g)
+  }
+
+# t1=get_ME_heatmap_realistic(1,2,1,1000)
+# t2=get_ME_heatmap_realistic(2,2,1,1000)
+
+# grid.arrange(t1,t2,ncol=2)
+
+```
+
+```{r}
+#Get a list of matrices with for every indicator the variances of the measurement error probability matrix
+get_var_ME = function(models,ind,cov,N,ME,ind_type=NULL){
+
+    if(ME==4){
+      select_inds = seq(ind_type,ind,2)
+    } else {
+      select_inds = 1:ind
+    }
+    
+    #Get list of measurement error probability matrices for all iterations of a certain condition
+    ME_list = list()
+
+    for(i in 1:length(models)){
+     if((models[[i]][[1]]$ind == ind) & (models[[i]][[1]]$cov == cov) & (models[[i]][[1]]$N == N) & (models[[i]][[1]]$ME == ME)){ 
+        ME_list = append(ME_list, list(get_ME(models[[i]])))
+      }     
+    }
+
+  to_return = list()
+  
+  #For every indicator
+  for(i in select_inds){
+    
+    var_vec = vector()
+    
+    for(m in 1:3){
+      for(n in 1:3){
+        
+        vec = vector()
+        
+        for(o in 1:length(ME_list)){
+          vec = c(vec,ME_list[[o]][[i]][m,n])
+        }
+        
+        var_vec = c(var_vec,var(vec))
+      }
+    }
+    
+    temp_matrix = matrix(var_vec,ncol=3,byrow=TRUE)
+    to_return = append(to_return,list(temp_matrix))
+  }
+  
+  return(to_return)
+}
+```
+
+## Get results
+
+```{r}
+get_results = function(models){
+  
+  results_df = data.frame(iteration=NA,indicator=NA,covariate=NA,N=NA,ME=NA,id=NA,
+                          full_id=NA,prop1=NA,prop2=NA,prop3=NA,entropy=NA,ME1.1=NA,ME1.2=NA,ME1.3=NA,ME2.1=NA,ME2.2=NA,ME2.3=NA,diag=NA)
+  
+  for(i in 1:length(models)){
+    model = models[[i]]
+    model1 = model[[1]]
+    print(i)
+    model_name = paste(as.numeric(model1$ind),as.numeric(model1$cov),as.numeric(model1$N),as.numeric(model1$ME),sep="-")
+    entropy = ifelse(length(model)!=5,get_entropy(model)[1],NA)
+    diag = get_diff_ME_diagonal_noabs(model)
+    
+    if(model1$ME==4){
+      ME1.1 = get_estimated_ME(model,1)[1]
+      ME2.1 = get_estimated_ME(model,1)[2]
+      ME1.2 = get_estimated_ME(model,2)[1]
+      ME2.2 = get_estimated_ME(model,2)[2]
+      ME1.3 = get_estimated_ME(model,3)[1]
+      ME2.3 = get_estimated_ME(model,3)[2]
+    }
+    else {
+      ME1.1 = get_estimated_ME(model,1)
+      ME2.1 = NA
+      ME1.2 = get_estimated_ME(model,2)
+      ME2.2 = NA
+      ME1.3 = get_estimated_ME(model,3)
+      ME2.3 = NA
+    }
+    
+    row = c(as.numeric(model1$iteration),as.numeric(model1$ind),
+            as.numeric(model1$cov),as.numeric(model1$N),
+            as.numeric(model1$ME),model_name,full_id=model1$id,
+            get_proportions(model)[1],get_proportions(model)[2],
+            get_proportions(model)[3],entropy,ME1.1,ME1.2,ME1.3,ME2.1,ME2.2,ME2.3,diag)
+    results_df[i,] = row
+  }
+  
+  
+  return(results_df)
+}
+
+```
+
+
+## Get summary
+
+```{r}
+get_summary = function(type, model_results){
+  
+  convert = c("prop1","prop2","prop3","entropy","ME1.1","ME1.2","ME1.3","ME2.1","ME2.2","ME2.3","diag")
+  model_results[ , convert] <- apply(model_results[ , convert], 2,function(x) as.numeric(as.character(x)))
+  
+  summary1 = as.data.frame(model_results %>%  group_by(indicator,covariate,N,ME,id) %>%   
+  summarise_at(c("prop1","prop2","prop3","entropy","ME1.1","ME1.2","ME1.3","ME2.1","ME2.2","ME2.3","diag"), mean))
+  
+  summary1$rmse_prop1 = summary1$rmse_prop2 = summary1$rmse_prop3 = NA
+
+  split_df=split(model_results, model_results$id)
+  
+  #Compute RMSE
+  for(i in 1:length(split_df)){
+    nsim = nrow(split_df[[i]])
+    
+    ME = split_df[[i]]$ME[1]
+    ME_matrix = get(paste0("ME_matrix",ME))
+    summary1[summary1$id == split_df[[i]]$id[1],]$rmse_prop1 = sqrt(sum((split_df[[i]]$prop1-true_proportions[1])^2)/nsim)
+    summary1[summary1$id == split_df[[i]]$id[1],]$rmse_prop2 = sqrt(sum((split_df[[i]]$prop2-true_proportions[2])^2)/nsim)
+    summary1[summary1$id == split_df[[i]]$id[1],]$rmse_prop3 = sqrt(sum((split_df[[i]]$prop3-true_proportions[3])^2)/nsim)
+  }
+  
+  summary2 = as.data.frame(model_results %>%  group_by(indicator,covariate,N,ME,id) %>% 
+  summarise_at(c("prop1","prop2","prop3","entropy","ME1.1","ME1.2","ME1.3","ME2.1","ME2.2","ME2.3"), sd))[,-c(1:5)]
+  names(summary2) = c("sd_prop1","sd_prop2","sd_prop3","sd_entropy","sd_ME1.1","sd_ME1.2","sd_ME1.3","sd_ME2.1","sd_ME2.2","sd_ME2.3")
+
+  summary = cbind(summary1,summary2)
+  summary$type = type
+  
+  return(summary)
+}
+
+```
+
+
+#lijst van alle modellen met precies dezelfde iteratie dinges
+
+
+Model_list: A list of models with the same parameters but different iteration versions
+
+```{r}
+get_indicator_rmse_help = function(model_list,indicator,contract){
+  
+  #Store estimated measurement error probabilities in a vector
+  ME_vec = vector()
+  
+  for(i in model_list){
+    ME_vec = c(ME_vec,get_ME(i)[[indicator]][contract,contract])
+  }
+  
+  #Get true value  
+  ME_matrix = get(paste0("ME_matrix",as.numeric(model_list[[1]][[1]]$ME)))
+  
+  if(model_list[[1]][[1]]$ME==4){ #For realistic ME scenario
+    print("yes2")
+    if(indicator==1|indicator==3){
+      true_value = ME_matrix[[1]][contract,contract]
+    } else {
+      true_value = ME_matrix[[2]][contract,contract]
+    }
+  } else {
+    true_value = ME_matrix[contract,contract]
+  }
+    
+  #Compute RMSE
+  rmse = sqrt(sum((ME_vec-true_value)^2)/length(model_list))
+
+  return(rmse)
+}
+
+```
+
+
+```{r}
+get_indicator_rmse = function(models,model_results){
+  
+  id = unique(model_results$id)
+  df = data.frame(indicator=NA,covariate=NA,N=NA,ME=NA,id=NA,rmse=NA,ind=NA,Contract=NA)
+
+  for(i in id){
+    model_sub = models[as.numeric(rownames(model_results[model_results$id==i,]))]
+    num_ind = model_sub[[1]][[1]]$ind
+    b = model_sub[[1]][[1]]$cov
+    c = model_sub[[1]][[1]]$N
+    d = model_sub[[1]][[1]]$ME
+    
+    for(j in 1:num_ind){
+      for(k in 1:3){
+      row = c(num_ind, b, c, d, i,get_indicator_rmse_help(model_sub, j,k),j,k)
+      df = rbind(df,row)
+      }
+    }
+  }
+  return(df[-1,])
+} 
+
+```
+
+
+# Get results and combine data
+
+```{r}
+treeMILC_results_poging3 = get_results(treeMILC_models_poging3)
+LC_results_poging3 = get_results(LC_models_poging3)
+LCT_results_poging3 = get_results(LCT_models_poging3)
+
+LC_results_combined = get_results(LC_models_combined)
+LCT_results_combined = get_results(LCT_models_combined)
+treeMILC_results_combined = get_results(treeMILC_models_combined)
+
+LC_summary_combined = get_summary("LC",LC_results_81)
+LCT_summary_combined = get_summary("LCT",LCT_results_81)
+treeMILC_summary_combined = get_summary("treeMILC",treeMILC_results_81)
+
+LC_results_81 = rbind(LC_results_combined,LC_results_poging3)
+LCT_results_81 = rbind(LCT_results_combined,LCT_results_poging3)
+treeMILC_results_81 = rbind(treeMILC_results_combined,treeMILC_results_poging3)
+
+
+all_joined = rbind(LC_summary_poging2,LCT_summary_poging2,treeMILC_summary_poging2)
+all_joined$indicator = as.numeric(all_joined$indicator)
+all_joined$covariate = as.numeric(all_joined$covariate)
+all_joined$N = as.numeric(all_joined$N)
+all_joined$ME = as.numeric(all_joined$ME)
+```
