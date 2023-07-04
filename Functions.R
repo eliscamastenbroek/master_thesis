@@ -14,6 +14,7 @@ library(RColorBrewer)
 ## @param a2,...b32 (int): Logit parameters used to simulate the data                           ##
 ## @returns matrix (matrix): Matrix with measurement error probabilities                        ##
 ##################################################################################################
+
 create_ME_matrix = function(a2, a3, b22, b33, b23, b32){
   row1 = c(1/(1+exp(a2)+exp(a3)), exp(a2)/(1+exp(a2)+exp(a3)), exp(a3)/(1+exp(a2)+exp(a3)))
   row2 = c(1/(1+exp(a2+b22)+exp(a3+b32)), exp(a2+b22)/(1+exp(a2+b22)+exp(a3+b32)), exp(a3+b32)/(1+exp(a2+b22)+exp(a3+b32)))
@@ -29,6 +30,7 @@ create_ME_matrix = function(a2, a3, b22, b33, b23, b32){
 ## @param folder (string): Folder to save files in                                              ##
 ## @returns (data.frame): A simulated data set of size n=20,000                                 ##
 ##################################################################################################
+
 simulate_data = function(seed, ME, folder){
 
   #Create data structure file required by Latent GOLD
@@ -156,6 +158,7 @@ simulate_data = function(seed, ME, folder){
 ## @param ME (int): Amount of measurement error (1=0.2, 2=0.3, 3=0.5, 4=realistic)              ##
 ## @returns (data.frame): A subset                                                              ##
 ##################################################################################################
+
 create_subset = function(iteration, ind, cov, N, ME){
   
   #If a certain data set does not exist in the global environment, create it 
@@ -181,7 +184,8 @@ create_subset = function(iteration, ind, cov, N, ME){
 }
 
 ##################################################################################################
-## Function to generate a Latent Gold script                                                    ## 
+## Function to generate a Latent Gold script for estimating LC models (i.e. LC, LCT step 1,     ## 
+## LCT step 2, tree-MILC step 1, tree-MILC step 2)                                              ##
 ## @param type (string): What type of script ("LC" for regular LC and "LCT" for LCT step 2)     ## 
 ## @param ind (int): Number of indicators                                                       ##
 ## @param cov (int): Number of covariates                                                       ##
@@ -191,6 +195,7 @@ create_subset = function(iteration, ind, cov, N, ME){
 ## @param filepath_output (string): Path where model output should be stored                    ##
 ## @returns (string): A string containing a Latent Gold script                                  ##
 ##################################################################################################
+
 generate_script = function(type, ind, cov, N, model_name, filepath_input, filepath_output){
   
   script_part1 = paste0("version = 6.0\ninfile '", filepath_input, "' \n\nmodel title '")
@@ -270,7 +275,6 @@ generate_script = function(type, ind, cov, N, model_name, filepath_input, filepa
   return(script)
 }
 
-
 ##################################################################################################
 ## Function to generate a Latent Gold script to obtain posterior probabilities for observations ## 
 ## in tree-MILC with response patterns that were not present in the bootstrap sample. This is   ##
@@ -287,6 +291,7 @@ generate_script = function(type, ind, cov, N, model_name, filepath_input, filepa
 ## @param par (data.frame): Data frame with logit parameters as estimated by the previous model ## 
 ## @returns (string): A string containing a Latent Gold script                                  ##
 ##################################################################################################
+
 generate_script_treeMILC_step1 = function(type, ind, cov, N, model_name, filepath_input, filepath_output, par){
   
   script_part1 = paste0("version = 6.0\ninfile '",filepath_input,"' \n\nmodel title '")
@@ -329,65 +334,168 @@ generate_script_treeMILC_step1 = function(type, ind, cov, N, model_name, filepat
     dep_ind_eq = "\tY1 <- (c) 1 + (d) Cluster;\n\tY2 <- (e) 1 + (f) Cluster;\n\tY3 <- (g) 1 + (h) Cluster;\n\tY4 <- (i) 1 + (j) Cluster;"
   }
   
-  #Create a string where the restrictions are stored
-  restrictions="\n"
+  #Create a string where the starting values are stored
+  start_val="\n"
   
   #Adjust equations depending on whether to include a covariate or not
   if(cov==1){
     dep_cov = "\n\tindependent q nominal;"
     latent_var_eq = "\tCluster <- (a) 1 + (b) q;\n"
-    restrictions = paste0(restrictions,"\tb[1,1] ~= ",par[3,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tb[1,2] ~= ",par[4,]$coef,";\n")
+    start_val = paste0(start_val,"\tb[1,1] ~= ",par[3,]$coef,";\n")
+    start_val = paste0(start_val,"\tb[1,2] ~= ",par[4,]$coef,";\n")
   }
   else if(cov==0){
     dep_cov = ""
     latent_var_eq = "\tCluster <- (a) 1;\n"
   }
   
-  restrictions = paste0(restrictions,"\ta[1,1] ~= ",par[1,]$coef,";\n")
-  restrictions = paste0(restrictions,"\ta[1,2] ~= ",par[2,]$coef,";\n")
+  #Specify starting values here
+  start_val = paste0(start_val,  "\ta[1,1] ~= ", par[1, ]$coef, ";\n")
+  start_val = paste0(start_val, "\ta[1,2] ~= ", par[2, ]$coef, ";\n")
+  start_val = paste0(start_val, "\tc[1,1] ~= ", par[4 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\tc[1,2] ~= ", par[5 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\td[1,1] ~= ", par[6 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\td[1,2] ~= ", par[7 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\td[1,3] ~= ", par[8 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\td[1,4] ~= ", par[9 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\te[1,1] ~= ", par[11 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\te[1,2] ~= ", par[12 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\tf[1,1] ~= ", par[13 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\tf[1,2] ~= ", par[14 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\tf[1,3] ~= ", par[15 + cov + cov, ]$coef, ";\n")
+  start_val = paste0(start_val, "\tf[1,4] ~= ", par[16 + cov + cov, ]$coef, ";\n")
   
-  restrictions = paste0(restrictions,"\tc[1,1] ~= ",par[4+cov+cov,]$coef,";\n")
-  restrictions = paste0(restrictions,"\tc[1,2] ~= ",par[5+cov+cov,]$coef,";\n")
-  restrictions = paste0(restrictions,"\td[1,1] ~= ",par[6+cov+cov,]$coef,";\n")
-  restrictions = paste0(restrictions,"\td[1,2] ~= ",par[7+cov+cov,]$coef,";\n")
-  restrictions = paste0(restrictions,"\td[1,3] ~= ",par[8+cov+cov,]$coef,";\n")
-  restrictions = paste0(restrictions,"\td[1,4] ~= ",par[9+cov+cov,]$coef,";\n")
-  
-  restrictions = paste0(restrictions,"\te[1,1] ~= ",par[11+cov+cov,]$coef,";\n")
-  restrictions = paste0(restrictions,"\te[1,2] ~= ",par[12+cov+cov,]$coef,";\n")
-  restrictions = paste0(restrictions,"\tf[1,1] ~= ",par[13+cov+cov,]$coef,";\n")
-  restrictions = paste0(restrictions,"\tf[1,2] ~= ",par[14+cov+cov,]$coef,";\n")
-  restrictions = paste0(restrictions,"\tf[1,3] ~= ",par[15+cov+cov,]$coef,";\n")
-  restrictions = paste0(restrictions,"\tf[1,4] ~= ",par[16+cov+cov,]$coef,";\n")
-  
-  
-  if(ind>=3){
-    restrictions = paste0(restrictions,"\tg[1,1] ~= ",par[18+cov+cov,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tg[1,2] ~= ",par[19+cov+cov,]$coef,";\n")
-    restrictions = paste0(restrictions,"\th[1,1] ~= ",par[20+cov+cov,]$coef,";\n")
-    restrictions = paste0(restrictions,"\th[1,2] ~= ",par[21+cov+cov,]$coef,";\n")
-    restrictions = paste0(restrictions,"\th[1,3] ~= ",par[22+cov+cov,]$coef,";\n")
-    restrictions = paste0(restrictions,"\th[1,4] ~= ",par[23+cov+cov,]$coef,";\n")
+  if(ind >= 3){
+    start_val = paste0(start_val, "\tg[1,1] ~= ", par[18 + cov + cov, ]$coef, ";\n")
+    start_val = paste0(start_val, "\tg[1,2] ~= ", par[19 + cov + cov, ]$coef, ";\n")
+    start_val = paste0(start_val, "\th[1,1] ~= ", par[20 + cov + cov, ]$coef, ";\n")
+    start_val = paste0(start_val, "\th[1,2] ~= ", par[21 + cov + cov, ]$coef, ";\n")
+    start_val = paste0(start_val, "\th[1,3] ~= ", par[22 + cov + cov, ]$coef, ";\n")
+    start_val = paste0(start_val, "\th[1,4] ~= ", par[23 + cov + cov, ]$coef, ";\n")
   } 
-  if(ind==4){
-    restrictions = paste0(restrictions,"\ti[1,1] ~= ",par[25+cov+cov,]$coef,";\n")
-    restrictions = paste0(restrictions,"\ti[1,2] ~= ",par[26+cov+cov,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tj[1,1] ~= ",par[27+cov+cov,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tj[1,2] ~= ",par[28+cov+cov,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tj[1,3] ~= ",par[29+cov+cov,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tj[1,4] ~= ",par[30+cov+cov,]$coef,";\n")
+  if(ind == 4){
+    start_val = paste0(start_val, "\ti[1,1] ~= ", par[25 + cov + cov, ]$coef, ";\n")
+    start_val = paste0(start_val, "\ti[1,2] ~= ", par[26 + cov + cov, ]$coef, ";\n")
+    start_val = paste0(start_val, "\tj[1,1] ~= ", par[27 + cov + cov, ]$coef, ";\n")
+    start_val = paste0(start_val, "\tj[1,2] ~= ", par[28 + cov + cov, ]$coef, ";\n")
+    start_val = paste0(start_val, "\tj[1,3] ~= ", par[29 + cov + cov, ]$coef, ";\n")
+    start_val = paste0(start_val, "\tj[1,4] ~= ", par[30 + cov + cov, ]$coef, ";\n")
   }
   
   #Combine all parts of the script
-  script=paste0(script_part1,model_name,script_part2,script_part3,dep_ind,dep_cov,
-                latent_var,latent_var_eq,dep_ind_eq,restrictions,"\nend model")
+  script = paste0(script_part1, model_name, script_part2, script_part3, dep_ind, dep_cov, 
+                latent_var, latent_var_eq, dep_ind_eq, start_val, "\nend model")
   return(script)
 }
 
-# t = generate_script_treeMILC("LC", 3,0,1000,1, "model_name", "F:/Documents/Thesis/Simulatie/Voorbeeld/simDat_onlyRemoved.dat", "filepath_output.dat",par=test.dat_withoutdummy)
-# writeLines(t,"F:/Documents/Thesis/Simulatie/Voorbeeld/script.lgs")
-# 
+##################################################################################################
+## Function to fix cluster assignments for LC and LCT models (i.e. assign the right names       ## 
+## to the right clusters)                                                                       ##
+## @param type (string): What type of model; only relevant is "LC" for LC)                      ##
+## @param results (list): Results of one particular LC, LCT or tree-MILC model                  ##
+## @returns (list): Same object as input, but with corrected cluster assignments if necessary   ##
+##################################################################################################
+
+fix_cluster_assignment = function(type=NULL,results){
+  
+  #Get a list of matrices with measurement error per indicator
+  ME_list = get_ME(results)
+  
+  #Create one matrix that contains the average values of all matrices
+  summed_matrices = ME_list[[1]]
+  for(j in 2:length(ME_list)){
+    summed_matrices = summed_matrices + ME_list[[j]]
+  }
+  mean_matrix = summed_matrices/length(ME_list)
+  
+  #Find diagonal combinations of cluster names and store them in a data frame
+  all_diagonals = data.frame()
+  
+  if(type=="LC"){ #Find all possible diagonal combinations
+    for(i in 1:3){
+      for(j in 1:3){
+        for(k in 1:3)
+          if(length(unique(c(i,j,k)))==3){
+            all_diagonals=rbind(all_diagonals, c(i, j, k, mean_matrix[i,1], mean_matrix[j,2], mean_matrix[k,3],
+                                                sum(mean_matrix[i,1], mean_matrix[j,2], mean_matrix[k,3])))
+          }
+      }
+    }
+  }
+  
+  #For non-LC models: only find combinations for switched 1 and 3's, because 2 is already correct
+  else {
+    all_diagonals = rbind(all_diagonals, c(1,2,3, mean_matrix[1,1], mean_matrix[2,2], mean_matrix[3,3], sum(mean_matrix[1,1], mean_matrix[2,2], mean_matrix[3,3])))
+    all_diagonals = rbind(all_diagonals, c(3,2,1, mean_matrix[3,1],mean_matrix[2,2], mean_matrix[1,3], sum(mean_matrix[3,1], mean_matrix[2,2], mean_matrix[1,3])))
+  }
+  
+  colnames(all_diagonals) = c("1", "2", "3", "d1", "d2", "d3", "sum")
+  
+  #Find out which combination of diagonals yields the highest sum of diagonal values
+  which_max = which.max(as.vector(all_diagonals[ ,7]))
+  
+  #Find out how to reassign clusters
+  max_1 = all_diagonals[which_max,1]
+  max_2 = all_diagonals[which_max,2]
+  max_3 = all_diagonals[which_max,3]
+  reassignment = c(as.numeric(max_1), as.numeric(max_2), as.numeric(max_3))
+  
+  #If clusters need not to be reassigned, return original results
+  if(identical(reassignment, c(1,2,3))){
+    return(results)
+  } 
+  else {
+    #Create a list to store the corrected results in (to ensure the output has the same format as the input)
+    to_return = list(results[[1]])
+    results = results[[2]]
+    
+    #Assign the posterior probabilities to the right cluster names
+    posteriors = data.frame(p1=results$p1, p2=results$p2, p3=results$p3)
+    results$p1 = posteriors[ , max_1]
+    results$p2 = posteriors[ , max_2]
+    results$p3 = posteriors[ , max_3]
+    to_return = append(to_return, list(results))
+    return(to_return)
+  }
+}
+
+##################################################################################################
+## Function to fix cluster assignments per tree-MILC bootstrap sample                           ## 
+## @param boot_results (data.frame): Results of one bootstrap sample                            ##
+## @returns (data.frame): Same as input, but with corrected cluster assignments if necessary    ##
+##################################################################################################
+
+fix_cluster_bootstrap = function(boot_results) {
+  
+  #Compute a contingency table for the value as observed by indicator Y2 and the imputed value
+  table = table(boot_results$Y2, boot_results$cluster)
+  prop_table = prop.table(table, margin = 1)
+  
+  #Find out which combination of diagonals yields the highest sum of diagonal values (assume that 2 is already correct)
+  all_diagonals = data.frame()
+  all_diagonals = rbind(all_diagonals, c(1,2,3,prop_table[1,1], prop_table[2,2], prop_table[3,3], sum(prop_table[1,1], prop_table[2,2], prop_table[3,3])))
+  all_diagonals = rbind(all_diagonals, c(3,2,1,prop_table[3,1], prop_table[2,2], prop_table[1,3], sum(prop_table[3,1], prop_table[2,2],prop_table[1,3])))
+  colnames(all_diagonals) = c("1","2","3","d1","d2","d3","sum")
+  which_max = which.max(as.vector(all_diagonals[ ,7]))
+  
+  #Find out how to reassign clusters
+  max_1=all_diagonals[which_max,1]
+  max_3=all_diagonals[which_max,3]
+  reassignment = c(max_1,max_3)
+  
+  if(identical(reassignment,c(1,3))){
+    return(boot_results)
+  } else {
+    boot_results$new_cluster = NA
+    boot_results[boot_results$cluster==max_1,]$new_cluster = 1
+    boot_results[boot_results$cluster==2,]$new_cluster = 2
+    boot_results[boot_results$cluster==max_3,]$new_cluster = 3
+    boot_results$cluster = boot_results$new_cluster
+    boot_results = boot_results[,-which(colnames(boot_results)=="new_cluster")]
+  }
+  
+  return(boot_results)
+}
 
 
 
