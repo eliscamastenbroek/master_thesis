@@ -1,4 +1,17 @@
 
+## Initialisations
+
+library(stringr)
+library(dplyr)
+library(tidyr)
+library(data.table)
+library(ggplot2)
+library(gridExtra)
+library(RColorBrewer)
+library(scales)
+
+options(dplyr.summarise.inform = FALSE)
+
 ##################################################################################################
 ## Simulate a data set                                                                          ##
 ## @param seed (int): Seed                                                                      ##
@@ -132,7 +145,7 @@ simulate_data = function(seed, ME, folder){
 ind = c(2:4)
 N = c(1000,10000)
 ME = c(1:4)
-iteration = c(1:50)
+iteration = c(1)
 
 ## Create lists to store results in
 LC_models = list()
@@ -153,7 +166,6 @@ for(l in iteration){
       
       for(j in N){
         #Create model name
-        m = m + 1
         name = paste0(i,"-",cov_ok,"-",j,"-",k)
         row=c(l,i,cov,j,k,name)
         print(paste0("-----------------------------"))
@@ -201,9 +213,9 @@ LCT_results = get_results(LCT_models)
 treeMILC_results = get_results(treeMILC_models)
 
 #Get summary
-LC_summary = get_summary(LC_results)
-LCT_summary = get_summary(LCT_results)
-treeMILC_summary = get_summary(treeMILC_results)
+LC_summary = get_summary("LC", LC_results)
+LCT_summary = get_summary("LCT", LCT_results)
+treeMILC_summary = get_summary("tree-MILC", treeMILC_results)
 
 #Merge summaries
 all_joined = rbind(LC_summary,LCT_summary,treeMILC_summary)
