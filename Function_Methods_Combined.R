@@ -565,7 +565,7 @@ perform_lc <- function(iteration, ind, cov_ok, cov_problem, N, ME, dat = NULL, f
   
   # Check if no warning was given
   model_lst <- paste(readLines(paste0(folder, "LC_", model_name, "_script.lst")), collapse = "\n")
-  if (grepl("WARNING", model_lst, fixed = TRUE)) {
+  if (grepl("WARNING", model_lst, fixed = TRUE, useBytes = TRUE)) {
     to_return <- append(to_return, list("Error"))
   } else {
     to_return <- append(to_return, list("Good"))
@@ -601,8 +601,8 @@ perform_lct <- function(iteration, ind, cov_ok, cov_problem, N, ME, folder) {
   fwrite(dat, file = paste0(folder, dat_name), sep = "\t")
   
   # Perform LC with 3 classes
-  model1 <- perform_lc(iteration, ind, cov_ok, cov_problem, N, ME, folder) # Since the same seed is used, the data set used in perform_lc should be identical
-  model1_output <- to_return1[[2]] 
+  model1 <- perform_lc(iteration, ind, cov_ok, cov_problem, N, ME, folder = folder) # Since the same seed is used, the data set used in perform_lc should be identical
+  model1_output <- model1[[2]] 
   
   # Check if no warning was given
   if (model1[[3]] == "Error") {
@@ -671,7 +671,7 @@ perform_lct <- function(iteration, ind, cov_ok, cov_problem, N, ME, folder) {
   
   # Check if no warning was given
   model_lst <- paste(readLines(paste0(folder, "LCT_", model_name, "_step2_script.lst")), collapse = "\n")
-  if (grepl("WARNING", model_lst, fixed = TRUE)) {
+  if (grepl("WARNING", model_lst, fixed = TRUE, useBytes = TRUE)) {
     to_return <- append(to_return, list("Error"))
   } else {
     to_return <- append(to_return, list("Good"))
@@ -756,17 +756,17 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
       parameters <- suppressWarnings(fread(parameters_path, sep = "\t", dec = ","))[, 1:6]
       names(parameters) <- c("term1", "term2", "term3", "term4", "term5", "coef")
       parameters$coef <- as.numeric(parameters$coef)
-      remove <- which(grepl("Cluster(1)", parameters$term1, fixed = TRUE) |
-                        grepl("Y2(1)", parameters$term1, fixed = TRUE) |
-                        grepl("Y3(1)", parameters$term1, fixed = TRUE) |
-                        grepl("Y4(1)", parameters$term1, fixed = TRUE) |
-                        grepl("(1)", parameters$term3, fixed = TRUE) |
-                        (grepl("Cluster(1)", parameters$term5, fixed = TRUE) &
-                           (grepl("Y1(1)", parameters$term1, fixed = TRUE))) |
-                        (grepl("Cluster(2)", parameters$term5, fixed = TRUE) &
-                           (grepl("Y1(1)", parameters$term1, fixed = TRUE))) |
-                        (grepl("Cluster(3)", parameters$term5, fixed = TRUE) &
-                           (grepl("Y1(1)", parameters$term1, fixed = TRUE))))
+      remove <- which(grepl("Cluster(1)", parameters$term1, fixed = TRUE, useBytes = TRUE) |
+                        grepl("Y2(1)", parameters$term1, fixed = TRUE, useBytes = TRUE) |
+                        grepl("Y3(1)", parameters$term1, fixed = TRUE, useBytes = TRUE) |
+                        grepl("Y4(1)", parameters$term1, fixed = TRUE, useBytes = TRUE) |
+                        grepl("(1)", parameters$term3, fixed = TRUE, useBytes = TRUE) |
+                        (grepl("Cluster(1)", parameters$term5, fixed = TRUE, useBytes = TRUE) &
+                           (grepl("Y1(1)", parameters$term1, fixed = TRUE, useBytes = TRUE))) |
+                        (grepl("Cluster(2)", parameters$term5, fixed = TRUE, useBytes = TRUE) &
+                           (grepl("Y1(1)", parameters$term1, fixed = TRUE, useBytes = TRUE))) |
+                        (grepl("Cluster(3)", parameters$term5, fixed = TRUE, useBytes = TRUE) &
+                           (grepl("Y1(1)", parameters$term1, fixed = TRUE, useBytes = TRUE))))
       parameters <- as.data.frame(parameters[-remove, ])
       
       # Estimate extra LC model with obtained parameters as starting values
@@ -811,7 +811,7 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
     
     # Check if no warning was given
     model_lst <- paste(readLines(paste0(folder, boot_name, "_step2_script.lst")), collapse = "\n")
-    if (grepl("WARNING", model_lst, fixed = TRUE)) {
+    if (grepl("WARNING", model_lst, fixed = TRUE, useBytes = TRUE)) {
       to_return <- append(to_return, list("Error"))
       to_return <- append(to_return, list("Error"))
       return(to_return)
