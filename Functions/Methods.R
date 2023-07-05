@@ -27,11 +27,11 @@
 ## @returns (data.frame): A subset                                                              ##
 ##################################################################################################
 
-create_subset <- function(folder, iteration, ind, cov_ok, cov_problem, N, ME) {
+create_subset <- function(iteration, ind, cov_ok, cov_problem, N, ME) {
   
   # If a certain data set does not exist, create it  
   if (!exists(paste0("simDat", ME, "_iteration", iteration))) {
-    assign(paste0("simDat", ME, "_iteration", iteration), simulate_data(iteration, ME, folder), envir = globalenv())
+    assign(paste0("simDat", ME, "_iteration", iteration), simulate_data(iteration, ME), envir = globalenv())
   }
   
   data <- get(paste0("simDat", ME, "_iteration", iteration))
@@ -532,7 +532,7 @@ perform_lc <- function(iteration, ind, cov_ok, cov_problem, N, ME, dat = NULL, f
   
   # Write data set to file
   if (is.null(dat)) {
-    dat <- create_subset(folder, iteration, ind, cov_ok, cov_problem, N, ME)
+    dat <- create_subset(iteration, ind, cov_ok, cov_problem, N, ME)
   } else {
     dat <- dat
   }
@@ -592,7 +592,7 @@ perform_lct <- function(iteration, ind, cov_ok, cov_problem, N, ME, folder) {
   model_name <- to_return[[1]]$id
   
   # Write data set to use to file
-  dat <- create_subset(folder, iteration, ind, cov_ok, cov_problem, N, ME)
+  dat <- create_subset(iteration, ind, cov_ok, cov_problem, N, ME)
   dat_name <- paste0("LCT_", model_name, "_step1_data.dat")
   fwrite(dat, file = paste0(folder, dat_name), sep = "\t")
   
@@ -698,7 +698,7 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
   model_name <- to_return[[1]]$id
   
   # Create subset and write to file
-  dat_org <- create_subset(folder, iteration, ind, cov_ok, cov_problem, N, ME)
+  dat_org <- create_subset(iteration, ind, cov_ok, cov_problem, N, ME)
   dat_org_path <- paste0(folder, "tree_MILC_", model_name, "_dat_org.dat")
   fwrite(dat_org, file = dat_org_path, sep = "\t")
   
