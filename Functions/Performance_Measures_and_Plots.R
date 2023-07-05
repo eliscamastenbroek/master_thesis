@@ -112,7 +112,7 @@ get_mean_summed_bias = function(results){
   #Get true measurement error probability matrices
   ME = results[[1]]$ME
   ME_matrix = get(paste0("ME_matrix",ME))
-  
+
   #If the amount of measurement error is realistic
   if(length(ME_matrix) == 2){
     diff_sum = 0 #Create integer to store the mean summed bias in
@@ -139,7 +139,7 @@ get_mean_summed_bias = function(results){
     for(j in 1:length(ME_results)){ #Iterate over the number of indicators 
       #Compute the bias of each element on the diagonal
       for(i in 1:3){ 
-        diff_sum = diff_sum + (ME_results[[j]][i,i] - ME_matrix[[k]][i,i])
+        diff_sum = diff_sum + (ME_results[[j]][i,i] - ME_matrix[i,i])
       }
     }
     
@@ -361,10 +361,10 @@ get_results <- function(models) {
                            ME2.1 = NA,
                            ME2.2 = NA,
                            ME2.3 = NA,
-                           diag = NA,
-                           var = NA)
+                           diag = NA)
   
   for (i in 1:length(models)) {
+    print(i)
     model <- models[[i]]
     model1 <- model[[1]] # This object contains the model information
     model_name <- paste(as.numeric(model1$ind), model1$cov_ok, model1$cov_problem, as.numeric(model1$N), as.numeric(model1$ME), sep = "-")
@@ -403,8 +403,7 @@ get_results <- function(models) {
              ME2.1,
              ME2.2,
              ME2.3,
-             get_mean_summed_bias(model),
-             tM_var(model)[[1]])
+             get_mean_summed_bias(model))
     results_df[i, ] <- row
   }
   
