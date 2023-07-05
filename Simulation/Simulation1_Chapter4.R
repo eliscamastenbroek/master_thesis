@@ -11,6 +11,7 @@ library(RColorBrewer)
 library(scales)
 
 options(dplyr.summarise.inform = FALSE)
+setwd("F:/Documents/Thesis/Simulatie/Simulatie_1_zonder_Cov")
 
 ##################################################################################################
 ## Simulate a data set                                                                          ##
@@ -20,10 +21,10 @@ options(dplyr.summarise.inform = FALSE)
 ## @returns (data.frame): A simulated data set (n=10,000)                                       ##
 ##################################################################################################
 
-simulate_data = function(seed, ME, folder){
+simulate_data = function(seed, ME){
   
   #Create data structure file required by Latent GOLD
-  filepath_input = paste0(folder,"exampleData.dat")
+  filepath_input = paste0("exampleData.dat")
   exampleData = paste0("id q Y1 Y2 Y3 Y4 n
 1 1 1 1 1 1 2500
 2 2 2 2 2 2 2500
@@ -46,7 +47,7 @@ simulate_data = function(seed, ME, folder){
     missing includeall;
     output       
     	parameters=first standarderrors profile reorderclasses iterationdetails;\n")
-  outfile_path = paste0(folder, "simDat", ME, "_iteration", seed, ".dat")
+  outfile_path = paste0("simDat", ME, "_iteration", seed, ".dat")
   
   #Logit parameters for P(X=k) based on real data
   data_a2 = -0.9662
@@ -126,7 +127,7 @@ simulate_data = function(seed, ME, folder){
   
   #Combine parts of script
   script = paste0(script_part1, script_part2, parameters)
-  script_path = paste0(folder, "simDat", ME, "_iteration", seed, "_script.lgs")
+  script_path = paste0("simDat", ME, "_iteration", seed, "_script.lgs")
   writeLines(script, script_path)
   
   #Execute Latent Gold script
@@ -152,6 +153,12 @@ LC_models = list()
 LCT_models = list()
 treeMILC_models = list()
 
+m = 0 
+
+#Keep track of potential errors
+errors = 0
+error_vec = vector()
+
 ## Execute simulations
 for(l in iteration){
   for(k in ME){
@@ -166,9 +173,10 @@ for(l in iteration){
       
       for(j in N){
         #Create model name
+        m = m + 1
         name = paste0(i,"-",cov_ok,"-",j,"-",k)
         row=c(l,i,cov,j,k,name)
-        print(paste0("-----------------------------"))
+        print(paste0("---------------", m,"/",length(iteration)*length(ind)*length(N)*length(ME),"------------------"))
         
         ## LC
         LC_models = append(LC_models,list(perform_lc(l,i,cov_ok,cov_problem=NULL,j,k,folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\LC\\")))
@@ -181,6 +189,14 @@ for(l in iteration){
         ## tree-MILC
         treeMILC_models = append(treeMILC_models,list(perform_treeMILC(l,i,cov_ok,cov_problem=NULL,j,k,folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\treeMILC\\")))
         print(paste0("tree-MILC model ",name," complete."))
+        
+        #Keep track of errors
+        if((LC[[3]]=="Error")|(LCT[[3]]=="Error")|(treeMILC[[3]]=="Error")){
+          errors = errors + 1
+          error_vec = c(error_vec,LC[[1]]$id)
+        }
+        print(paste0("Number of errors caught: ",errors, " in ",error_vec))
+        
       }
     }
     
@@ -219,5 +235,3 @@ treeMILC_summary = get_summary("tree-MILC", treeMILC_results)
 
 #Merge summaries
 all_joined = rbind(LC_summary,LCT_summary,treeMILC_summary)
-
-
