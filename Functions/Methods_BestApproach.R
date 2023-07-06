@@ -333,7 +333,7 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
     dat <- dat[, -which(colnames(dat) == "Cluster#")]
     
     # Fix cluster assignment (if necessary)
-    dat <- fix_cluster_bootstrap(dat)
+    dat <- fix_cluster_bootstrap("sim", dat)
     bootstrap_results <- append(bootstrap_results, list(dat))
   }
   
