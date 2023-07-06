@@ -1,7 +1,8 @@
 
 ############################### Methods_SuboptimalApproach.R #####################################
 ## This file contains the functions required to perform LC, LCT and tree-MILC analysis using    ##
-## less optimal approach for including missing covariates from Chapter 5 (see Section 5.1.1):   ##
+## the less optimal approach for including missing covariates from Chapter 5 (see Section       ##
+## 5.1.1):                                                                                      ##                                                               
 ##    - generate_script                                                                         ##
 ##    - perform_lc                                                                              ##
 ##    - perform_lct                                                                             ##
