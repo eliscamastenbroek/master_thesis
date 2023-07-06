@@ -295,12 +295,11 @@ store_model_info <- function(cov_ok, cov_problem) {
 
 ##################################################################################################
 ## Compute measurement error matrices (one per indicator) for an LC, LCT or tree-MILC model     ##
-## @param type (character): String indicating whether the model is for simulated or real data   ##
 ## @param results (list): Results of an LC, LCT or tree-MILC model                              ##
 ## @returns (list): List of measurement error matrices (one per indicator)                      ##
 ##################################################################################################
 
-get_ME <- function(type, results) {
+get_ME <- function(results) {
   
   # For LC and LCT: Compute ME for each indicator using the get_ME_help function 
   if (class(results[[2]]) != "list") {
