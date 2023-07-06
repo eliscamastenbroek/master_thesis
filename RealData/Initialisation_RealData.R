@@ -35,36 +35,36 @@ data2017 <- data2017[, .SD[1], by = persnr]
 data2018 <- data2018[, .SD[1], by = persnr]
 
 ## Combine subsets
-combined = rbind(data2016, data2017, data2018)
+combined <- rbind(data2016, data2017, data2018)
 
 ## Recode such that 1=permanent, 2=other, 3=flexible (i.e. to match the cluster names in the simulation studies)
-combined[combined$contract==3,]$contract=4
-combined[combined$contractEBB==3,]$contractEBB=4
-combined[combined$contractEBB==2,]$contractEBB=3
-combined[combined$contract==2,]$contract=3
-combined[combined$contract==4,]$contract=2
-combined[combined$contractEBB==4,]$contractEBB=2
+combined$contract[combined$contract == 3] <- 4
+combined$contractEBB[combined$contractEBB == 3] <- 4
+combined$contractEBB[combined$contractEBB == 2] <- 3
+combined$contract[combined$contract == 2] <- 3
+combined$contract[combined$contract == 4] <- 2
+combined$contractEBB[combined$contractEBB == 4] <- 2
 
 ##################################################################################################
 ## 2. Create subsets in original form (see Section 6.1)                                         ##
 ##################################################################################################
 
-data2016_original = as.data.frame(combined[combined$year == 2016,])
-data2017_original = as.data.frame(combined[combined$year == 2017,])
-data2018_original = as.data.frame(combined[combined$year == 2018,])
+data2016_original <- as.data.frame(combined[combined$year == 2016, ])
+data2017_original <- as.data.frame(combined[combined$year == 2017, ])
+data2018_original <- as.data.frame(combined[combined$year == 2018, ])
 
 ##################################################################################################
 ## 3. Create subsets with HMM recodings (see Section 6.4)                                       ##
 ##################################################################################################
 
 ## Replace missing covariate categories to existing covariates categories
-combined_recoded = combined
+combined_recoded <- combined
 
-combined_recoded[combined_recoded$SBIgroep==10,]$SBIgroep = 1
-combined_recoded[combined_recoded$BaanduurKlasse==7,]$BaanduurKlasse = 1
-combined_recoded[combined_recoded$grootteklasse==4,]$grootteklasse = 3
-combined_recoded[combined_recoded$softwarecluster==6,]$softwarecluster = 5
+combined_recoded$SBIgroep[combined_recoded$SBIgroep == 10] <- 1
+combined_recoded$BaanduurKlasse[combined_recoded$BaanduurKlasse == 7] <- 1
+combined_recoded$grootteklasse[combined_recoded$grootteklasse == 4] <- 3
+combined_recoded$softwarecluster[combined_recoded$softwarecluster == 6] <- 5
 
-data2016_recoded = combined_recoded[combined_recoded$year==2016,]
-data2017_recoded = combined_recoded[combined_recoded$year==2017,]
-data2018_recoded = combined_recoded[combined_recoded$year==2018,]
+data2016_recoded <- combined_recoded[combined_recoded$year == 2016, ]
+data2017_recoded <- combined_recoded[combined_recoded$year == 2017, ]
+data2018_recoded <- combined_recoded[combined_recoded$year == 2018, ]
