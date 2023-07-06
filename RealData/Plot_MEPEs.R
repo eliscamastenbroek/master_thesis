@@ -13,17 +13,17 @@ library(dplyr)
 ## Define measurement error probability matrices as estimated by the HMMs                       ##
 ##################################################################################################
 
-LFS.2016 <- matrix(c(0.985, 0.01, 0.005, 0.04, 0.934, 0.026, 0.332, 0.071, 0.597), ncol = 3, byrow = TRUE)
 ER.2016 <- matrix(c(0.932, 0.001, 0.067, 0.004, 0.996, 0, 0.107, 0.001, 0.892), ncol = 3, byrow = TRUE)
-HMM_ME.2016 <- list(Polis.2016, ER.2016)
+LFS.2016 <- matrix(c(0.985, 0.01, 0.005, 0.04, 0.934, 0.026, 0.332, 0.071, 0.597), ncol = 3, byrow = TRUE)
+HMM_ME.2016 <- list(ER.2016, LFS.2016)
 
-LFS.2017 <- matrix(c(0.929, 0.001, 0.07, 0.001, 0.998, 0.001, 0.089, 0, 0.911), ncol = 3, byrow = TRUE)
-ER.2017 <- matrix(c(0.982, 0.014, 0.005, 0.042, 0.928, 0.03, 0.296, 0.071, 0.633), ncol = 3, byrow = TRUE)
-HMM_ME.2017 <- list(LFS.2017, ER.2017)
+ER.2016 <- matrix(c(0.929, 0.001, 0.07, 0.001, 0.998, 0.001, 0.089, 0, 0.911), ncol = 3, byrow = TRUE)
+LFS.2017 <- matrix(c(0.982, 0.014, 0.005, 0.042, 0.928, 0.03, 0.296, 0.071, 0.633), ncol = 3, byrow = TRUE)
+HMM_ME.2017 <- list(ER.2017, LFS.2017)
 
-LFS.2018 <- matrix(c(0.931, 0.002, 0.068, 0.004, 0.996, 0, 0.083, 0.001, 0.916), ncol = 3, byrow = TRUE)
-ER.2018 <- matrix(c(0.982, 0.011, 0.007, 0.04, 0.933, 0.027, 0.302, 0.074, 0.623), ncol = 3, byrow = TRUE)
-HMM_ME.2018 <- list(LFS.2018, ER.2018)
+ER.2018 <- matrix(c(0.931, 0.002, 0.068, 0.004, 0.996, 0, 0.083, 0.001, 0.916), ncol = 3, byrow = TRUE)
+LFS.2018 <- matrix(c(0.982, 0.011, 0.007, 0.04, 0.933, 0.027, 0.302, 0.074, 0.623), ncol = 3, byrow = TRUE)
+HMM_ME.2018 <- list(ER.2018, LFS.2018)
 
 ###################################################################################################
 ## This function creates a heatmap that shows the difference between the ME probability matrices ## 
