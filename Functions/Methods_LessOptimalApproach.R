@@ -286,6 +286,7 @@ perform_lct <- function(iteration, ind, cov_ok = NULL, cov_problem = NULL, N, ME
 ## @param cov_problem (vector): Vector with the names of missing covariates                     ##
 ## @param N (int): Size of data set                                                             ## 
 ## @param ME (int): Amount of measurement error (1=10%, 2=20%, 3=30%, 4=realistic)              ##
+## @param M (int): Number of bootstrap samples                                                  ##
 ## @param folder (string): Folder to save files in                                              ##
 ## @returns (list): A list that consists of:                                                    ## 
 ##  [[1]] Data frame with an overview of model parameters (iteration, ind, cov, N, ME)          ##
