@@ -20,7 +20,7 @@
 ## @returns (list): A list that consists of:                                                    ## 
 ##  [[1]] Data frame with an overview of model parameters (iteration, ind, cov, N, ME)          ##
 ##  [[2]] Data frame with model results (posterior probabilities for each observation)          ##
-##  [[3]] Character indicating whether the model was "Good" or whether there was an "Error"     ## 
+##  [[3]] Character indicating whether the model is "Good" or whether there was an "Error"     ## 
 ##################################################################################################
 
 perform_lc <- function(iteration, ind, cov_ok, cov_problem, N, ME, dat = NULL, folder) {
@@ -81,7 +81,7 @@ perform_lc <- function(iteration, ind, cov_ok, cov_problem, N, ME, dat = NULL, f
 ## @returns (list): A list that consists of:                                                    ## 
 ##  [[1]] Data frame with an overview of model parameters (iteration, ind, cov, N, ME)          ##
 ##  [[2]] Data frame with model results (posterior probabilities for each observation)          ##
-##  [[3]] Character indicating whether the model was "Good" or whether there was an "Error"     ## 
+##  [[3]] Character indicating whether the model is "Good" or whether there was an "Error"     ## 
 ##################################################################################################
 
 perform_lct <- function(iteration, ind, cov_ok, cov_problem, N, ME, folder) {
@@ -187,7 +187,7 @@ perform_lct <- function(iteration, ind, cov_ok, cov_problem, N, ME, folder) {
 ## @returns (list): A list that consists of:                                                    ## 
 ##  [[1]] Data frame with an overview of model parameters (iteration, ind, cov, N, ME)          ##
 ##  [[2]] Data frame with model results (posterior probabilities for each observation)          ##
-##  [[3]] Character indicating whether the model was "Good" or whether there was an "Error"     ## 
+##  [[3]] Character indicating whether the model is "Good" or whether there was an "Error"     ## 
 ##################################################################################################
 
 perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, folder) {
