@@ -1,15 +1,20 @@
+##################################### Simulation2.R ##############################################
+## This file contains the code that is required to perform the simulation study with missing    ##
+## covariates (i.e. direct effects and parameter restrictions) as described in Chapter 5.       ##
+## The file is divided into three parts:                                                        ##
+##   1. Function 'simulate_data' to simulate data for this specific simulation study.           ##
+##   2. Perform the simulation study.                                                           ##
+##   3. Get the results of the simulation study.                                                ## 
+## To run the code, the functions in the files 'Methods_BestApproach.R' and                     ## 
+## 'Methods_Helpfunction.R' are also required.                                                  ##
+##################################################################################################
 
 ## Load required packages and initialisations
-library(stringr)
+## Initialisations
 library(dplyr)
-library(tidyr)
 library(data.table)
-library(ggplot2)
-library(gridExtra)
-library(RColorBrewer)
-library(scales)
-options(dplyr.summarise.inform = FALSE)
-setwd("F:/Documents/Thesis/Simulatie/Simulatie_8_met_twee_cov")
+options(dplyr.summarise.inform = FALSE) # Ignore redundant warnings from dplyr 
+setwd("F:/Documents/Thesis/Simulatie/Simulatie_8_met_twee_cov") # Set working directory
 
 ##################################################################################################
 ## Simulate a data set                                                                          ##
@@ -142,7 +147,7 @@ simulate_data = function(seed, ME){
 }
 
 #####################################################################################################
-## Perform simulation study 2 (with missing covariates, direct effects and parameter restrictions) ##
+## 1. Perform simulation study 2                                                                   ##
 #####################################################################################################
 
 ## Specification of simulation conditions
