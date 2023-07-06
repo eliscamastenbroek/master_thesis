@@ -116,7 +116,6 @@ perform_treeMILC <- function(cov_ok, cov_problem, dat = NULL, dat_path = NULL, f
   
   # For each bootstrap sample
   for (i in 1:M) {
-    print(i)
     dat <- dat_org
     set.seed(10 + i) # Set seed to get different bootstrap samples
     sample_ids <- sample(1:nrow(dat), nrow(dat), replace = TRUE)
@@ -144,8 +143,7 @@ perform_treeMILC <- function(cov_ok, cov_problem, dat = NULL, dat_path = NULL, f
       filename_lc <- paste0(folder, "LC_", model_name, "_script.lst")
       lc_lst <- readChar(filename_lc, file.info(filename_lc)$size)
       lc_lst <- strsplit(lc_lst, split = "Regression Parameters")
-      lc_lst <- strsplit(lc```R
-                         lc_lst[[1]][2], split = "Paired Comparisons")
+      lc_lst <- strsplit(lc_lst[[1]][2], split = "Paired Comparisons")
       lc_lst <- lc_lst[[1]][1]
       parameters_path <- paste0(folder, "tree_MILC_", model_name, "_boot", i, "_parameters.dat")
       writeLines(lc_lst, parameters_path)
@@ -160,7 +158,7 @@ perform_treeMILC <- function(cov_ok, cov_problem, dat = NULL, dat_path = NULL, f
       
       # Estimate extra LC model with obtained parameters as starting values
       output_path <- paste0(folder, "tree_MILC_", model_name, "_boot", i, "_dat_org_posteriors.dat")
-      script <- generate_script_treeMILC_step1(cov_ok, cov_problem, model_name, dat = dat, dat_path = dat_path, filepath_output = output_path, parameters)
+      script <- generate_script_treeMILC_extra(cov_ok, cov_problem, model_name, dat = dat, filepath_input = dat_path, filepath_output = output_path, parameters)
       script_path <- paste0(folder, "tree_MILC_", model_name, "_boot", i, "_dat_org_posteriors.lgs")
       writeLines(script, script_path)
       shell(paste0('"C:/Program Files/LatentGOLDnet6.0/lg60.exe" ', script_path, ' /b'))
@@ -212,28 +210,22 @@ perform_treeMILC <- function(cov_ok, cov_problem, dat = NULL, dat_path = NULL, f
     # Sample again from obtained posterior membership probabilities
     dat$imp2 <- apply(dat, 1, impute_value_step2)
     
-    # Combine imputations from both models 
+    #Combine imputations from both models 
     dat$cluster <- dat$imp1
-    dat[dat$imp1 == 1 & ((!is.na(dat$imp2) & dat$imp2 == 1)), ]$cluster <- 1
-    dat[dat$imp1 == 1 & ((!is.na(dat$imp2) & dat$imp2 == 2)), ]$cluster <- 3
+    dat[dat$imp1 == 1 & ((!is.na(dat$imp2) & dat$imp2 == 1)),]$cluster <- 1
+    dat[dat$imp1 == 1 & ((!is.na(dat$imp2) & dat$imp2 == 2)),]$cluster <- 3
     
-    # Select and rename columns
-    new_names <- c("step2_p1", "step2_p3")
-    setnames(dat, old = c("Cluster#1", "Cluster#3"), new = new_names)
+    #Select and rename columns
+    new_names <- c("step2_p1","step2_p3")
+    setnames(dat,old = c("Cluster#1","Cluster#2"),new = new_names)
+    dat = dat[, -which(colnames(dat) == "Cluster#")]
     
-    # Store imputed data for the bootstrap sample
-    bootstrap_results[[i]] <- dat
+    #Fix cluster assignment (if necessary)
+    dat <- fix_cluster_bootstrap("real", dat)
+    bootstrap_results <- append(bootstrap_results, list(dat))
   }
   
-  # Combine the imputed data from all bootstrap samples
-  imputed_data <- bind_rows(bootstrap_results)
-  
-  # Rename columns and remove unnecessary columns
-  setnames(imputed_data, old = c("imp1", "imp2"), new = c("imp_step1", "imp_step2"))
-  imputed_data <- imputed_data[, !grepl("^step", colnames(imputed_data))]
-  
-  # Return the imputed data
-  to_return <- append(to_return, list(imputed_data))
-  
+  #Add results to final output list
+  to_return <- append(to_return, list(bootstrap_results))
   return(to_return)
 }
