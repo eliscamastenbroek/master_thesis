@@ -36,7 +36,7 @@ data2018 <- data2018[, .SD[1], by = persnr]
 ## Combine subsets
 combined <- rbind(data2016, data2017, data2018)
 
-## Recode such that 1=permanent, 2=other, 3=flexible (i.e. to match the cluster names in the simulation studies)
+## Recode such that 1 = permanent, 2 = other, 3 = flexible (i.e. to match the cluster names in the simulation studies)
 combined$contract[combined$contract == 3] <- 4
 combined$contractEBB[combined$contractEBB == 3] <- 4
 combined$contractEBB[combined$contractEBB == 2] <- 3
