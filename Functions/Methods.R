@@ -223,7 +223,7 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
     
     boot_output <- boot_output[[2]]
     
-    # Count combinations of indicators in the bootstrap sample
+    # Count combinations of indicators and covariates in the bootstrap sample
     count_boot <- as.data.frame(boot_output[, -which(colnames(boot_output) %in% c("id", "cluster"))] %>%
                                   group_by_all() %>%
                                   summarise(COUNT = n()))
