@@ -1,6 +1,6 @@
 ################################# Methods_Helpfunctions.R ######################################## 
 ## This file contains a number of (help) functions that are required to perform LC, LCT and     ##
-## tree-MILC analysis on simulated data (Chapters 4-5) and real data from the ER and the LFS    ##
+## tree-MILC analysis on simulated data (Chapters 4-5) and on real data from the ER and the LFS ##
 ## (Chapter 6). This file contains the following functions:                                     ## 
 ##    - fix_cluster_assignment                                                                  ##
 ##    - fix_cluster_bootstrap                                                                   ##
