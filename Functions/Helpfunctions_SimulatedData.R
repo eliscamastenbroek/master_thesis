@@ -232,7 +232,7 @@ generate_script_treeMILC_extra <- function(ind, cov_ok, cov_problem, model_name,
   dep_cov <- ifelse(is.null(cov), "", "\n\tindependent ")
   dep_ind_eq1 <- "\n\tY1 <- (jj) 1 | Cluster"
   
-  #Specify restrictions
+  # Specify restrictions
   if (!is.null(cov_problem)) {
     for (i in 1:length(cov_problem)) {
       pars_count <- pars_count + 1
@@ -263,7 +263,7 @@ generate_script_treeMILC_extra <- function(ind, cov_ok, cov_problem, model_name,
     dep_cov <- paste0(dep_cov, ";")
   }  
   
-  #Specify start values
+  # Specify start values
   restrictions <- paste0(restrictions, "\n\tzz[1,1] ~= ", par[1, ]$coef, ";\n")
   restrictions <- paste0(restrictions, "\tzz[1,2] ~= ", par[2, ]$coef, ";\n")
   df_counter <- 2
@@ -297,7 +297,7 @@ generate_script_treeMILC_extra <- function(ind, cov_ok, cov_problem, model_name,
     dep_ind_eq2 <- "\n\tY2 <- (kk) 1 | Cluster;\n\tY3 <- (ll) 1 | Cluster;\n\tY4 <- (mm) 1 | Cluster;"
   }
   
-  #Continue specifying start values
+  # Continue specifying start values
   all_indicators <- c("Y1", "Y2", "Y3", "Y4")
   indicators_parname <- c("jj", "kk", "ll", "mm")
   for (i in 1:ind) {
@@ -382,9 +382,9 @@ store_model_info <- function(iteration, ind, cov_ok, cov_problem, N, ME) {
 
 get_ME = function(results){
   
-  #For LC and LCT: Compute a ME probability matrix for each indicator using the get_ME_help function
+  # For LC and LCT: Compute a ME probability matrix for each indicator using the get_ME_help function
   if (class(results[[2]]) != "list") {
-    results = results[[2]] #Ignore first data frame with model information
+    results = results[[2]] # Ignore first data frame with model information
     
     which_ind = results[, colnames(results) %in% c("Y1", "Y2", "Y3", "Y4")]
     to_return = list()
@@ -394,7 +394,7 @@ get_ME = function(results){
     return(to_return)
   }
   
-  #For tree-MILC: Compute ME matrix for each indicator based on the imputed values
+  # For tree-MILC: Compute ME matrix for each indicator based on the imputed values
   else {
     
     all_indicators = c("Y1", "Y2", "Y3", "Y4")
@@ -406,7 +406,7 @@ get_ME = function(results){
       cluster_index = which(names(results_2[[1]]) == "cluster")
       ind_index = which(colnames(results_2[[1]]) == all_indicators[i])
       
-      #Compute averages of the ME probability matrices for each bootstrap sample (per indicator) 
+      # Compute averages of the ME probability matrices for each bootstrap sample (per indicator) 
       summed_matrix = prop.table(table(results_2[[1]][, cluster_index], results_2[[1]][, ind_index]), 1)
       for (j in 2:length(results_2)) {
         cluster_index = which(names(results_2[[j]]) == "cluster")
