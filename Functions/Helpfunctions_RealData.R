@@ -21,17 +21,17 @@
 ## @returns (string): A string containing a Latent Gold script                                  ##
 ##################################################################################################
 
-generate_script = function(type, cov_ok, cov_problem, model_name, dat, filepath_input, filepath_output){
+generate_script <- function(type, cov_ok, cov_problem, model_name, dat, filepath_input, filepath_output) {
   
   # Create vectors with characters to use for restrictions later on
-  pars = c("aa","bb","cc","dd","ee","ff","gg","hh","ii","jj")
-  pars2 = c("kk","ll","mm","nn","oo","pp","qq","rr","ss","tt")
-  pars_count = 0
-  pars2_count = 0
+  pars <- c("aa", "bb", "cc", "dd", "ee", "ff", "gg", "hh", "ii", "jj")
+  pars2 <- c("kk", "ll", "mm", "nn", "oo", "pp", "qq", "rr", "ss", "tt")
+  pars_count <- 0
+  pars2_count <- 0
   
-  script_part1 = paste0("version = 6.0\ninfile '",filepath_input,"' \n\nmodel title '")
+  script_part1 <- paste0("version = 6.0\ninfile '", filepath_input, "' \n\nmodel title '")
   
-  script_part2 = paste0("';
+  script_part2 <- paste0("';
     options
     algorithm
         tolerance=1e-08 emtolerance=0.01 emiterations=10000000 nriterations=10000000;
@@ -43,84 +43,84 @@ generate_script = function(type, cov_ok, cov_problem, model_name, dat, filepath_
     output
     	parameters=")
   
-  script_part3 = paste0("first standarderrors profile reorderclasses iterationdetails;
-    	outfile '",filepath_output,"' classification keep=persnr;
+  script_part3 <- paste0("first standarderrors profile reorderclasses iterationdetails;
+    	outfile '", filepath_output, "' classification keep=persnr;
     variables\n") 
   
-  #Adjust number of clusters depending on what type of analysis is performed
-  if(type=="LC"){
-    latent_var = paste0("\n\tlatent Cluster nominal 3;
+  # Adjust the number of clusters depending on the type of analysis performed
+  if (type == "LC") {
+    latent_var <- paste0("\n\tlatent Cluster nominal 3;
     equations\n")
   } else {
-    latent_var = paste0("\n\tlatent Cluster nominal 2;
+    latent_var <- paste0("\n\tlatent Cluster nominal 2;
     equations\n")
   }
-
-  dep_ind = "\tdependent contract nominal, contractEBB nominal;"
-  dep_ind_eq1 = "\n\tcontract <- 1 | Cluster"
-  dep_ind_eq2 = "\n\tcontractEBB <- 1 | Cluster;"
   
-  #Adjust equations and restrictions depending on which covariates to include (if any)
-  cov = c(cov_ok, cov_problem)
-  restrictions1 = restrictions2 = ""
-  dep_cov = "\n\tindependent "
+  dep_ind <- "\tdependent contract nominal, contractEBB nominal;"
+  dep_ind_eq1 <- "\n\tcontract <- 1 | Cluster"
+  dep_ind_eq2 <- "\n\tcontractEBB <- 1 | Cluster;"
   
-  for(i in 1:length(cov)){
-    if(i==1){
-      dep_cov = paste0(dep_cov," ",cov[i]," nominal")
+  # Adjust equations and restrictions depending on the included covariates
+  cov <- c(cov_ok, cov_problem)
+  restrictions1 <- restrictions2 <- ""
+  dep_cov <- "\n\tindependent "
+  
+  for (i in 1:length(cov)) {
+    if (i == 1) {
+      dep_cov <- paste0(dep_cov, " ", cov[i], " nominal")
     } else {
-      dep_cov = paste0(dep_cov,", ",cov[i]," nominal")
+      dep_cov <- paste0(dep_cov, ", ", cov[i], " nominal")
     }
   }
   
-  dep_cov = paste0(dep_cov,";")
-  latent_var_eq = "\tCluster <- 1"
+  dep_cov <- paste0(dep_cov, ";")
+  latent_var_eq <- "\tCluster <- 1"
   
-  if(!is.null(cov_ok)){
-    for(i in 1:length(cov_ok)){
-      latent_var_eq = paste(latent_var_eq,"+",cov_ok[i])
+  if (!is.null(cov_ok)) {
+    for (i in 1:length(cov_ok)) {
+      latent_var_eq <- paste(latent_var_eq, "+", cov_ok[i])
     }
   }
   
   # Specify restrictions
-  if(!is.null(cov_problem)){
-    for(i in 1:length(cov_problem)){
-      pars_count = pars_count + 1
-      which_col = which(colnames(dat)==cov_problem[i])
-      num_cats = length(levels(factor(dat[,which_col])))
-      dep_ind_eq1 = paste0(dep_ind_eq1," + (",pars[i],"~ful) 1 | ",cov_problem[i])
-      latent_var_eq = paste0(latent_var_eq," + (",pars2[i],") ",cov_problem[i])
+  if (!is.null(cov_problem)) {
+    for (i in 1:length(cov_problem)) {
+      pars_count <- pars_count + 1
+      which_col <- which(colnames(dat) == cov_problem[i])
+      num_cats <- length(levels(factor(dat[, which_col])))
+      dep_ind_eq1 <- paste0(dep_ind_eq1, "+ (", pars[i], "~ful) 1 | ", cov_problem[i])
+      latent_var_eq <- paste0(latent_var_eq, "+ (", pars2[i], ")", cov_problem[i])
       
       # Specify the first restriction (see Section 5.1)
-      for(j in 1:num_cats){
-        if(j!=num_cats){
-          restrictions2 = paste0(restrictions2,"\n\t",pars[i],"[",j,",] = 0;")
+      for (j in 1:num_cats) {
+        if (j != num_cats) {
+          restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",] = 0;")
         } else{
-          restrictions2 = paste0(restrictions2,"\n\t",pars[i],"[",j,",1] = -100;")
-          restrictions2 = paste0(restrictions2,"\n\t",pars[i],"[",j,",2] = 0;")
-          restrictions2 = paste0(restrictions2,"\n\t",pars[i],"[",j,",3] = -100;")
+          restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",1] = -100;")
+          restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",2] = 0;")
+          restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",3] = -100;")
         }
       }   
       
       # Specify the second restriction (see Section 5.1)
-      if(length(cov_problem)>1){
-        par2 = (num_cats-1)*2
-        par1 = par2-1
-        if(type=="LC"){
-          restrictions1 = paste0(restrictions1,paste0("\n\t",pars2[i],"[1,",par1,"] = 0; ",pars2[i],"[1,",par2,"] = 0;"))
+      if (length(cov_problem) > 1) {
+        par2 <- (num_cats - 1) * 2
+        par1 <- par2 - 1
+        if (type == "LC") {
+          restrictions1 <- paste0(restrictions1, paste0("\n\t", pars2[i], "[1,", par1, "] = 0; ", pars2[i], "[1,", par2, "] = 0;"))
         } else {
-          restrictions1 = paste0(restrictions1,paste0("\n\t",pars2[i],"[1,",num_cats-1,"] = 0;"))
+          restrictions1 <- paste0(restrictions1, paste0("\n\t", pars2[i], "[1,", num_cats - 1, "] = 0;"))
         }
       }
     }
   }
   
-  latent_var_eq = paste0(latent_var_eq,";")
-  dep_ind_eq1 = paste0(dep_ind_eq1,";")
+  latent_var_eq <- paste0(latent_var_eq, ";")
+  dep_ind_eq1 <- paste0(dep_ind_eq1, ";")
   
-  #Combine all parts of the script
-  script=paste0(script_part1,model_name,script_part2,script_part3,dep_ind,dep_cov,
-                latent_var,latent_var_eq,dep_ind_eq1,dep_ind_eq2,restrictions1,restrictions2,"\nend model")
+  # Combine all parts of the script
+  script <- paste0(script_part1, model_name, script_part2, script_part3, dep_ind, dep_cov,
+                   latent_var, latent_var_eq, dep_ind_eq1, dep_ind_eq2, restrictions1, restrictions2, "\nend model")
   return(script)
 }
 
@@ -142,13 +142,13 @@ generate_script = function(type, cov_ok, cov_problem, model_name, dat, filepath_
 
 generate_script_treeMILC_extra = function(cov_ok, cov_problem, model_name, dat, filepath_input, filepath_output, par){
     
-    #Create vectors with characters to use for restrictions later on
-    pars = c("aa","bb","cc","dd","ee","ff","gg","hh","ii","ll","mm","nn","oo","pp","qq","rr","ss","tt","uu","vv","ww")
-    pars_count  = 0
+    # Create vectors with characters to use for restrictions later on
+    pars <- c("aa", "bb", "cc", "dd", "ee", "ff", "gg", "hh", "ii", "ll", "mm", "nn", "oo", "pp", "qq", "rr", "ss", "tt", "uu", "vv", "ww")
+    pars_count  <- 0
     
-    script_part1 = paste0("version = 6.0\ninfile '",filepath_input,"' \n\nmodel title '")
+    script_part1 <- paste0("version = 6.0\ninfile '", filepath_input, "' \n\nmodel title '")
     
-    script_part2 = paste0("';
+    script_part2 <- paste0("';
     options
     algorithm
         tolerance=1e-08 emtolerance=0.01 emiterations=0 nriterations=0;
@@ -160,35 +160,35 @@ generate_script_treeMILC_extra = function(cov_ok, cov_problem, model_name, dat, 
     output
     	parameters=")
     
-    script_part3 = paste0("first standarderrors profile reorderclasses iterationdetails;
-    	outfile '",filepath_output,"' classification keep=persnr;
+    script_part3 <- paste0("first standarderrors profile reorderclasses iterationdetails;
+    	outfile '", filepath_output, "' classification keep=persnr;
     variables\n") 
     
-    latent_var = paste0("\n\tlatent Cluster nominal 3;
+    latent_var <- paste0("\n\tlatent Cluster nominal 3;
     equations\n")
     
-    #Adjust equations (and restrictions) depending on which covariates to include (if any)
-    cov = c(cov_ok, cov_problem)
-    restrictions = restrictions2 = ""
-    latent_var_eq = "\tCluster <- (zz) 1"
-    dep_cov = ifelse(is.null(cov),"","\n\tindependent ")
-    dep_ind_eq1 = "\n\tcontract <- (jj) 1 | Cluster"
+    # Adjust equations (and restrictions) depending on which covariates to include (if any)
+    cov <- c(cov_ok, cov_problem)
+    restrictions <- restrictions2 <- ""
+    latent_var_eq <- "\tCluster <- (zz) 1"
+    dep_cov <- ifelse(is.null(cov), "", "\n\tindependent ")
+    dep_ind_eq1 <- "\n\tcontract <- (jj) 1 | Cluster"
     
-    #Specify restrictions
+    # Specify restrictions
     if(!is.null(cov_problem)){
       for(i in 1:length(cov_problem)){
-        pars_count = pars_count + 1
-        which_col = which(colnames(dat)==cov_problem[i])
-        num_cats = length(levels(factor(dat[,which_col])))
-        dep_ind_eq1 = paste0(dep_ind_eq1," + (",pars[i],"~ful) 1 | ",cov_problem[i]) 
+        pars_count <- pars_count + 1
+        which_col <- which(colnames(dat) == cov_problem[i])
+        num_cats <- length(levels(factor(dat[, which_col])))
+        dep_ind_eq1 = paste0(dep_ind_eq1, " + (", pars[i], "~ful) 1 | ", cov_problem[i]) 
         
         for(j in 1:num_cats){
-          if(j!=num_cats){
-            restrictions2 = paste0(restrictions2,"\n\t",pars[i],"[",j,",] = 0;")  #Specify second restriction (see Section 5.1)
+          if(j != num_cats){
+            restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",] = 0;")  #Specify second restriction (see Section 5.1)
           } else{
-            restrictions2 = paste0(restrictions2,"\n\t",pars[i],"[",j,",1] = -100;")  #Specify first restriction (see Section 5.1)
-            restrictions2 = paste0(restrictions2,"\n\t",pars[i],"[",j,",2] = 0;")
-            restrictions2 = paste0(restrictions2,"\n\t",pars[i],"[",j,",3] = -100;")
+            restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",1] = -100;")  #Specify first restriction (see Section 5.1)
+            restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",2] = 0;")
+            restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",3] = -100;")
           }
         }   
       }
@@ -196,66 +196,66 @@ generate_script_treeMILC_extra = function(cov_ok, cov_problem, model_name, dat, 
     
     if(!is.null(cov)){
       for(i in 1:length(cov)){
-        if(i==1){
-          dep_cov = paste0(dep_cov," ",cov[i]," nominal")
+        if(i == 1){
+          dep_cov <- paste0(dep_cov, " ", cov[i], " nominal")
         } else {
-          dep_cov = paste0(dep_cov,", ",cov[i]," nominal")
+          dep_cov <- paste0(dep_cov, ",  ", cov[i], " nominal")
         }
       }
-      dep_cov = paste0(dep_cov,";")
+      dep_cov = paste0(dep_cov, ";")
     }  
     
-    #Specify start values
-    restrictions = paste0(restrictions,"\n\tzz[1,1] ~= ",par[1,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tzz[1,2] ~= ",par[2,]$coef,";\n")
+    # Specify start values
+    restrictions <- paste0(restrictions, "\n\tzz[1,1] ~= ", par[1, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tzz[1,2] ~= ", par[2, ]$coef, ";\n")
     
     df_counter = 2
     
     if(!is.null(cov)){
       for(i in 1:length(cov)){
-        which_col = which(colnames(dat)==cov[i])
-        num_cats = length(levels(factor(dat[,which_col])))
-        pars_count = pars_count + 1
-        latent_var_eq = paste0(latent_var_eq," + (",pars[pars_count],") ",cov[i])
-        par2 = (num_cats-1)*2
+        which_col <- which(colnames(dat) == cov[i])
+        num_cats <- length(levels(factor(dat[, which_col])))
+        pars_count <- pars_count + 1
+        latent_var_eq <- paste0(latent_var_eq, " + (", pars[pars_count], ") ", cov[i])
+        par2 <- (num_cats - 1) * 2
         
         for(j in 1:par2){
-          df_counter = df_counter + 1
-          if(par[df_counter,]$coef==0){
-            restrictions = paste0(restrictions,"\t",pars[pars_count],"[1,",j,"] = ",par[df_counter,]$coef,";\n")
+          df_counter <- df_counter + 1
+          if(par[df_counter, ]$coef == 0){
+            restrictions <- paste0(restrictions, "\t", pars[pars_count], "[1,", j, "] = ", par[df_counter, ]$coef, ";\n")
           } else {
-            restrictions = paste0(restrictions,"\t",pars[pars_count],"[1,",j,"] ~= ",par[df_counter,]$coef,";\n")
+            restrictions <- paste0(restrictions, "\t", pars[pars_count], "[1,", j, "] ~= ", par[df_counter, ]$coef, ";\n")
           }
         }
       }
     }
     
-    dep_ind = "\tdependent contract nominal, contractEBB nominal;"
-    dep_ind_eq2 = "\n\tcontractEBB <- (kk) 1 | Cluster;"
+    dep_ind <- "\tdependent contract nominal, contractEBB nominal;"
+    dep_ind_eq2 <- "\n\tcontractEBB <- (kk) 1 | Cluster;"
     
-    df_counter = grep("contractEBB",par$term1)[1]
-    restrictions = paste0(restrictions,"\tkk[1,1] ~= ",par[df_counter,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tkk[1,2] ~= ",par[df_counter+1,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tkk[2,1] ~= ",par[df_counter+2,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tkk[2,2] ~= ",par[df_counter+3,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tkk[3,1] ~= ",par[df_counter+4,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tkk[3,2] ~= ",par[df_counter+5,]$coef,";\n")
+    df_counter <- grep("contractEBB", par$term1)[1]
+    restrictions <- paste0(restrictions, "\tkk[1,1] ~= ", par[df_counter, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tkk[1,2] ~= ", par[df_counter+1, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tkk[2,1] ~= ", par[df_counter+2, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tkk[2,2] ~= ", par[df_counter+3, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tkk[3,1] ~= ", par[df_counter+4, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tkk[3,2] ~= ", par[df_counter+5, ]$coef, ";\n")
     
-    df_counter = grep("contract",par$term1)[1]
-    restrictions = paste0(restrictions,"\tjj[1,1] ~= ",par[df_counter,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tjj[1,2] ~= ",par[df_counter+1,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tjj[2,1] ~= ",par[df_counter+2,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tjj[2,2] ~= ",par[df_counter+3,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tjj[3,1] ~= ",par[df_counter+4,]$coef,";\n")
-    restrictions = paste0(restrictions,"\tjj[3,2] ~= ",par[df_counter+5,]$coef,";\n")
+    df_counter <- grep("contract", par$term1)[1]
+    restrictions <- paste0(restrictions, "\tjj[1,1] ~= ", par[df_counter, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tjj[1,2] ~= ", par[df_counter+1, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tjj[2,1] ~= ", par[df_counter+2, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tjj[2,2] ~= ", par[df_counter+3, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tjj[3,1] ~= ", par[df_counter+4, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\tjj[3,2] ~= ", par[df_counter+5, ]$coef, ";\n")
     
-    latent_var_eq = paste0(latent_var_eq,";")
-    dep_ind_eq1 = paste0(dep_ind_eq1,";")
+    latent_var_eq <- paste0(latent_var_eq, ";")
+    dep_ind_eq1 <- paste0(dep_ind_eq1, ";")
     
     
     #Combine all parts of the script
-    script=paste0(script_part1,model_name,script_part2,script_part3,dep_ind,dep_cov,
-                  latent_var,latent_var_eq,dep_ind_eq1,dep_ind_eq2,restrictions,restrictions2,"\nend model")
+    script=paste0(script_part1, model_name, script_part2, script_part3, dep_ind, dep_cov, 
+                  latent_var, latent_var_eq, dep_ind_eq1, dep_ind_eq2, restrictions, restrictions2, "\nend model")
     return(script)
   }
   
@@ -268,27 +268,27 @@ generate_script_treeMILC_extra = function(cov_ok, cov_problem, model_name, dat, 
 ##  [[1]]: A data frame with model information                                                  ##
 ##################################################################################################
 
-store_model_info = function(cov_ok, cov_problem){
+store_model_info <- function(cov_ok, cov_problem) {
   
-  if(is.null(cov_ok)){
-    cov_ok1 = "null"
+  if (is.null(cov_ok)) {
+    cov_ok1 <- "null"
   } else {
-    cov_ok1 = paste(cov_ok, collapse="-")
+    cov_ok1 <- paste(cov_ok, collapse = "-")
   }
   
-  if(is.null(cov_problem)){
-    cov_problem1 = "null"
+  if (is.null(cov_problem)) {
+    cov_problem1 <- "null"
   } else {
-    cov_problem1 = paste(cov_problem, collapse="-")
+    cov_problem1 <- paste(cov_problem, collapse = "-")
   }
   
-  cov = c(cov_ok1,cov_problem1)
-  model_name = paste(cov_ok1,  cov_problem1, sep="-")
-  model_info1 = data.frame(cov_ok=cov_ok1,cov_problem=cov_problem1)
-  model_info2 = data.frame(id=model_name)
-  model_info = cbind(model_info1,model_info2)
+  cov <- c(cov_ok1, cov_problem1)
+  model_name <- paste(cov_ok1, cov_problem1, sep = "-")
+  model_info1 <- data.frame(cov_ok = cov_ok1, cov_problem = cov_problem1)
+  model_info2 <- data.frame(id = model_name)
+  model_info <- cbind(model_info1, model_info2)
   
-  to_return = list(model_info) 
+  to_return <- list(model_info) 
   
   return(to_return)
 }
@@ -299,37 +299,37 @@ store_model_info = function(cov_ok, cov_problem){
 ## @returns (list): List of measurement error matrices (one per indicator)                      ##
 ##################################################################################################
 
-get_ME = function(results){
+get_ME <- function(results) {
   
-  #For LC and LCT: Compute ME for each indicator using the get_ME help function 
-  if(class(results[[2]])!="list"){
-    results = results[[2]] #Ignore first data frame with model information
+  # For LC and LCT: Compute ME for each indicator using the get_ME_help function 
+  if (class(results[[2]]) != "list") {
+    results <- results[[2]] # Ignore first data frame with model information
     
-    which_ind = results[,colnames(results) %in% c("contract","contractEBB")]
-    to_return = list()
-    for(i in 1:ncol(which_ind)){
-      to_return = append(to_return,list(get_ME_help(results,which_ind[,i])))
+    which_ind <- results[, colnames(results) %in% c("contract", "contractEBB")]
+    to_return <- list()
+    for (i in 1:ncol(which_ind)) {
+      to_return <- append(to_return, list(get_ME_help(results, which_ind[, i])))
     }
     return(to_return)
   }
   
-  #For tree-MILC: Compute ME matrix for each indicator based on the imputed values
+  # For tree-MILC: Compute ME matrix for each indicator based on the imputed values
   else {
-    all_indicators = c("contract","contractEBB")
-    num_of_ind = 2
-    results = results[[2]]
-    to_return = list()  #Create list to store the averages of all bootstrap sample matrices for each indicator 
+    all_indicators <- c("contract", "contractEBB")
+    num_of_ind <- 2
+    results <- results[[2]]
+    to_return <- list()  # Create list to store the averages of all bootstrap sample matrices for each indicator 
     
-    for(i in 1:num_of_ind){
-      cluster_index = which(names(results[[1]])=="cluster")
-      ind_index = which(names(results[[1]])==all_indicators[i])
-      summed_matrix = prop.table(table(results[[1]][,cluster_index],results[[1]][,ind_index]),1)
-      for(j in 2:length(results)){
-        summed_matrix = summed_matrix + prop.table(table(results[[j]][,cluster_index],results[[j]][,ind_index]),1)
+    for (i in 1:num_of_ind) {
+      cluster_index <- which(names(results[[1]]) == "cluster")
+      ind_index <- which(names(results[[1]]) == all_indicators[i])
+      summed_matrix <- prop.table(table(results[[1]][, cluster_index], results[[1]][, ind_index]), 1)
+      for (j in 2:length(results)) {
+        summed_matrix <- summed_matrix + prop.table(table(results[[j]][, cluster_index], results[[j]][, ind_index]), 1)
       }
       
-      mean_matrix = summed_matrix / length(results)
-      to_return = append(to_return, list(mean_matrix))
+      mean_matrix <- summed_matrix / length(results)
+      to_return <- append(to_return, list(mean_matrix))
     }
     
     return(to_return)
