@@ -4,9 +4,9 @@
 ## covariates as described in Chapter 4. The file is divided into three parts:                  ##
 ##   1. Function 'simulate_data' to simulate data for this specific simulation study.           ##
 ##   2. Perform the simulation study.                                                           ##
-##   3. Get the results of the simulation study.                                                 ## 
-## To run the code, the functions in the files 'Methods.R' and 'Methods_Helpfunction.R' are     ## 
-## also required.                                                                               ##
+##   3. Get the results of the simulation study.                                                ## 
+## To run the code, the functions in the files 'Methods_BestApproach.R' and                     ## 
+## 'Methods_Helpfunction.R' are also required.                                                  ##
 ##################################################################################################
 
 ## Initialisations
