@@ -467,7 +467,7 @@ get_rmse_ME <- function(models, model_results) {
   id <- unique(model_results$id)
   df <- data.frame(indicator = NA, cov_ok = NA, cov_problem = NA, N = NA, ME = NA, id = NA, rmse = NA, ind = NA, Contract = NA)
   
-  # For every contract type, compute estimated ME probability using the get_indicator_rmse_help function
+  # For every contract type, compute estimated ME probability using the get_rmse_ME_help function
   for (i in id) {
     model_sub <- models[as.numeric(rownames(model_results[model_results$id == i,]))]
     for (j in 1:num_ind) {
