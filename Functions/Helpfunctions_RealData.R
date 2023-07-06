@@ -295,17 +295,18 @@ store_model_info <- function(cov_ok, cov_problem) {
 
 ##################################################################################################
 ## Compute measurement error matrices (one per indicator) for an LC, LCT or tree-MILC model     ##
+## @param type (character): String indicating whether the model is for simulated or real data   ##
 ## @param results (list): Results of an LC, LCT or tree-MILC model                              ##
 ## @returns (list): List of measurement error matrices (one per indicator)                      ##
 ##################################################################################################
 
-get_ME <- function(results) {
+get_ME <- function(type, results) {
   
   # For LC and LCT: Compute ME for each indicator using the get_ME_help function 
   if (class(results[[2]]) != "list") {
     results <- results[[2]] # Ignore first data frame with model information
     
-    which_ind <- results[, colnames(results) %in% c("contract", "contractEBB")]
+    which_ind <- results[, colnames(results) %in% c("contract", "contractEBB", "Y1", "Y2", "Y3", "Y4")]
     to_return <- list()
     for (i in 1:ncol(which_ind)) {
       to_return <- append(to_return, list(get_ME_help(results, which_ind[, i])))
@@ -315,7 +316,13 @@ get_ME <- function(results) {
   
   # For tree-MILC: Compute ME matrix for each indicator based on the imputed values
   else {
-    all_indicators <- c("contract", "contractEBB")
+    
+    if (type == "sim") { 
+      all_indicators <- c("contract", "contractEBB")
+    } else if (type == "real") {
+      all_indicators <- c("Y1", "Y2", "Y3", "Y4")
+    }
+    
     num_of_ind <- 2
     results <- results[[2]]
     to_return <- list()  # Create list to store the averages of all bootstrap sample matrices for each indicator 
