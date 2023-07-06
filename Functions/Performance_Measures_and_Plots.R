@@ -1,5 +1,4 @@
-
-##################### FUNCTIONS_PERFORMANCE_MEASURES_AND_PLOTS.R ################################# 
+########################## Performance_Measures_and_Plots.R ###################################### 
 ## This file contains the functions needed to compute the performance measures and creating the ## 
 ## plots in Chapters 4 and 5:                                                                   ##
 ##    - create_ME_matrix                                                                        ##                                                                          
@@ -9,7 +8,7 @@
 ##    - get_diff_matrix                                                                         ##
 ##    - get_mean_matrix                                                                         ##
 ##    - get_ME_per_contract                                                                     ## 
-##    - get_var_ME
+##    - get_var_ME                                                                              ##
 ##################################################################################################
 
 ##################################################################################################
