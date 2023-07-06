@@ -1,4 +1,4 @@
-############################ FUNCTIONS_METHODS_CH4_and_CH5.R ##################################### 
+################################# Methods_Helpfunctions.R ######################################## 
 ## This file contains the functions required to perform LC, LCT and tree-MILC analysis without  ##
 ## missing covariates (see Chapter 4) and with missing covariates with direct effects and       ##
 ## parameter restrictions (see Chapter 5). Note that in this file, the term 'clusters' is used  ## 
