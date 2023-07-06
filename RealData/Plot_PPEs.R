@@ -67,28 +67,35 @@ for (i in 1:3) {
 # Convert LC and tree-MILC results to long format
 results_LC_tM <- pivot_longer(results_props, cols = c("prop1", "prop2", "prop3"), names_to = "Contract")
 results_LC_tM <- results_LC_tM[, -c(4:6)]
-results_LC_tM$Contract <- factor(results_LC_tM$Contract, levels = c("Permanent", "Other", "Flexible"))
+results_LC_tM$Contract <- as.factor(results_LC_tM$Contract)
+levels(results_LC_tM$Contract) <- c("Permanent", "Other", "Flexible")
+results_LC_tM$Contract <- factor(results_LC_tM$Contract, levels=c("Permanent", "Flexible", "Other"))
 setnames(results_LC_tM, old = c("value"), new = c("prop"))
 results_LC_tM$prop <- as.numeric(results_LC_tM$prop)
 
 # Convert HMM results to long format
 results_HMMs <- pivot_longer(results_props, cols = c("HMM_prop1", "HMM_prop2", "HMM_prop3"), names_to = "Contract")
-results_HMMs$Contract <- factor(results_HMMs$Contract, levels = c("Permanent", "Other", "Flexible"))
+results_HMMs$Contract <- as.factor(results_HMMs$Contract)
+levels(results_HMMs$Contract) <- c("Permanent", "Other", "Flexible")
+results_HMMs$Contract <- factor(results_HMMs$Contract, levels=c("Permanent", "Flexible", "Other"))
 results_HMMs <- results_HMMs[, -c(1:3)]
 setnames(results_HMMs, old = c("value"), new = c("HMM"))
 results_HMMs$HMM <- as.numeric(results_HMMs$HMM)
 
-#Convert LFS results to long format
 # Convert LFS results to long format
 results_LFS <- pivot_longer(results_props, cols = c("LFS_prop1", "LFS_prop2", "LFS_prop3"), names_to = "Contract")
 results_LFS <- results_LFS[, c("year", "model", "cov", "Contract", "value")]
-results_LFS$Contract <- factor(results_LFS$Contract, levels = c("Permanent", "Other", "Flexible"))
+results_LFS$Contract <- as.factor(results_LFS$Contract)
+levels(results_LFS$Contract) <- c("Permanent", "Other", "Flexible")
+results_LFS$Contract <- factor(results_LFS$Contract, levels=c("Permanent", "Flexible", "Other"))
 setnames(results_LFS, old = c("value"), new = c("prop"))
 
 # Convert ER results to long format
 results_ER <- pivot_longer(results_props, cols = c("ER_prop1", "ER_prop2", "ER_prop3"), names_to = "Contract")
 results_ER <- results_ER[, c("year", "model", "cov", "Contract", "value")]
-results_ER$Contract <- factor(results_ER$Contract, levels = c("Permanent", "Other", "Flexible"))
+results_ER$Contract <- as.factor(results_ER$Contract)
+levels(results_ER$Contract) <- c("Permanent", "Other", "Flexible")
+results_ER$Contract <- factor(results_ER$Contract, levels=c("Permanent", "Flexible", "Other"))
 setnames(results_ER, old = c("value"), new = c("prop"))
 
 # Combine results for LC, tree-MILC, HMM, LFS, and ER
