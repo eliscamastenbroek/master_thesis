@@ -170,15 +170,18 @@ for(l in iteration){
         print(paste0("---------------", m, "/", length(iteration) * length(ind) * length(N) * length(ME), "------------------"))
         
         ## LC
-        LC_models <- append(LC_models, list(perform_lc(l, i, cov_ok, cov_problem = NULL, j, k, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\LC\\")))
+        LC <- perform_lc(l, i, cov_ok, cov_problem = NULL, j, k, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\LC\\")
+        LC_models <- append(LC_models, list(LC))
         print(paste0("LC model ", name, " complete."))
         
         ## LCT
-        LCT_models <- append(LCT_models, list(perform_lct(l, i, cov_ok, cov_problem = NULL, j, k, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\LCT\\")))
+        LCT <- perform_lct(l, i, cov_ok, cov_problem = NULL, j, k, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\LCT\\")
+        LCT_models <- append(LCT_models, list(LCT))
         print(paste0("LCT model ", name, " complete."))
-         
+        
         ## tree-MILC
-        treeMILC_models <- append(treeMILC_models, list(perform_treeMILC(l, i, cov_ok, cov_problem = NULL, j, k, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\treeMILC\\")))
+        treeMILC <- perform_treeMILC(l, i, cov_ok, cov_problem = NULL, j, k, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_1_zonder_cov\\treeMILC\\")
+        treeMILC_models <- append(treeMILC_models, list(treeMILC))
         print(paste0("tree-MILC model ", name, " complete."))
         
         #Keep track of errors
