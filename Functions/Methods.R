@@ -191,7 +191,7 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
   dat_org_path <- paste0(folder, "tree_MILC_", model_name, "_dat_org.dat")
   fwrite(dat_org, file = dat_org_path, sep = "\t")
   
-  # Count combinations of indicators in the original data set
+  # Count combinations of indicators and covariates in the original data set
   count_dat <- as.data.frame(dat_org[, -which(colnames(dat_org) %in% c("id"))] %>%
                                group_by_all() %>%
                                summarise(COUNT = n()))
