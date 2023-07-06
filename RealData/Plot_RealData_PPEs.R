@@ -1,0 +1,134 @@
+################################### Plot_RealData_PPEs.R ######################################### 
+## This file obtains the results for the PPs of the real data analyses and displays the results ##
+## in plots (see Section 6.3-6.4).                                                              ##                      
+##################################################################################################
+
+library(ggplot2)
+
+##################################################################################################
+## Results for population proportion estimates                                                  ##
+##################################################################################################
+
+# Fill data frame with model results
+results_props <- data.frame(prop1=NA,prop2=NA,prop3=NA,year=NA,Model=NA,cov=NA)
+ok <- "1. Without missing covariates"
+recoded <- "2. Missing covariates using HMM approach"
+restricted <- "3. Missing covariates with direct effects"
+
+results_props <- rbind(results_props,c(get_proportions(LC_2016_ok),2016,"LC",ok))
+results_props <- rbind(results_props,c(get_proportions(LC_2017_ok),2017,"LC",ok))
+results_props <- rbind(results_props,c(get_proportions(LC_2018_ok),2018,"LC",ok))
+results_props <- rbind(results_props,c(get_proportions(LC_2016_recoded),2016,"LC",recoded))
+results_props <- rbind(results_props,c(get_proportions(LC_2017_recoded),2017,"LC",recoded))
+results_props <- rbind(results_props,c(get_proportions(LC_2018_recoded),2018,"LC",recoded))
+results_props <- rbind(results_props,c(get_proportions(LC_2016_restricted),2016,"LC",restricted))
+results_props <- rbind(results_props,c(get_proportions(LC_2017_restricted),2017,"LC",restricted))
+results_props <- rbind(results_props,c(get_proportions(LC_2018_restricted),2018,"LC",restricted))
+results_props <- rbind(results_props,c(get_proportions(treeMILC_2016_ok),2016,"tree-MILC",ok))
+results_props <- rbind(results_props,c(get_proportions(treeMILC_2017_ok),2017,"tree-MILC",ok))
+results_props <- rbind(results_props,c(get_proportions(treeMILC_2018_ok),2018,"tree-MILC",ok))
+results_props <- rbind(results_props,c(get_proportions(treeMILC_2016_recoded),2016,"tree-MILC",recoded))
+results_props <- rbind(results_props,c(get_proportions(treeMILC_2017_recoded),2017,"tree-MILC",recoded))
+results_props <- rbind(results_props,c(get_proportions(treeMILC_2018_recoded),2018,"tree-MILC",recoded))
+results_props <- rbind(results_props,c(get_proportions(treeMILC_2016_restricted),2016,"tree-MILC",restricted))
+results_props <- rbind(results_props,c(get_proportions(treeMILC_2017_restricted),2017,"tree-MILC",restricted))
+results_props <- rbind(results_props,c(get_proportions(treeMILC_2018_restricted),2018,"tree-MILC",restricted))
+results_props <- results_props[-1,]
+
+## Add HMM, LFS and ER proportions
+results_props$HMM_prop1 <- results_props$HMM_prop2 <- results_props$HMM_prop3 <- NA
+results_props$LFS_prop1 <- results_props$LFS_prop2 <- results_props$LFS_prop3 <- NA
+results_props$ER_prop1 <- results_props$ER_prop2 <- results_props$ER_prop3 <- NA
+
+year <- c(2016,2017,2018)
+HMM_prop1 <- c(0.508, 0.515, 0.522) #resp. 2016, 2017 and 2018
+HMM_prop2 <- c(0.307, 0.302, 0.292)
+HMM_prop3 <- c(0.186, 0.183, 0.186)
+LFS_prop1 <- c(0.571, 0.569, 0.579)
+LFS_prop2 <- c(0.310, 0.306, 0.295)
+LFS_prop3 <- c(0.119, 0.125, 0.126)
+ER_prop1 <- c(0.494, 0.495, 0.502)
+ER_prop2 <- c(0.306, 0.302, 0.292)
+ER_prop3 <- c(0.200, 0.203, 0.206)
+
+for(i in 1:3){
+  results_props[results_props$year==year[i],]$HMM_prop1 <- HMM_prop1[i]
+  results_props[results_props$year==year[i],]$HMM_prop2 <- HMM_prop2[i]
+  results_props[results_props$year==year[i],]$HMM_prop3 <- HMM_prop3[i]
+  results_props[results_props$year==year[i],]$LFS_prop1 <- LFS_prop1[i]
+  results_props[results_props$year==year[i],]$LFS_prop2 <- LFS_prop2[i]
+  results_props[results_props$year==year[i],]$LFS_prop3 <- LFS_prop3[i]
+  results_props[results_props$year==year[i],]$ER_prop1 <- ER_prop1[i]
+  results_props[results_props$year==year[i],]$ER_prop2 <- ER_prop2[i]
+  results_props[results_props$year==year[i],]$ER_prop3 <- ER_prop3[i]
+}
+
+#Convert LC and tree-MILC results to long format
+results_LC_tM <- as.data.frame(pivot_longer(results_props,cols=c("prop1","prop2", "prop3"),names_to="Contract"))
+results_LC_tM <- results_LC_tM[,-c(4:6)]
+results_LC_tM$Contract <- as.factor(results_LC_tM$Contract)
+levels(results_LC_tM$Contract) <- c("Permanent","Other","Flexible")
+results_LC_tM$Contract <- factor(results_LC_tM$Contract,levels=c("Permanent","Flexible","Other"))
+setnames(results_LC_tM,old=c("value"),new=c("prop"))
+results_LC_tM$prop <- as.numeric(results_LC_tM$prop)
+
+#Convert HMM results to long format
+results_HMMs <- as.data.frame(pivot_longer(results_props,cols=c("HMM_prop1","HMM_prop2", "HMM_prop3"),names_to="Contract"))
+results_HMMs$Contract <- as.factor(results_HMMs$Contract)
+levels(results_HMMs$Contract) <- c("Permanent","Other","Flexible")
+results_HMMs$Contract <- factor(results_HMMs$Contract,levels=c("Permanent","Flexible","Other"))
+results_HMMs <- results_HMMs[,-c(1:3)]
+setnames(results_HMMs,old=c("value"),new=c("HMM"))
+results_HMMs$HMM <- as.numeric(results_HMMs$HMM)
+
+#Convert LFS results to long format
+results_LFS <- as.data.frame(pivot_longer(results_props,cols=c("LFS_prop1","LFS_prop2", "LFS_prop3"),names_to="Contract"))
+results_LFS <- results_LFS[,c("year","Model","cov","Contract","value")]
+results_LFS$Contract <- as.factor(results_LFS$Contract)
+levels(results_LFS$Contract) <- c("Permanent","Other","Flexible")
+results_LFS$Contract <- factor(results_LFS$Contract,levels=c("Permanent","Flexible","Other"))
+setnames(results_LFS,old=c("value"),new=c("prop"))
+
+#Convert ER results to long format
+results_ER <- as.data.frame(pivot_longer(results_props,cols=c("ER_prop1","ER_prop2", "ER_prop3"),names_to="Contract"))
+results_ER <- results_ER[,c("year","Model","cov","Contract","value")]
+results_ER$Contract <- as.factor(results_ER$Contract)
+levels(results_ER$Contract) <- c("Permanent","Other","Flexible")
+results_ER$Contract <- factor(results_ER$Contract,levels=c("Permanent","Flexible","Other"))
+setnames(results_ER,old=c("value"),new=c("prop"))
+
+#Combine results for LC, tree-MILC, HMM, LFS and ER
+results_props_HMM <- left_join(results_LC_tM,results_HMMs,by=c("year","Model","cov","Contract","LFS_prop1","LFS_prop2","LFS_prop3","ER_prop1","ER_prop2","ER_prop3"))
+results_props_LFS <- left_join(results_LFS,results_HMMs,by=c("year","Model","cov","Contract"))
+results_props_ER <- left_join(results_ER,results_HMMs,by=c("year","Model","cov","Contract"))
+results_HMMs$Model <- "HMM"
+results_props_LFS$Model <- "LFS"
+results_props_ER$Model <- "ER"
+results_HMMs <- distinct(results_HMMs)
+results_props_LFS <- distinct(results_props_LFS)
+results_props_ER <- distinct(results_props_ER)
+results_HMMs$prop <- results_HMMs$HMM
+combined_results <- rbind(results_props_HMM,results_HMMs)
+combined_results <- rbind(combined_results,results_props_LFS)
+combined_results <- rbind(combined_results,results_props_ER)
+combined_results$cov <- as.factor(combined_results$cov)
+combined_results$prop <- round(combined_results$prop,3)
+combined_results$Model <- factor(combined_results$Model,levels=c("LFS","ER","HMM","LC","tree-MILC"))
+
+###################################################################################################
+## Plot population proportion estimates                                                          ##
+###################################################################################################
+
+group.colors <- c("LFS" = "grey85","ER" = "grey75", HMM = "grey60",LC = "#F8766D",  "tree-MILC" ="#619CFF")
+
+#Plots in Section 6.3: PPEs for (best) approach with direct effects and parameter restrictions
+PPE_restricted <- combined_results[combined_results$cov==restricted,] %>% ggplot(aes(x=Model, y=prop,fill=Model)) + geom_bar(stat='identity', position='dodge') + facet_grid(Contract ~ year,labeller=label_value,scales="fixed")  +  scale_fill_manual(name="",values=group.colors) + geom_hline(aes(yintercept=HMM,colour="black"),colour="black")  + labs(y= "Population proportion estimates") + geom_text(aes(label=prop),size=3.5,hjust=0.5,vjust=2.7,position="stack")+theme(legend.position="top")
+ggsave(filename="Y:/Elisca/EchteData/Plots/PPE_restricted.pdf",plot=PPE_restricted,width=10,height=6)
+
+#Plots in Section 6.4: PPEs for additional analyses
+PPE_2016 = combined_results[combined_results$year==2016,] %>% ggplot( aes(x=Model, y=prop,fill=Model)) + geom_bar(stat='identity', position='dodge')  + facet_grid(Contract ~ cov,labeller=label_value,scales="fixed")  + scale_fill_manual(name="",values=group.colors) + labs(y= "Population proportion estimates") + geom_text(aes(label=prop),size=3.5,hjust=0.5,vjust=2.85)+ geom_hline(aes(yintercept=HMM,colour="black"),colour="black")  
+PPE_2017 = combined_results[combined_results$year==2017,] %>% ggplot( aes(x=Model, y=prop,fill=Model)) + geom_bar(stat='identity', position='dodge')  + facet_grid(Contract ~ cov,labeller=label_value,scales="fixed")  + scale_fill_manual(name="",values=group.colors) + labs(y= "Population proportion estimates") + geom_text(aes(label=prop),size=3.5,hjust=0.5,vjust=2.85)+ geom_hline(aes(yintercept=HMM,colour="black"),colour="black")  
+PPE_2018 = combined_results[combined_results$year==2018,] %>% ggplot( aes(x=Model, y=prop,fill=Model)) + geom_bar(stat='identity', position='dodge')  + facet_grid(Contract ~ cov,labeller=label_value,scales="fixed")  + scale_fill_manual(name="",values=group.colors) + labs(y= "Population proportion estimates") + geom_text(aes(label=prop),size=3.5,hjust=0.5,vjust=2.85)+ geom_hline(aes(yintercept=HMM,colour="black"),colour="black")  
+ggsave(filename="Y:/Elisca/EchteData/Plots/PPE_2016.pdf",plot=PPE_2016,width=10,height=6)
+ggsave(filename="Y:/Elisca/EchteData/Plots/PPE_2017.pdf",plot=PPE_2017,width=10,height=6)
+ggsave(filename="Y:/Elisca/EchteData/Plots/PPE_2018.pdf",plot=PPE_2018,width=10,height=6)
