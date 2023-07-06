@@ -542,14 +542,26 @@ get_ME_heatmap = function(LC_models, LCT_models, treeMILC_models, model_results,
   
   # Create data frame to store results in
   df_to_plot = data.frame()
+
+  # Create temporary variables with "null" instead of NULL for other functions to work
+  cov_ok1 = cov_ok
+  cov_problem1 = cov_problem
   
+  if(is.null(cov_ok)){
+    cov_ok1 = "null"
+  }
+  
+  if(is.null(cov_problem)){
+    cov_problem1 = "null"
+  }
+
   # Repeat for every amount of ME:
   for (k in levels(model_results$ME)[1:3]) {
     
     # Select indices of models with the correct number of indicators, covariates, and data set size
     indexes = as.numeric(row.names(model_results[(model_results$ind == ind) & 
-                                                   (model_results$cov_ok == cov_ok) & 
-                                                   (model_results$cov_problem == cov_problem) &  
+                                                   (model_results$cov_ok == cov_ok1) & 
+                                                   (model_results$cov_problem == cov_problem1) &  
                                                    (model_results$N == N) & 
                                                    (model_results$ME == k),]))
     LC_diff_list = LCT_diff_list = treeMILC_diff_list = list()
@@ -574,9 +586,9 @@ get_ME_heatmap = function(LC_models, LCT_models, treeMILC_models, model_results,
     } else if (type == 2) {
       
       # Create list (for every model) of lists (for every indicator) with matrices that contain the variance
-      LC_mean_diff = get_var_ME(LC_models, ind, cov_ok, cov_problem, N, which(levels(model_results$ME) == k))
-      LCT_mean_diff = get_var_ME(LCT_models, ind, cov_ok, cov_problem, N, which(levels(model_results$ME) == k))
-      treeMILC_mean_diff = get_var_ME(treeMILC_models, ind, cov_ok, cov_problem, N, which(levels(model_results$ME) == k)) 
+      LC_mean_diff = get_var_ME(LC_models, ind, cov_ok1, cov_problem1, N, which(levels(model_results$ME) == k))
+      LCT_mean_diff = get_var_ME(LCT_models, ind, cov_ok1, cov_problem1, N, which(levels(model_results$ME) == k))
+      treeMILC_mean_diff = get_var_ME(treeMILC_models, ind, cov_ok1, cov_problem1, N, which(levels(model_results$ME) == k)) 
     }
     
     # Take sum of matrices for every indicator
@@ -671,9 +683,21 @@ get_ME_heatmap_realistic = function(LC_models, LCT_models, treeMILC_models, mode
   
   # Create data frame to store results in
   df_to_plot = data.frame()
+
+  # Create temporary variables with "null" instead of NULL for other functions to work
+  cov_ok1 = cov_ok
+  cov_problem1 = cov_problem
+  
+  if(is.null(cov_ok)){
+    cov_ok1 = "null"
+  }
+  
+  if(is.null(cov_problem)){
+    cov_problem1 = "null"
+  }
   
   # Select indices of models with the correct number of indicators, covariates, and data set size
-  indexes = as.numeric(row.names(model_results[(model_results$ind == ind) & (model_results$cov_ok == cov_ok) & (model_results$cov_problem == cov_problem) & (model_results$N == N) & (model_results$ME == 4), ]))
+  indexes = as.numeric(row.names(model_results[(model_results$ind == ind) & (model_results$cov_ok == cov_ok1) & (model_results$cov_problem == cov_problem1) & (model_results$N == N) & (model_results$ME == 4), ]))
   N = as.numeric(N)
   
   # Repeat for indicators (Y1 and Y3) and (Y2 and Y3)
@@ -700,9 +724,9 @@ get_ME_heatmap_realistic = function(LC_models, LCT_models, treeMILC_models, mode
     } else if (type == 2) {
       
       # Create list (for every model) of lists (for every indicator) with matrices that contain the variance
-      LC_mean_diff = get_var_ME(LC_models, ind, cov_ok, cov_problem, ME = 4, N, k)
-      LCT_mean_diff = get_var_ME(LCT_models, ind, cov_ok, cov_problem, N, ME = 4, k)
-      treeMILC_mean_diff = get_var_ME(treeMILC_models, ind, cov_ok, cov_problem, N, ME = 4, k)
+      LC_mean_diff = get_var_ME(LC_models, ind, cov_ok1, cov_problem1, ME = 4, N, k)
+      LCT_mean_diff = get_var_ME(LCT_models, ind, cov_ok1, cov_problem1, N, ME = 4, k)
+      treeMILC_mean_diff = get_var_ME(treeMILC_models, ind, cov_ok1, cov_problem1, N, ME = 4, k)
     }
     
     # If there is only one indicator in the model (e.g. only Y1 (and not Y3)), convert to data frame
