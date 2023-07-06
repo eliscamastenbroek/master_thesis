@@ -47,7 +47,7 @@ combined$contract[combined$contract == 2] <- 3
 combined$contract[combined$contract == 4] <- 2
 combined$contractEBB[combined$contractEBB == 4] <- 2
 
-## Create subsets for Section 6.1
+## Create subsets for Section 6.1-6.3
 data2016_original <- as.data.frame(combined[combined$year == 2016, ])
 data2017_original <- as.data.frame(combined[combined$year == 2017, ])
 data2018_original <- as.data.frame(combined[combined$year == 2018, ])
