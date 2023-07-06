@@ -1,12 +1,15 @@
 ##################################### Simulation2.R ##############################################
-## This file contains the code that is required to perform the simulation study with missing    ##
-## covariates (i.e. direct effects and parameter restrictions) as described in Chapter 5.       ##
-## The file is divided into three parts:                                                        ##
+## This file contains the code that is required to perform the simulation study in Chapter 5.   ##
+##                                                                                              ##
+## Note that depending on whether the functions from the file 'Methods_LessOptimalApproach.R'   ##
+## or the file 'Methods_BestApproach.R' are loaded, missing covariates are included using       ##
+## either the less optimal approach (see Section 5.1) or the best approach (see Section X)      ##
+## with direct effects and parameter restrictions.                                              ##
+##                                                                                              ##
+## The current file is divided into three parts:                                                ##
 ##   1. Function 'simulate_data' to simulate data for this specific simulation study.           ##
 ##   2. Perform the simulation study.                                                           ##
 ##   3. Get the results of the simulation study.                                                ## 
-## To run the code, the functions in the files 'Methods_BestApproach.R' and                     ## 
-## 'Methods_Helpfunction.R' are also required.                                                  ##
 ##################################################################################################
 
 ## Initialisations
