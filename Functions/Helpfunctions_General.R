@@ -78,15 +78,21 @@ fix_cluster_assignment <- function(type = NULL, results) {
 }
 
 ##################################################################################################
-## Fix cluster assignments per bootstrap sample in tree-MILC                                     ## 
+## Fix cluster assignments per bootstrap sample in tree-MILC                                    ## 
+## @param type (character): String indicating whether the model is for simulated or real data   ##
 ## @param boot_results (data.frame): Results of one bootstrap sample                            ##
 ## @returns (data.frame): Same as input, but with corrected cluster assignments if necessary    ##
 ##################################################################################################
 
-fix_cluster_bootstrap <- function(boot_results) {
+fix_cluster_bootstrap <- function(type, boot_results) {
   
   # Compute ME probability matrix (i.e. compute a contingency table for the values in indicator Y2 and the imputed values and normalise by rows)
-  table <- table(boot_results$Y2, boot_results$cluster)
+  if (type == "sim"){
+    table <- table(boot_results$Y2, boot_results$cluster) #If simulated data, use indicator Y2
+  } else if (type == "real"){
+    table <- table(boot_results$contract, boot_results$cluster) #If real data, use indicator contract
+  }
+  
   prop_table <- prop.table(table, margin = 1)
   
   # Find out which combination of diagonals yields the highest sum of diagonal values (assume that 2 is already correct)
