@@ -1,4 +1,3 @@
-
 ##################################### Simulation1.R ##############################################
 ## This file contains the code that is required to perform the simulation study without missing ##
 ## covariates as described in Chapter 4. The file is divided into three parts:                  ##
