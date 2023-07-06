@@ -1,3 +1,13 @@
+################################## Methods_BestApproach.R ########################################
+## This file contains the functions required to perform LC, LCT and tree-MILC analysis using    ##
+## the best approach for including missing covariates from Chapter 5 (see Section               ##
+## 5.1.2). The current file contains the following functions:                                   ##
+##    - generate_script                                                                         ##
+##    - perform_lc                                                                              ##
+##    - perform_lct                                                                             ##
+##    - perform_treeMILC                                                                        ##
+##################################################################################################
+
 ##################################################################################################
 ## Perform LC analysis                                                                          ##
 ## @param iteration (int): Iteration number                                                     ## 
