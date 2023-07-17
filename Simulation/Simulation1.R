@@ -4,15 +4,19 @@
 ##   1. Function 'simulate_data' to simulate data for this specific simulation study.           ##
 ##   2. Perform the simulation study.                                                           ##
 ##   3. Get the results of the simulation study.                                                ## 
-## To run the code, the functions in the files 'Methods_BestApproach.R' and                     ## 
-## 'Methods_Helpfunction.R' are also required.                                                  ##
+## To run the code, the functions in the files 'Helpfunctions_General.R',                       ##
+## 'Helpfunctions_SimulatedData.R' and 'Methods_BestApproach.R' are required.                   ##
 ##################################################################################################
 
-## Initialisations
+# Load packages
 library(dplyr)
 library(data.table)
-options(dplyr.summarise.inform = FALSE) # Ignore redundant warnings from dplyr 
-setwd("F:/Documents/Thesis/Simulatie/Simulatie_1_zonder_cov") # Set working directory
+
+# Ignore redundant warnings from dplyr 
+options(dplyr.summarise.inform = FALSE) 
+
+# Set working directory
+setwd("F:/Documents/Thesis/Simulatie/Simulatie_1_zonder_cov") 
 
 ##################################################################################################
 ## 1. Function to simulate a data set                                                           ##
@@ -157,9 +161,9 @@ for(l in iteration){
       
       ## Add covariate if the number of indicators is two
       if(i == 2){
-        cov_ok = "q"
+        cov_ok <- "q"
       } else {
-        cov_ok = NULL
+        cov_ok <- NULL
       }
       
       for(j in N){
@@ -206,26 +210,26 @@ for(l in iteration){
 ##################################################################################################
 
 ## True proportions in simulated data
-true_proportions = c(0.6061153, 0.2577143, 0.1361704)
-names(true_proportions) = c("Permanent", "Other", "Flexible")
+true_proportions <- c(0.6061153, 0.2577143, 0.1361704)
+names(true_proportions) <- c("Permanent", "Other", "Flexible")
 
 ## Create (true) ME matrices
-ME_matrix1 = create_ME_matrix(-log(18), -log(18), log(324), log(324), log(18), log(18)) #10% ME
-ME_matrix2 = create_ME_matrix(-3*log(2), -3*log(2), 6*log(2), 6*log(2), 3*log(2), 3*log(2)) #20% ME
-ME_matrix3 = create_ME_matrix(-1.54045, -1.54045, 3.0809, 3.0809, 1.54045, 1.54045) #30% ME
-ME_matrix4a = create_ME_matrix(-4.4917, -4.94368, 7.64123, 5.6678, 3.09876, 4.55064) #Realistic 7% ME
-ME_matrix4b = create_ME_matrix(-6.14311, -2.63157, 11.9482, 5.03275, 1.72427, 1.53296) #Realistic 7% ME
-ME_matrix4 = list(ME_matrix4a, ME_matrix4b) #Realistic 7% ME
+ME_matrix1 <- create_ME_matrix(-log(18), -log(18), log(324), log(324), log(18), log(18)) #10% ME
+ME_matrix2 <- create_ME_matrix(-3*log(2), -3*log(2), 6*log(2), 6*log(2), 3*log(2), 3*log(2)) #20% ME
+ME_matrix3 <- create_ME_matrix(-1.54045, -1.54045, 3.0809, 3.0809, 1.54045, 1.54045) #30% ME
+ME_matrix4a <- create_ME_matrix(-4.4917, -4.94368, 7.64123, 5.6678, 3.09876, 4.55064) #Realistic 7% ME
+ME_matrix4b <- create_ME_matrix(-6.14311, -2.63157, 11.9482, 5.03275, 1.72427, 1.53296) #Realistic 7% ME
+ME_matrix4 <- list(ME_matrix4a, ME_matrix4b) #Realistic 7% ME
 
 ## Get results
-LC_results = get_results(LC_models)
-LCT_results = get_results(LCT_models)
-treeMILC_results = get_results(treeMILC_models)
+LC_results <- get_results(LC_models)
+LCT_results <- get_results(LCT_models)
+treeMILC_results <- get_results(treeMILC_models)
 
 ## Get summary
-LC_summary = get_summary("LC", LC_results)
-LCT_summary = get_summary("LCT", LCT_results)
-treeMILC_summary = get_summary("tree-MILC", treeMILC_results)
+LC_summary <- get_summary("LC", LC_results)
+LCT_summary <- get_summary("LCT", LCT_results)
+treeMILC_summary <- get_summary("tree-MILC", treeMILC_results)
 
 ## Merge summaries
-all_joined = rbind(LC_summary, LCT_summary, treeMILC_summary)
+all_results <- rbind(LC_summary, LCT_summary, treeMILC_summary)
