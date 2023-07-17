@@ -268,6 +268,7 @@ get_ME_per_contract <- function(model, contract){
     return(ME_estimated[contract, contract])
   }
 }
+
 ##################################################################################################
 ## Compute the variance of the ME probability estimates                                         ##
 ## -------------------------------------------------------------------------------------------- ##
