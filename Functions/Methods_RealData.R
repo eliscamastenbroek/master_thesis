@@ -218,7 +218,7 @@ perform_treeMILC <- function(cov_ok, cov_problem, dat = NULL, dat_path = NULL, f
     #Select and rename columns
     new_names <- c("step2_p1","step2_p3")
     setnames(dat,old = c("Cluster#1","Cluster#2"),new = new_names)
-    dat = dat[, -which(colnames(dat) == "Cluster#")]
+    dat <- dat[, -which(colnames(dat) == "Cluster#")]
     
     #Fix cluster assignment (if necessary)
     dat <- fix_cluster_bootstrap("real", dat)
