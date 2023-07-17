@@ -238,4 +238,4 @@ LCT_summary <- get_summary("LCT", LCT_results)
 treeMILC_summary <- get_summary("tree-MILC", treeMILC_results)
 
 #Merge summaries
-all_joined <- rbind(LC_summary, LCT_summary, treeMILC_summary)
+all_results <- rbind(LC_summary, LCT_summary, treeMILC_summary)
