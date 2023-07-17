@@ -9,6 +9,12 @@
 ##    - get_mean_matrix                                                                         ##
 ##    - get_ME_per_contract                                                                     ## 
 ##    - get_var_ME                                                                              ##
+##    - get_results                                                                             ##
+##    - get_summary                                                                             ##
+##    - get_rmse_ME                                                                             ##
+##    - get_rmse_ME_help                                                                        ##
+##    - get_ME_heatmap                                                                          ##
+##    - get_ME_heatmap_realistic                                                                ##
 ##################################################################################################
 
 ##################################################################################################
@@ -225,7 +231,7 @@ get_mean_matrix <- function(list) {
 ## @returns (int): Mean ME probability estimate for one particular contract type.               ##
 ##################################################################################################
 
-get_ME_per_contract <- function(model, contract){
+  get_ME_per_contract <- function(model, contract){
 
   # If the amount of measurement error is realistic
   ME <- model[[1]]$ME
@@ -475,6 +481,8 @@ get_rmse_ME <- function(models, model_results) {
   # For every contract type, compute estimated ME probability using the get_rmse_ME_help function
   for (i in id) {
     model_sub <- models[as.numeric(rownames(model_results[model_results$id == i,]))]
+    num_ind <- model_sub[[1]][[1]]$ind
+    
     for (j in 1:num_ind) {
       for (k in 1:3) {
         row <- c(model_sub[[1]][[1]]$ind, model_sub[[1]][[1]]$cov_ok, model_sub[[1]][[1]]$cov_problem, model_sub[[1]][[1]]$N, model_sub[[1]][[1]]$ME, i, get_rmse_ME_help(model_sub, j, k), j, k)
