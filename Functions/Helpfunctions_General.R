@@ -128,7 +128,7 @@ fix_cluster_bootstrap <- function(type, boot_results) {
 ## @returns (vector): Output vector containing corrected numbers                                ##
 ##################################################################################################
 
-fix_number_notation = function(vector) {
+fix_number_notation <- function(vector) {
   
   # If the vector is numeric, all values are already in the correct format
   if (is.numeric(vector)) {
@@ -172,7 +172,7 @@ fix_number_notation = function(vector) {
 ## @returns (int): Imputed value                                                                ##
 ##################################################################################################
 
-impute_value_step1 = function(x) {
+impute_value_step1 <- function(x) {
   return(which(rmultinom(1, 1, c(as.numeric(x["p1"]) + as.numeric(x["p3"]), as.numeric(x["p2"]))) == 1))
 }
 
@@ -182,11 +182,11 @@ impute_value_step1 = function(x) {
 ## @returns (int): Imputed value                                                                ##
 ##################################################################################################
 
-impute_value_step2 = function(x) {
+impute_value_step2 <- function(x) {
   if (is.na(x["Cluster#1"])) {
     return(NA)
   } else {
-    return(which(rmultinom(1, 1, c(as.numeric(x["Cluster#1"]), as.numeric(x["Cluster#2"]))) == 1))
+    return(which(rmultinom(1, 1, c(as.numeric(x["Cluster#1"]), as.numeric(x["Cluster#2"]))) =<- 1))
   }
 }
 
@@ -197,21 +197,21 @@ impute_value_step2 = function(x) {
 ## @returns (matrix): Measurement error matrix for one indicator                                ##
 ##################################################################################################
 
-get_ME_help = function(results, ind_vec) {
+get_ME_help <- function(results, ind_vec) {
   
-  results$yx = ind_vec
-  indicator_matrix = data.frame()
+  results$yx <- ind_vec
+  indicator_matrix <- data.frame()
   
   for (i in 1:3) {
     #Compute the sum of p1, p2, and p3 for each indicator value
-    indicator_matrix = rbind(indicator_matrix, sum(results[results$yx == i, ]$p1))
-    indicator_matrix = rbind(indicator_matrix, sum(results[results$yx == i, ]$p2))
-    indicator_matrix = rbind(indicator_matrix, sum(results[results$yx == i, ]$p3))
+    indicator_matrix <- rbind(indicator_matrix, sum(results[results$yx == i, ]$p1))
+    indicator_matrix <- rbind(indicator_matrix, sum(results[results$yx == i, ]$p2))
+    indicator_matrix <- rbind(indicator_matrix, sum(results[results$yx == i, ]$p3))
   }
   
   #Create a matrix and normalise the rows
-  indicator_matrix = matrix(as.vector(indicator_matrix[, 1]), nrow = 3, ncol = 3, byrow = FALSE)
-  indicator_matrix = prop.table(indicator_matrix, margin = 1)
+  indicator_matrix <- matrix(as.vector(indicator_matrix[, 1]), nrow = 3, ncol = 3, byrow = FALSE)
+  indicator_matrix <- prop.table(indicator_matrix, margin = 1)
   
   return(indicator_matrix)
 }
