@@ -225,36 +225,42 @@ get_mean_matrix <- function(list) {
 ## @returns (int): Mean ME probability estimate for one particular contract type.               ##
 ##################################################################################################
 
-get_ME_per_contract <- function(model, contract) {
-  
+get_ME_per_contract <- function(model, contract){
+
   # If the amount of measurement error is realistic
   ME <- model[[1]]$ME
-  if (ME == 4) {
+  
+  if(ME == 4){
+
     # Get (estimated) ME probability matrix
     ME_estimated <- get_ME(model)
     ind <- length(ME_estimated)
     
-    first <- ME_estimated[seq(1, ind, 2)]  # ME probability matrices for Y1/Y3
-    second <- ME_estimated[seq(2, ind, 2)] # ME probability matrices for Y2/Y4
+    first <- ME_estimated[seq(1, ind, 2)] # ME probability matrices for Y1 and Y3
+    second <- ME_estimated[seq(2, ind, 2)] # ME probability matrices for Y2 and Y4
     
     # If Y1 and Y3, compute the mean ME probability estimate for both indicators
-    if (length(first) > 1) {
-      first <- mean(first[[1]][contract, contract] + first[[2]][contract, contract])
-    # If only Y1, get the ME probability estimate 
+    if(length(first) > 1){
+      x <- get_mean_matrix(first)
+      first <- matrix(unlist(x), ncol = 3, byrow = TRUE)
+      first <- first[contract, contract]
+    # If only Y1, get the ME probability estimate
     } else {
       first <- first[[1]][contract, contract]
     }
     
     # If Y2 and Y4, compute the mean ME probability estimate for both indicators
-    if (length(second) > 1) {
-      second <- mean(second[[1]][contract, contract] + second[[2]][contract, contract])
-    # If only Y2, get the ME probability estimate
+    if(length(second) > 1){
+      y <- get_mean_matrix(second)
+      second <- matrix(unlist(y), ncol = 3, byrow = TRUE)
+      second <- second[contract, contract]
+    # If only Y2, get the ME probability estimate	
     } else {
-      second <- second[[1]][contract, contract]
+      second = second[[1]][contract,contract]
     }
+
     return(c(first, second))
-  
-  # If the amount of measurement error is 10%, 20%, or 30%
+  # If the amount of measurement error is 10%, 20%, or 30%   
   } else {
     # Compute the mean of ME probability matrices for all indicators
     ME_estimated <- get_mean_matrix(get_ME(model))
@@ -262,7 +268,6 @@ get_ME_per_contract <- function(model, contract) {
     return(ME_estimated[contract, contract])
   }
 }
-
 ##################################################################################################
 ## Compute the variance of the ME probability estimates                                         ##
 ## -------------------------------------------------------------------------------------------- ##
