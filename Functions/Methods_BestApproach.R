@@ -27,7 +27,7 @@ perform_lc <- function(iteration, ind, cov_ok, cov_problem, N, ME, dat = NULL, f
   
   # Store model information
   to_return <- store_model_info(iteration, ind, cov_ok, cov_problem, N, ME)
-  model_name = to_return[[1]]$id
+  model_name <- to_return[[1]]$id
   
   # Write data set to file
   if (is.null(dat)) {
