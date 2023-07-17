@@ -140,7 +140,7 @@ generate_script <- function(type, cov_ok, cov_problem, model_name, dat, filepath
 ## @returns (string): A string containing a Latent Gold script                                  ##
 ##################################################################################################
 
-generate_script_treeMILC_extra = function(cov_ok, cov_problem, model_name, dat, filepath_input, filepath_output, par){
+generate_script_treeMILC_extra <- function(cov_ok, cov_problem, model_name, dat, filepath_input, filepath_output, par){
     
     # Create vectors with characters to use for restrictions later on
     pars <- c("aa", "bb", "cc", "dd", "ee", "ff", "gg", "hh", "ii", "ll", "mm", "nn", "oo", "pp", "qq", "rr", "ss", "tt", "uu", "vv", "ww")
@@ -180,7 +180,7 @@ generate_script_treeMILC_extra = function(cov_ok, cov_problem, model_name, dat, 
         pars_count <- pars_count + 1
         which_col <- which(colnames(dat) == cov_problem[i])
         num_cats <- length(levels(factor(dat[, which_col])))
-        dep_ind_eq1 = paste0(dep_ind_eq1, " + (", pars[i], "~ful) 1 | ", cov_problem[i]) 
+        dep_ind_eq1 <- paste0(dep_ind_eq1, " + (", pars[i], "~ful) 1 | ", cov_problem[i]) 
         
         for(j in 1:num_cats){
           if(j != num_cats){
@@ -202,14 +202,14 @@ generate_script_treeMILC_extra = function(cov_ok, cov_problem, model_name, dat, 
           dep_cov <- paste0(dep_cov, ",  ", cov[i], " nominal")
         }
       }
-      dep_cov = paste0(dep_cov, ";")
+      dep_cov <- paste0(dep_cov, ";")
     }  
     
     # Specify start values
     restrictions <- paste0(restrictions, "\n\tzz[1,1] ~= ", par[1, ]$coef, ";\n")
     restrictions <- paste0(restrictions, "\tzz[1,2] ~= ", par[2, ]$coef, ";\n")
     
-    df_counter = 2
+    df_counter <- 2
     
     if(!is.null(cov)){
       for(i in 1:length(cov)){
