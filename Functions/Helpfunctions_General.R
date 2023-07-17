@@ -186,7 +186,7 @@ impute_value_step2 <- function(x) {
   if (is.na(x["Cluster#1"])) {
     return(NA)
   } else {
-    return(which(rmultinom(1, 1, c(as.numeric(x["Cluster#1"]), as.numeric(x["Cluster#2"]))) =<- 1))
+    return(which(rmultinom(1, 1, c(as.numeric(x["Cluster#1"]), as.numeric(x["Cluster#2"]))) == 1))
   }
 }
 
