@@ -169,18 +169,17 @@ plot_df[plot_df$N==1000 & plot_df$Contract=="Permanent",] %>% ggplot(aes(x=indic
   facet_wrap(~ME, ncol=4, labeller=label_value) +
   geom_hline(aes(yintercept=hline), color="black", size=0.3) +
   geom_errorbar(aes(ymin=prop-sd, ymax=prop+sd), width=.25, size=0.3, position=position_dodge(.9)) +
-  guides(fill = guide_legend(direction = "horizontal")) +
-  theme(plot.title = element_text(size = 13), legend.justification="right")
+  theme(legend.position="top")
   
 # RMSE (permanent and n=1,000)
 plot_df[plot_df$N==1000 & plot_df$Contract=="Permanent",] %>% ggplot(aes(x=indicator, y=rmse, fill=type)) +
   geom_bar(stat='identity', position='dodge') +
   scale_fill_manual(name="", values=colours) +
-  labs(y= "Expected\nvalue", x = "Number of indicators") +
+  labs(y= "RMSE", x = "Number of indicators") +
   facet_wrap(~ME, ncol=4, labeller=label_value) +
   theme(legend.position="top") +
-  guides(fill = guide_legend(direction = "horizontal")) +
-  theme(plot.title = element_text(size = 13), legend.justification="right")
+  guides(fill = guide_legend(direction = "horizontal"))  +
+  theme(legend.position="top")
 
 ##################################################################################################
 ## Create plots for MEPEs (i.e. expected value and RMSE)                                        ##
@@ -209,11 +208,11 @@ plot_ME[plot_ME$N==1000 & plot_ME$Contract=="Permanent",] %>% ggplot(aes(x=indic
   geom_bar(stat='identity', position='dodge') +
   scale_fill_manual(name="", values=colours) +
   labs(y= "(Mean) expected value", x = "Number of indicators") +
-  theme(legend.position=c(1, 1.65), legend.justification="right") +
   geom_errorbar(aes(ymin=ME1-sd_ME1, ymax=ME1+sd_ME1), width=.25, size=0.3, position=position_dodge(.9)) +
   guides(fill = guide_legend(direction = "horizontal")) +
   facet_wrap(~ME, ncol=5, labeller=label_value) +
-  geom_hline(aes(yintercept=mline), color="black", size=0.3)
+  geom_hline(aes(yintercept=mline), color="black", size=0.3) +
+  theme(legend.position="top")
 
 # RMSE (permanent and n=1,000)
 plot_rmse_ME[plot_rmse_ME$N==1000 & plot_rmse_ME$Contract=="Permanent",] %>% ggplot(aes(x=indicator, y=rmse, fill=type)) +
@@ -221,7 +220,7 @@ plot_rmse_ME[plot_rmse_ME$N==1000 & plot_rmse_ME$Contract=="Permanent",] %>% ggp
   scale_fill_manual(name="Model", values=colours) +
   labs(y= "(Mean) RMSE", x = "Number of indicators") +
   guides(fill = guide_legend(direction = "horizontal")) +
-  theme(plot.title = element_text(size = 13), legend.position="top") +
+  theme(legend.position="top") +
   facet_wrap(~ ME, ncol=5, labeller=label_value)
 
 ##################################################################################################
