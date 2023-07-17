@@ -380,16 +380,16 @@ store_model_info <- function(iteration, ind, cov_ok, cov_problem, N, ME) {
 ## @returns (list): List of measurement error matrices (one per indicator)                      ##
 ##################################################################################################
 
-get_ME = function(results){
+get_ME <- function(results){
   
   # For LC and LCT: Compute a ME probability matrix for each indicator using the get_ME_help function
   if (class(results[[2]]) != "list") {
-    results = results[[2]] # Ignore first data frame with model information
+    results <- results[[2]] # Ignore first data frame with model information
     
-    which_ind = results[, colnames(results) %in% c("Y1", "Y2", "Y3", "Y4")]
-    to_return = list()
+    which_ind <- results[, colnames(results) %in% c("Y1", "Y2", "Y3", "Y4")]
+    to_return <- list()
     for (i in 1:ncol(which_ind)) {
-      to_return = append(to_return, list(get_ME_help(results, which_ind[, i])))
+      to_return <- append(to_return, list(get_ME_help(results, which_ind[, i])))
     }
     return(to_return)
   }
@@ -397,24 +397,24 @@ get_ME = function(results){
   # For tree-MILC: Compute ME matrix for each indicator based on the imputed values
   else {
     
-    all_indicators = c("Y1", "Y2", "Y3", "Y4")
-    num_of_ind = results[[1]]$ind
-    results_2 = results[[2]]
-    to_return = list() 
+    all_indicators <- c("Y1", "Y2", "Y3", "Y4")
+    num_of_ind <- results[[1]]$ind
+    results_2 <- results[[2]]
+    to_return <- list() 
     
     for (i in 1:num_of_ind) {
-      cluster_index = which(names(results_2[[1]]) == "cluster")
-      ind_index = which(colnames(results_2[[1]]) == all_indicators[i])
+      cluster_index <- which(names(results_2[[1]]) == "cluster")
+      ind_index <- which(colnames(results_2[[1]]) == all_indicators[i])
       
       # Compute averages of the ME probability matrices for each bootstrap sample (per indicator) 
-      summed_matrix = prop.table(table(results_2[[1]][, cluster_index], results_2[[1]][, ind_index]), 1)
+      summed_matrix <- prop.table(table(results_2[[1]][, cluster_index], results_2[[1]][, ind_index]), 1)
       for (j in 2:length(results_2)) {
-        cluster_index = which(names(results_2[[j]]) == "cluster")
-        ind_index = which(colnames(results_2[[j]]) == all_indicators[i])
-        summed_matrix = summed_matrix + prop.table(table(results_2[[j]][, cluster_index], results_2[[j]][, ind_index]), 1)
+        cluster_index <- which(names(results_2[[j]]) == "cluster")
+        ind_index <- which(colnames(results_2[[j]]) == all_indicators[i])
+        summed_matrix <- summed_matrix + prop.table(table(results_2[[j]][, cluster_index], results_2[[j]][, ind_index]), 1)
       }
-      mean_matrix = summed_matrix / length(results_2)
-      to_return = append(to_return, list(mean_matrix))
+      mean_matrix <- summed_matrix / length(results_2)
+      to_return <- append(to_return, list(mean_matrix))
     }
     
     return(to_return)
