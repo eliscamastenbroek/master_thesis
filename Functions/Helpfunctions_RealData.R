@@ -7,6 +7,8 @@
 ##    - store_model_info                                                                        ##
 ##    - get_ME                                                                                  ##
 ##    - get_ME_heatmap                                                                          ##
+##    - get_within_variance_treeMILC                                                            ##
+##    - get_variance_treeMILC_PPEs                                                              ##
 ##################################################################################################
 
 ##################################################################################################
@@ -394,3 +396,41 @@ get_ME_heatmap <- function(ME_estimated, ME_HMM) {
   return(plot)
 }
 
+##################################################################################################
+## This is a help function to compute the within variance of tree-MILC estimates                ##
+## @param prop_boot (numeric):  Estimate of interest based on a particular bootstrap sample     ##
+## @nsize (int): Number of observations in the boostrap sample                                  ##
+## @returns (nueric): The fraction in Equation (2.22)                                           ##
+##################################################################################################
+
+get_within_variance_treeMILC <- function(prop_boot, nsize) (prop_boot * (1 - prop_boot)) / nsize
+
+##################################################################################################
+## This is function to compute the variance of tree-MILC's PPEs                                 ##
+## @param results (list): Results of one tree-MILC model                                        ##
+## @returns (vector): A vector that contains the variance of tree-MILC's PPEs (for permanent,   ##
+## flexible and other)                                                                          ##
+##################################################################################################
+
+get_variance_treeMILC_PPEs <- function(results){ 
+  
+  # Ignore first data frame with model information
+  results <- results[[2]]   
+  
+  n <- nrow(results[[2]])
+  prop_per_bootstrap <- list()
+  
+  for(i in 1 : length(results)){
+    prop_per_bootstrap <- append(prop_per_bootstrap, list(summary(factor(results[[i]]$cluster)) / nrow(results[[i]])))
+  }
+  
+  #Pool results
+  pooled_proportions <- bind_rows(prop_per_bootstrap) 
+  pooled_proportions <- as.data.frame(pooled_proportions)
+  pooled_proportions <- split(pooled_proportions, seq(5))
+  
+  res_var <- lapply(pooled_proportions, fun_var, nsize = n) # within variance
+  tvarmat <- colMeans(bind_rows(res_var)) + apply(as.matrix(bind_rows(pooled_proportions)), 2, var) * (1 + 1/5)
+  
+  return(tvarmat)
+}
