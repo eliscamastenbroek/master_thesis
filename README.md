@@ -18,8 +18,12 @@ To plot the results, the following R packages were used:
 
 
 # 1. Instructions to reproduce Simulation study 1 (Chapter 4)
-To reproduce the first simulation study, the functions in the following files should be loaded into the global environment.
+To reproduce the first simulation study, the following steps should be taken:
+1. Load the functions in the file '[Helpfunctions_General](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)' into the global environment.
+2. 
 
+# 2. Instructions to reproduce Simulation study 2 (Chapter )
+To reproduce the first simulation study, the functions in the following files should be loaded into the global environment.
 
 
 
