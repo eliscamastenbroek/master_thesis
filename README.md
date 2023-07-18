@@ -17,7 +17,7 @@ To plot the results, the following R packages were used:
 - x
 
 
-# Reproducing Simulation study 1 (Chapter 4)
+# 1. Instructions to reproduce Simulation study 1 (Chapter 4)
 To reproduce the first simulation study, the functions in the following files should be loaded into the global environment.
 
 
