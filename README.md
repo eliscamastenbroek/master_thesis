@@ -25,14 +25,18 @@ To reproduce the first simulation study in R, the following steps should be take
 4. Change the argument _folder = ""_ in lines 177, 182, and 187 to where you would like to store the model results.
 5. Execute the rest of the code. Note that this takes approximately 5 days.
 
-Note that the functions in the files above can also be used to create individual models, such as:
+Note that the functions in the files above can also be used to create individual models. For example, the following line creates an LC model with two indicators and the (non-missing) covariate "q" using a data set with 10% ME that is generated using the seed 1.
 ```{r}
-# This line creates an LC model with two indicators and the (non-missing) covariate "q". The data set contains 10% ME and is generated using the seed 1.
 perform_lc(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here")
 ```
 
-# 2. Instructions to reproduce Simulation study 2 (Chapter )
-To reproduce the first simulation study, the functions in the following files should be loaded into the global environment.
+To plot the results of the first simulation study in R, the following additional steps should be taken:
+1. Open the file '[Plot_Simulation_1_and_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Simulation/Plot_Simulation_1_and_2.R)'.
+2. Execute the code in the first half of this file to prepare the data for plotting.
+3. Execute the code in the second half of this file to create the desired plots. 
+
+# 2. Instructions to reproduce Simulation study 2 (Chapter 5)
+To reproduce the second simulation study, the functions in the following files should be loaded into the global environment.
 
 
 
