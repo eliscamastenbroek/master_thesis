@@ -25,9 +25,10 @@ To reproduce the first simulation study in R, the following steps should be take
 4. Change the argument _folder = ""_ in lines 177, 182, and 187 to where you would like to store the model results.
 5. Execute the rest of the code. Note that this takes approximately 5 days.
 
-Note that the functions in the files above can also be used to 
+Note that the functions in the files above can also be used to create individual models, such as:
 ```{r}
-perform_lc(1,2,"q",NULL,folder="your_folder_here")
+# This line creates an LC model with two indicators and the (non-missing) covariate "q". The data set contains 10% ME and is generated using the seed 1.
+perform_lc(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here")
 ```
 
 # 2. Instructions to reproduce Simulation study 2 (Chapter )
