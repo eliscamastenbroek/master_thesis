@@ -7,6 +7,9 @@ Three types of analyses were conducted in this thesis, namely:
 2. Simulation study 2 (Chapter 5)
 3. Analysis of real data (Chapter 6)
 
+# 1. Simulation study 1 (Chapter 4)
+To reproduce the first simulation study, the functions in the following files should be loaded into the global environment.
+
 
 
 
