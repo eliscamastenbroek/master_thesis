@@ -429,7 +429,7 @@ get_variance_treeMILC_PPEs <- function(results){
   pooled_proportions <- as.data.frame(pooled_proportions)
   pooled_proportions <- split(pooled_proportions, seq(5))
   
-  res_var <- lapply(pooled_proportions, fun_var, nsize = n) # within variance
+  res_var <- lapply(pooled_proportions, get_within_variance_treeMILC, nsize = n) # within variance
   tvarmat <- colMeans(bind_rows(res_var)) + apply(as.matrix(bind_rows(pooled_proportions)), 2, var) * (1 + 1/5)
   
   return(tvarmat)
