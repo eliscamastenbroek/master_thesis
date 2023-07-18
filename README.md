@@ -25,7 +25,7 @@ To reproduce the first simulation study in R, the following steps should be take
 4. Change the argument _folder = ""_ in lines 177, 182, and 187 to where you would like to store the model results.
 5. Execute the rest of the code. Note that this takes approximately 5 days.
 
-Note that the functions _perform_lc_, _perform_lct_ and _perform_treeMILC_ in the files above can also be used to create individual models. For example, the following lines create LC, LCT and tree-MILC models with two indicators and the (non-missing) covariate "q". Here, a data set is used of n=1000 with 10% ME that is generated using the seed 1:
+Note that the functions _perform_lc_, _perform_lct_ and _perform_treeMILC_ in the files above can also be used to estiate individual models. For example, the following lines create LC, LCT and tree-MILC models with two indicators and the (non-missing) covariate "q" on a data set of n=1000 with 10% ME that is generated using the seed 1:
 ```{r}
 #LC
 perform_lc(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here")
