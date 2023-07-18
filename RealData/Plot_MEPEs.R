@@ -17,7 +17,7 @@ ER.2016 <- matrix(c(0.932, 0.001, 0.067, 0.004, 0.996, 0, 0.107, 0.001, 0.892), 
 LFS.2016 <- matrix(c(0.985, 0.01, 0.005, 0.04, 0.934, 0.026, 0.332, 0.071, 0.597), ncol = 3, byrow = TRUE)
 HMM_ME.2016 <- list(ER.2016, LFS.2016)
 
-ER.2016 <- matrix(c(0.929, 0.001, 0.07, 0.001, 0.998, 0.001, 0.089, 0, 0.911), ncol = 3, byrow = TRUE)
+ER.2017 <- matrix(c(0.929, 0.001, 0.07, 0.001, 0.998, 0.001, 0.089, 0, 0.911), ncol = 3, byrow = TRUE)
 LFS.2017 <- matrix(c(0.982, 0.014, 0.005, 0.042, 0.928, 0.03, 0.296, 0.071, 0.633), ncol = 3, byrow = TRUE)
 HMM_ME.2017 <- list(ER.2017, LFS.2017)
 
@@ -85,6 +85,8 @@ get_ME_heatmap <- function(ME_estimated, ME_HMM) {
 ###################################################################################################
 ## Obtain ME probability estimates for the LC and the tree-MILC models                           ##                                                          ##
 ###################################################################################################
+
+## 1=Permanent, 2=Other, 3=Flexible
 
 # ME probability matrices for (best) approach with direct effects and parameter restrictions (Section 6.1-6.3)
 get_ME(LC_2016_restricted)
