@@ -47,12 +47,12 @@ combined$contract[combined$contract == 2] <- 3
 combined$contract[combined$contract == 4] <- 2
 combined$contractEBB[combined$contractEBB == 4] <- 2
 
-## Create subsets for Section 6.1-6.3
+## Create subsets for the models in Section 6.1-6.3
 data2016_original <- as.data.frame(combined[combined$year == 2016, ])
 data2017_original <- as.data.frame(combined[combined$year == 2017, ])
 data2018_original <- as.data.frame(combined[combined$year == 2018, ])
 
-## Create subsets for Section 6.4 with HMM recodings
+## Create subsets for the models in Section 6.4 with HMM recodings
 combined_recoded <- combined
 combined_recoded$SBIgroep[combined_recoded$SBIgroep == 10] <- 1 
 combined_recoded$BaanduurKlasse[combined_recoded$BaanduurKlasse == 7] <- 1
