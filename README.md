@@ -19,7 +19,7 @@ To plot the results, the following R packages were used:
 
 # 1. Instructions to reproduce Simulation study 1 (Chapter 4)
 To reproduce the first simulation study in R, the following steps should be taken:
-1. Load the functions in the file '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_SimulatedData.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_SimulatedData.R)', and '[Methods_BestApproach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_BestApproach.R)' into the global environment.
+1. Load the functions in the file '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_SimulatedData.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_SimulatedData.R)', and '[Methods_BestApproach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_BestApproach.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into the global environment.
 2. Open the file '[Simulation1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Simulation/Simulation1.R)'.
 3. Change the working directory in this file.
 4. Change the folder = "" in lines 177, 182, and 187 to where you would like to store the model results.
