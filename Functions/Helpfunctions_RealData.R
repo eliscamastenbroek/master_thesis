@@ -1,11 +1,12 @@
 ################################# Methods_Helpfunctions.R ######################################## 
 ## This file contains a number of (help) functions that are required to perform LC and          ##
-## tree-MILC analysis on real data from the ER and the LFS (see Chapter 6). This file contains  ##
-## the following functions:                                                                     ##
+## tree-MILC analysis on real data from the ER and the LFS (see Chapter 6) and to plot the      ##
+## results. This file contains the following functions:                                         ##
 ##    - generate_script                                                                         ##
 ##    - generate_script_treeMILC_extra                                                          ##
 ##    - store_model_info                                                                        ##
 ##    - get_ME                                                                                  ##
+##    - get_ME_heatmap                                                                          ##
 ##################################################################################################
 
 ##################################################################################################
@@ -335,3 +336,61 @@ get_ME <- function(results) {
     return(to_return)
   }
 }
+
+###################################################################################################
+## This function creates a heatmap that shows the difference between the ME probability matrices ## 
+## as estimated by an HMM and as estimated by an LC or a tree-MILC model.                        ##
+## @param ME_estimated (list): List of ME probability matrices (one for each indicator) as       ## 
+## estimated by an LC or a tree-MILC model.                                                      ##
+## @param ME_HMM (list): List of ME probability matrices (one for each indicator) as             ## 
+## estimated by an HMM.                                                                          ##    
+###################################################################################################
+
+get_ME_heatmap <- function(ME_estimated, ME_HMM) {
+  
+  # Compute the difference between the two matrices for each indicator
+  diff_ER <- ME_estimated[[1]] - ME_HMM[[1]]
+  diff_LFS <- ME_estimated[[2]] - ME_HMM[[2]]
+  
+  # Convert matrices to data frame (in long format)
+  ER_to_plot <- as.data.frame(as.table(diff_ER))
+  ER_to_plot$type <- "ER"
+  LFS_to_plot <- as.data.frame(as.table(diff_LFS))
+  LFS_to_plot$type <- "LFS"
+  df_to_plot <- rbind(ER_to_plot, LFS_to_plot)
+  colnames(df_to_plot) <- c("Model", "Indicator", "Difference", "type")
+  df_to_plot$Model <- as.character(df_to_plot$Model)
+  df_to_plot$Indicator <- as.character(df_to_plot$Indicator)
+  
+  # Rename (automatically assigned) values to P, F, and O (permanent, flexible, and other)
+  df_to_plot[df_to_plot$Model %in% c("A", "1"), "Model"] <- "P"
+  df_to_plot[df_to_plot$Model %in% c("B", "2"), "Model"] <- "O"
+  df_to_plot[df_to_plot$Model %in% c("C", "3"), "Model"] <- "F"
+  df_to_plot[df_to_plot$Indicator %in% c("A", "1"), "Indicator"] <- "P"
+  df_to_plot[df_to_plot$Indicator %in% c("B", "2"), "Indicator"] <- "O"
+  df_to_plot[df_to_plot$Indicator %in% c("C", "3"), "Indicator"] <- "F"
+  
+  # Get P, F, and O into the correct order
+  df_to_plot$Model <- factor(df_to_plot$Model, levels = c("O", "F", "P"))
+  df_to_plot$Indicator <- factor(df_to_plot$Indicator, levels = c("P", "F", "O"))
+  df_to_plot$Difference <- round(df_to_plot$Difference, 3)
+  
+  # Define ranges for plots
+  max_abs <- max(abs(df_to_plot$Difference))
+  rng <- c(-0.15, 0.15)
+  
+  plot <- ggplot(df_to_plot, aes(Indicator, Model)) +
+    geom_tile(aes(fill = Difference)) +
+    geom_text(aes(label = Difference)) +
+    scale_fill_gradientn(
+      colors = rev(brewer.pal(9, "RdBu")),
+      values = rescale(c(rng[1], 0, rng[2])),
+      limits = c(rng[1], rng[2]),
+      n.breaks = 8
+    ) +
+    facet_wrap(~type, labeller = label_value) +
+    labs(fill = "Difference")
+  
+  return(plot)
+}
+
