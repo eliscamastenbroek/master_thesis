@@ -39,7 +39,7 @@ perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1
 
 To plot the results of the first simulation study in R, the following additional steps should be taken:
 1. Open the file '[Plot_Simulation_1_and_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Simulation/Plot_Simulation_1_and_2.R)'.
-2. Execute the code in the first half of this file to prepare the data for plotting.
+2. Execute the code in the first half of this file to prepare the data for plotting. Note that this requires that X. 
 3. Execute the code in the second half of this file to create the desired plots. 
 
 # 2. Instructions to reproduce Simulation study 2 using the best approach (Chapter 5)
