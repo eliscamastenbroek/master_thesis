@@ -25,6 +25,11 @@ To reproduce the first simulation study in R, the following steps should be take
 4. Change the argument _folder = ""_ in lines 177, 182, and 187 to where you would like to store the model results.
 5. Execute the rest of the code. Note that this takes approximately 5 days.
 
+Note that the functions in the files above can also be used to 
+```{r}
+perform_lc(1,2,"q",NULL,folder="your_folder_here")
+```
+
 # 2. Instructions to reproduce Simulation study 2 (Chapter )
 To reproduce the first simulation study, the functions in the following files should be loaded into the global environment.
 
