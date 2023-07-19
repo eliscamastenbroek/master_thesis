@@ -28,7 +28,6 @@ setwd("F:/Documents/Thesis/Simulatie/Simulatie_8_met_twee_cov")
 ## @param seed (int): Seed                                                                      ##
 ## @param N (int): Size of the data set                                                         ##
 ## @param ME (int): Amount of measurement error (1=10%, 2=20%, 3=30%, 4=realistic)              ##
-## @param folder (string): Folder to save files in                                              ##
 ## @returns (data.frame): A simulated data set (n=10,000)                                       ##
 ##################################################################################################
 
@@ -36,9 +35,9 @@ simulate_data <- function(seed, N, ME) {
 
   # Select the correct exampleDat.dat file depending on N
   if(N == 1000){
-    filepath_input <- paste0(folder, "exampleDat_1000.dat")
+    filepath_input <- paste0("exampleDat_1000.dat")
   } else {
-    filepath_input <- paste0(folder, "exampleDat_10000.dat")
+    filepath_input <- paste0("exampleDat_10000.dat")
   }
   
   # Create Latent Gold script for LC 
