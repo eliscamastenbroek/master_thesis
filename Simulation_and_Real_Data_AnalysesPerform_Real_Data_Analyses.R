@@ -1,4 +1,4 @@
-############################# Perform_RealData_Analyses.R ######################################## 
+############################# Perform_Real_Data_Analyses.R ####################################### 
 ## This file reads in data from the ER and the LFS, creates the right subsets, and performs     ##  
 ## LC and tree-MILC analysis on the data (see Chapter 6).                                       ## 
 ##################################################################################################
