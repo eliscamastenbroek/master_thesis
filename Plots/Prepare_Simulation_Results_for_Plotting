@@ -3,18 +3,25 @@
 ## studies in Chapters 4-5 for plotting.                                                        ##
 ##                                                                                              ##
 ## Note that the code in this file requires that the code in the file 'Perform_Simulation1.R'   ##
-## or 'Perform_Simulation2.R' has finished running. In other words, the code assumes that the   ##
-## following objects are in the global environment:
-##    - all_results
-##    - true_proportions
-##    - ME_matrix1
-##    - ME_matrix2
-##    - ME_matrix3
-##    - ME_matrix4
-##    - LC_models, LC_results
-##    - LCT_models, LCT_results
-##    - treeMILC_models, treeMILC_results
-##    - get_rmse_ME (function)
+## or 'Perform_Simulation2.R' has been executed.                                                ##
+##                                                                                              ##
+## In other words, the code assumes that the following objects are in the global environment:   ##
+##    - all_results (data.frame): Data frame containing the results of the simulation study     ##
+##    - true_proportions (numeric): Vector containing the true proportions                      ##
+##    - ME_matrix1 (matrix): Matrix with the true ME probabilities for 10% ME                   ##
+##    - ME_matrix2 (matrix): Matrix with the true ME probabilities for 20% ME                   ##
+##    - ME_matrix3 (matrix): Matrix with the true ME probabilities for 30% ME                   ##
+##    - ME_matrix4 (matrix): Matrix with the true ME probabilities for a realistic 7% ME        ##
+##    - LC_models (list): List containing the (detailed) model results for LC analysis          ##
+##    - LCT_models (list): List containing the (detailed) model results for LCT analysis        ##
+##    - treeMILC_models (list): List containing the (detailed) model results for tree-MILC      ## 
+##    - LC_results (data.frame): Data frame containing the model results for LC analysis        ##
+##    - LCT_results (data.frame): Data frame containing the model results for LC analysis       ##
+##    - treeMILC_results (data.frame): Data frame containing the model results for treeMILC     ##
+##    - LC_summary (data.frame): Data frame containing the model results for LC analysis        ##
+##    - LCT_summary (data.frame): Data frame containing the model results for LC analysis       ##
+##    - treeMILC_summary (data.frame): Data frame containing the model results for treeMILC     ##
+##    - get_rmse_ME (function): Function that computes the RMSE of the ME probabilities         ##
 ##################################################################################################
 
 # Load packages
@@ -95,9 +102,9 @@ plot_ME$ME <- relevel(plot_ME$ME, "Real. 7% (ind. 1)")
 ##################################################################################################
 
 # Compute RMSE of ME probability estimators
-LC_ME_rmse <- get_rmse_ME(LC_models, LC_results)
-LCT_ME_rmse <- get_rmse_ME(LCT_models, LCT_results)
-treeMILC_ME_rmse <- get_rmse_ME(treeMILC_models, treeMILC_results)
+LC_ME_rmse <- get_rmse_ME(LC_models, LC_results) # Note that this takes approx. 5 minutes to run
+LCT_ME_rmse <- get_rmse_ME(LCT_models, LCT_results) # Note that this takes approx. 5 minutes to run
+treeMILC_ME_rmse <- get_rmse_ME(treeMILC_models, treeMILC_results) # Note that this takes approx. 5 minutes to run
 LC_ME_rmse$rmse <- as.numeric(LC_ME_rmse$rmse)
 LCT_ME_rmse$rmse <- as.numeric(LCT_ME_rmse$rmse)
 treeMILC_ME_rmse$rmse <- as.numeric(treeMILC_ME_rmse$rmse)
@@ -116,10 +123,10 @@ plot_rmse_ME[plot_rmse_ME$ME == 4 & (plot_rmse_ME$ind == 2 | plot_rmse_ME$ind ==
 
 # Compute mean RMSE over all indicators
 plot_rmse_ME_not4 <- plot_rmse_ME[plot_rmse_ME$ME != 4, ] 
-plot_rmse_ME_not4 <- as.data.frame(plot_rmse_ME_not4 %>% group_by(indicator, covariate, N, ME, id, Contract, type) %>% summarise_at(c("rmse"), mean))
+plot_rmse_ME_not4 <- as.data.frame(plot_rmse_ME_not4 %>% group_by(indicator, cov_ok, cov_problem, N, ME, id, Contract, type) %>% summarise_at(c("rmse"), mean))
 plot_rmse_ME_not4$ind <- NA
 plot_rmse_ME_4 <- plot_rmse_ME[plot_rmse_ME$ME == 4, ] 
-plot_rmse_ME_4 <- as.data.frame(plot_rmse_ME_4 %>% group_by(indicator, covariate, N, ME, id, ind, Contract, type) %>% summarise_at(c("rmse"), mean))
+plot_rmse_ME_4 <- as.data.frame(plot_rmse_ME_4 %>% group_by(indicator, cov_ok, cov_problem, N, ME, id, ind, Contract, type) %>% summarise_at(c("rmse"), mean))
 plot_rmse_ME <- rbind(plot_rmse_ME_4, plot_rmse_ME_not4)
 rm(plot_rmse_ME_4, plot_rmse_ME_not4)
 
