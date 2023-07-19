@@ -1,4 +1,4 @@
-#################################### Plot_Simulation_2.R ######################################### 
+############################# Plot_Simulation_2_BestApproach.R ################################### 
 ## This file contains the code that is required to create the plots for the simulation study    ##
 ## in Chapter 5. To create most plots, the following objects are required to be in the global   ##
 ## environment:                                                                                 ##
