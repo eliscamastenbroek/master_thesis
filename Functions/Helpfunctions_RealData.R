@@ -1,4 +1,4 @@
-################################# Methods_Helpfunctions.R ######################################## 
+################################# Helpfunctions_RealData.R ####################################### 
 ## This file contains a number of (help) functions that are required to perform LC and          ##
 ## tree-MILC analysis on real data from the ER and the LFS (see Chapter 6) and to plot the      ##
 ## results. This file contains the following functions:                                         ##
