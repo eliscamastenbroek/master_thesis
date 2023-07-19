@@ -4,8 +4,9 @@
 ##   1. Function 'simulate_data' to simulate data for this simulation study.                    ##
 ##   2. Perform the simulation study.                                                           ##
 ##   3. Get the results of the simulation study.                                                ## 
-## To run the code, the functions in the files 'Helpfunctions_General.R',                       ##
-## 'Helpfunctions_SimulatedData.R' and 'Methods_BestApproach.R' are required.                   ##
+## Note that to run the code, the functions in the files 'Helpfunctions_General.R',             ##
+## 'Helpfunctions_Simulations.R', 'Methods_BestApproach.R', and                                 ##
+## 'Helpfunctions_Performance_Measures_and_Plots.R' are required (see README.md).               ##
 ##################################################################################################
 
 # Load packages
