@@ -1,14 +1,7 @@
-
 ################################## Plot_Simulation_1_and_2.R ##################################### 
 ## This file contains the code that is required to create the plots for the simulation study    ##
 ## in Chapter 4. The data is prepared for plotting in the second half. The plots are created    ##
 ## in the second half.                                                                          ##
-##                                                                                              ##
-## Note that the prepared data is already made available in the .RData files. This is because   ##
-## not all objects that are required for preparing the data (i.e. the objects 'LC_models',      ##
-## 'LCT_models' and 'treeMILC_models' could be uploaded due to storage limits in GitHub. As a   ## 
-## result, creating the measurement error (ME) heatmaps is only possible when these objects are ##
-## created manually using the 'Simulation.R' file.
 ##################################################################################################
 
 # Load packages
@@ -17,12 +10,12 @@ library(RColorBrewer)
 library(scales)
 library(dplyr)
 
-# Set working directory 
+# (optional) Set working directory 
 setwd("add working directory here")
 
-# Load data from either simulation study 1 (Chapter 4) or simulation study 2 (Chapter 5)
-load("Simulation1.RData")
-load("Simulation2.RData")
+# (optional) Load data from either simulation study 1 (Chapter 4) or simulation study 2 (Chapter 5)
+load("Simulation1_Reduced.RData")
+load("Simulation2_Reduced.RData")
 
 # Define which colours to use in the plots
 colours <- c(LC = "#F8766D", LCT = "#00BA38", "tree-MILC" ="#619CFF") 
