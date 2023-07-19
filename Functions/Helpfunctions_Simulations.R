@@ -2,45 +2,12 @@
 ## This file contains a number of (help) functions that are required to perform the             ##
 ## simulation study without missing covariates (see Chapter 4) and with missing covariates (see ##
 ## Chapter 5). This file contains the following functions:                                      ##                                                                              ##
-##    - create_subset                                                                           ## 
 ##    - generate_script                                                                         ##
 ##    - generate_script_treeMILC_extra                                                          ##
 ##    - fix_extra_covcat                                                                        ##
 ##    - store_model_info                                                                        ##
 ##    - get_ME                                                                                  ##
 ##################################################################################################
-
-##################################################################################################
-## Function to create a subset from a simulated data set                                        ##
-## @param iteration (int): Iteration number                                                     ## 
-## @param ind (int): Number of indicators                                                       ##
-## @param cov_ok (vector): Vector with the names of non-missing covariates                      ##
-## @param cov_problem (vector): Vector with the names of missing covariates                     ##
-## @param N (int): Size of the data set                                                         ##
-## @param ME (int): Amount of measurement error (1=10%, 2=20%, 3=30%, 4=realistic)              ##
-## @returns (data.frame): A subset                                                              ##
-##################################################################################################
-
-create_subset <- function(iteration, ind, cov_ok, cov_problem, N, ME) {
-  
-  # If a certain data set does not exist, create it  
-  if (!exists(paste0("simDat", ME, "_iteration", iteration))) {
-    assign(paste0("simDat", ME, "_iteration", iteration), simulate_data(iteration, ME), envir = globalenv())
-  }
-  
-  data <- get(paste0("simDat", ME, "_iteration", iteration))
-  
-  # Set seed to get the same data set for every model within each iteration
-  set.seed(iteration) 
-  select_cases <- sample(1:nrow(data), N, replace = FALSE)
-  
-  # Remove redundant columns
-  all_ind <- c("Y1", "Y2", "Y3", "Y4")
-  ind <- all_ind[1:ind]
-  subset <- data[select_cases, c("id", ind, cov_ok, cov_problem)]
-  
-  return(subset)
-}
 
 ##################################################################################################
 ## Generate a Latent Gold script for to estimate an LC model. This function can be used to      ##  
