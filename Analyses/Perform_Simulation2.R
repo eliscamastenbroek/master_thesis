@@ -1,35 +1,47 @@
-################################## Perform_Simulation2.R #########################################
-## This file contains the code that is required to perform the simulation study in Chapter 5.   ##
+################################# Perform_Simulation2.R ##########################################
+## This file contains the code that is required to perform the simulation study without missing ##
+## covariates as described in Chapter 5. The file is divided into three parts:                  ##
+##   1. Functions 'simulate_data' and 'create_subset' to simulate data.                         ##
+##   2. Perform the simulation study.                                                           ##
+##   3. Get the results of the simulation study.                                                ## 
 ##                                                                                              ##
 ## Note that depending on whether the functions from the file 'Methods_LessOptimalApproach.R'   ##
 ## or the file 'Methods_BestApproach.R' are loaded, missing covariates are included using       ##
 ## either the less optimal approach (see Section 5.1) or the best approach (see Section X)      ##
-## with direct effects and parameter restrictions.                                              ##
-##                                                                                              ##
-## The current file is divided into three parts:                                                ##
-##   1. Function 'simulate_data' to simulate data for this specific simulation study.           ##
-##   2. Perform the simulation study.                                                           ##
-##   3. Get the results of the simulation study.                                                ## 
+## with direct effects and parameter restrictions. In addition, to run the code, the functions  ##
+## in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R', and                   ##
+## 'Helpfunctions_Performance_Measures_and_Plots.R' are required (see README.md).               ## 
 ##################################################################################################
 
-## Initialisations
+# Initialisations
 library(dplyr)
 library(data.table)
-options(dplyr.summarise.inform = FALSE) # Ignore redundant warnings from dplyr 
-setwd("F:/Documents/Thesis/Simulatie/Simulatie_8_met_twee_cov") # Set working directory
+
+# Ignore redundant warnings from dplyr
+options(dplyr.summarise.inform = FALSE)  
+
+# Set working directory
+setwd("F:/Documents/Thesis/Simulatie/Simulatie_8_met_twee_cov") 
 
 ##################################################################################################
 ## Simulate a data set                                                                          ##
 ## @param seed (int): Seed                                                                      ##
+## @param N (int): Size of the data set                                                         ##
 ## @param ME (int): Amount of measurement error (1=10%, 2=20%, 3=30%, 4=realistic)              ##
 ## @param folder (string): Folder to save files in                                              ##
 ## @returns (data.frame): A simulated data set (n=10,000)                                       ##
 ##################################################################################################
 
-simulate_data <- function(seed, ME) {
-  # Create Latent Gold script for LC
-  filepath_input <- "exampleDat.dat"
+simulate_data <- function(seed, N, ME) {
+
+  # Select the correct exampleDat.dat file depending on N
+  if(N == 1000){
+    filepath_input <- paste0(folder, "exampleDat_1000.dat")
+  } else {
+    filepath_input <- paste0(folder, "exampleDat_10000.dat")
+  }
   
+  # Create Latent Gold script for LC 
   script_part1 <- paste0("version = 6.0\ninfile '", filepath_input, "' \n\nmodel
     title 'simulation", ME, "';
     options
@@ -132,8 +144,40 @@ simulate_data <- function(seed, ME) {
   return(simDat)
 }
 
+##################################################################################################
+## Function to create a subset from a simulated data set                                        ##
+## @param iteration (int): Iteration number                                                     ## 
+## @param ind (int): Number of indicators                                                       ##
+## @param cov_ok (vector): Vector with the names of non-missing covariates                      ##
+## @param cov_problem (vector): Vector with the names of missing covariates                     ##
+## @param N (int): Size of the data set                                                         ##
+## @param ME (int): Amount of measurement error (1=10%, 2=20%, 3=30%, 4=realistic)              ##
+## @returns (data.frame): A subset                                                              ##
+##################################################################################################
+
+create_subset <- function(iteration, ind, cov_ok, cov_problem, N, ME) {
+  
+  # If a certain data set does not exist, create it  
+  if(!exists(paste0("simDat", ME, "_iteration", iteration,"_", N))){
+    assign(paste0("simDat", ME, "_iteration", iteration, "_", N), simulate_data(iteration, N, ME), envir=globalenv())
+  }
+  
+  data <- get(paste0("simDat", ME, "_iteration", iteration, "_", N))
+  
+  # Set seed to get the same data set for every model within each iteration
+  set.seed(iteration) 
+  select_cases <- sample(1:nrow(data), N, replace = FALSE)
+  
+  # Remove redundant columns
+  all_ind <- c("Y1", "Y2", "Y3", "Y4")
+  ind <- all_ind[1:ind]
+  subset <- data[select_cases, c("id", ind, cov_ok, cov_problem)]
+  
+  return(subset)
+}
+
 #####################################################################################################
-## 1. Perform simulation study 2                                                                   ##
+## 2. Perform simulation study 2                                                                   ##
 #####################################################################################################
 
 ## Specification of simulation conditions
