@@ -14,7 +14,7 @@
 ##    - LC_models (list): List containing the (detailed) model results for LC analysis          ##
 ##    - LCT_models (list): List containing the (detailed) model results for LCT analysis        ##
 ##    - treeMILC_models (list): List containing the (detailed) model results for tree-MILC      ## 
-## ---add here---
+## --- toevoegen van RData ---                                                                  ##
 ##################################################################################################
 
 # Load packages
