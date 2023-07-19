@@ -28,11 +28,12 @@ setwd("F:/Documents/Thesis/Simulatie/Simulatie_8_met_twee_cov")
 ## @param seed (int): Seed                                                                      ##
 ## @param N (int): Size of the data set                                                         ##
 ## @param ME (int): Amount of measurement error (1=10%, 2=20%, 3=30%, 4=realistic)              ##
+## @param folder (string): Folder to save files in                                              ##
 ## @returns (data.frame): A simulated data set (n=10,000)                                       ##
 ##################################################################################################
 
 simulate_data <- function(seed, N, ME) {
-
+  
   # Select the correct exampleDat.dat file depending on N
   if(N == 1000){
     filepath_input <- paste0("exampleDat_1000.dat")
@@ -181,7 +182,7 @@ create_subset <- function(iteration, ind, cov_ok, cov_problem, N, ME) {
 
 ## Specification of simulation conditions
 ind <- c(2, 3)
-N <- c(10000)
+N <- c(1000,10000)
 ME <- c(1:4)
 iteration <- c(1)
 cov_problem <- c("NULL", "baanduur", "baanduur-SBIgroep")
@@ -215,7 +216,7 @@ for(l in iteration){
           ## Create model name
           name <- paste0(i, "-", ifelse(is.null(cov_ok), "NULL", cov_ok), "-", n, "-", j, "-", k)
           print(paste0("---------------", m, "/", length(iteration) * length(cov_problem) * length(ind) * length(N) * length(ME) , "------------------"))
-
+          
           ## Get parameters in right format
           if(n == "NULL"){
             n <- NULL
@@ -248,8 +249,11 @@ for(l in iteration){
     }
     
     #If a certain data set does not exist, create it
-    if(exists(paste0("simDat", k, "_iteration", l))){
-      rm(list=paste0("simDat", k, "_iteration", l))
+    if(exists(paste0("simDat", k, "_iteration", l, "_1000"))){
+      rm(list=paste0("simDat", k, "_iteration", l, "_1000"))
+    }
+    if(exists(paste0("simDat", k, "_iteration", l, "_10000"))){
+      rm(list=paste0("simDat", k, "_iteration", l, "_10000"))
     }
   }
 }
