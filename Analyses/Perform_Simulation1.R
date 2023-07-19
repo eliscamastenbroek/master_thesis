@@ -23,7 +23,6 @@ setwd("your_working_directory_here")
 ## Function to simulate a data set                                                              ##
 ## @param seed (int): Seed                                                                      ##
 ## @param ME (int): Amount of measurement error (1=10%, 2=20%, 3=30%, 4=realistic)              ##
-## @param folder (string): Folder to save files in                                              ##
 ## @returns (data.frame): A simulated data set (n=10,000)                                       ##
 ##################################################################################################
 
