@@ -1,4 +1,4 @@
-##################################### Simulation2.R ##############################################
+################################## Perform_Simulation2.R #########################################
 ## This file contains the code that is required to perform the simulation study in Chapter 5.   ##
 ##                                                                                              ##
 ## Note that depending on whether the functions from the file 'Methods_LessOptimalApproach.R'   ##
