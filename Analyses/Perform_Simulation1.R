@@ -1,7 +1,7 @@
 ################################# Perform_Simulation1.R ##########################################
 ## This file contains the code that is required to perform the simulation study without missing ##
 ## covariates as described in Chapter 4. The file is divided into three parts:                  ##
-##   1. Function 'simulate_data' to simulate data for this simulation study.                    ##
+##   1. Functions 'simulate_data' and 'create_subset' to simulate data.                         ##
 ##   2. Perform the simulation study.                                                           ##
 ##   3. Get the results of the simulation study.                                                ## 
 ## Note that to run the code, the functions in the files 'Helpfunctions_General.R',             ##
@@ -20,7 +20,7 @@ options(dplyr.summarise.inform = FALSE)
 setwd("your_working_directory_here") 
 
 ##################################################################################################
-## 1. Function to simulate a data set                                                           ##
+## Function to simulate a data set                                                              ##
 ## @param seed (int): Seed                                                                      ##
 ## @param ME (int): Amount of measurement error (1=10%, 2=20%, 3=30%, 4=realistic)              ##
 ## @param folder (string): Folder to save files in                                              ##
@@ -131,6 +131,38 @@ simulate_data <- function(seed, ME) {
   # Import simulated data set
   simDat <- read.delim(outfile_path, sep = "\t", dec = ",")
   return(simDat)
+}
+
+##################################################################################################
+## Function to create a subset from a simulated data set                                        ##
+## @param iteration (int): Iteration number                                                     ## 
+## @param ind (int): Number of indicators                                                       ##
+## @param cov_ok (vector): Vector with the names of non-missing covariates                      ##
+## @param cov_problem (vector): Vector with the names of missing covariates                     ##
+## @param N (int): Size of the data set                                                         ##
+## @param ME (int): Amount of measurement error (1=10%, 2=20%, 3=30%, 4=realistic)              ##
+## @returns (data.frame): A subset                                                              ##
+##################################################################################################
+
+create_subset <- function(iteration, ind, cov_ok, cov_problem, N, ME) {
+  
+  # If a certain data set does not exist, create it  
+  if (!exists(paste0("simDat", ME, "_iteration", iteration))) {
+    assign(paste0("simDat", ME, "_iteration", iteration), simulate_data(iteration, ME), envir = globalenv())
+  }
+  
+  data <- get(paste0("simDat", ME, "_iteration", iteration))
+  
+  # Set seed to get the same data set for every model within each iteration
+  set.seed(iteration) 
+  select_cases <- sample(1:nrow(data), N, replace = FALSE)
+  
+  # Remove redundant columns
+  all_ind <- c("Y1", "Y2", "Y3", "Y4")
+  ind <- all_ind[1:ind]
+  subset <- data[select_cases, c("id", ind, cov_ok, cov_problem)]
+  
+  return(subset)
 }
 
 ##################################################################################################
