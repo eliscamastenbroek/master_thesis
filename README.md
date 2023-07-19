@@ -1,6 +1,7 @@
 # Introduction
 
-This GitHub repository contains the R code that is used for the MSc thesis 'Comparing the performance of LC, LCT and tree-MILC analysis to correct for measurement error in the Employment Register and the Labour Force Survey' by Elisca Mastenbroek ([link to thesis](https://github.com/eliscamastenbroek/master_thesis/blob/main/MSc_thesis.pdf)).
+This GitHub repository contains the R code that is used for the MSc thesis 'Correcting for measurement error in the
+Employment Register (ER) and the Labour Force Survey (LFS) using LC, LCT and tree-MILC analysis' by Elisca Mastenbroek ([link to thesis](https://github.com/eliscamastenbroek/master_thesis/blob/main/MSc_thesis.pdf)).
 
 In this README.md file, instructions are provided to reproduce the results of the two simulation studies (see Chapters 4-5) and the analyses of the real data (see Chapter 6). Note that the real data from the ER and the LFS is not publicly available.
 
