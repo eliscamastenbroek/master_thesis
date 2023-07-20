@@ -4,9 +4,7 @@
 ##                                                                                              ##
 ## Note that to create the heatmaps, the functions in the files 'Helpfunctions_General.R',      ##
 ## 'Helpfunctions_Simulations.R' and 'Helpfunctions_Performance_Measures_and_Plots.R' are       ## 
-## required.                                                                                    ##
-##                                                                                              ##
-## In addition, to create the heatmaps plots, the following objects are required:               ##
+## required. In addition, the following objects are required:                                   ##
 ##    - plot_df (data.frame): Data frame with results to plot the PPEs, the entropy R2, and     ##
 ##      the mean summed bias                                                                    ##
 ##    - plot_ME (data.frame): Data frame with results to plot the expected value of the MEPEs   ##
@@ -20,7 +18,8 @@
 ##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
 ##    2) Loading the RData in the file 'Simulation1_Complete.RData'.                            ##
 ## -- toevoegen van RData --                                                                    ##
-## Finally, to create the heatmaps, a working directory should be specified in line X.         ##
+##                                                                                              ##
+## Finally, to create the heatmaps, a working directory should be specified in line X.          ##
 ##################################################################################################
 
 # Load packages
