@@ -21,9 +21,9 @@ To perform the analyses and plot the results, the following R packages were used
 
 # 1. Instructions to reproduce and/or plot Simulation study 1 (Chapter 4)
 
-## Reproduce the simulation study
+### Reproduce the simulation study
 To reproduce the first simulation study in R, the following steps should be taken:
-1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Methods_Best_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Best_Approach.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' in R.
+1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Methods_Best_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Best_Approach.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
 2. Open the file '[Perform_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_1.R)'.
 3. Change the working directory in line 24.
 4. Change the argument _folder = ""_ in lines 213, 218, and 223 to where you would like to store the model results.
@@ -41,24 +41,24 @@ perform_lct(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, 
 perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here")
 ```
 
-## Plot the results (except for the heatmaps)
-To plot the results of the first simulation study in R (except for the heatmaps), the following steps should be taken:
+### Plot the results (except for the heatmaps)
+To plot the results in R (except for the heatmaps), the following steps should be taken:
 1. Follow either step 1a **or** 1b:
 
    a. Run the code in the file '[Prepare_Simulation_Results_for_Plotting.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Prepare_Simulation_Results_for_Plotting.R)' to prepare the data for plotting. Note that this part requires that the simulation in the file '[Perform_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_1.R)' has been executed.
 
-   b. Load the content of the file '[Simulation1_Reduced.RData](https://github.com/eliscamastenbroek/master_thesis/blob/main/RData/Simulation1_Reduced.RData)' in R.
-2. Run the code in the file '(Plot_Simulation_1.R)[https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1.R]' to create the desired plots.
+   b. Load the contenta of the file '[Simulation1_Reduced.RData](https://github.com/eliscamastenbroek/master_thesis/blob/main/RData/Simulation1_Reduced.RData)' in R.
+2. Run the code in the file '[Plot_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1.R)' to create the desired plots.
 
-## Plot the heatmaps
-To plot the heatmaps for the first simulation study in R, the following steps should be taken:
+### Plot the heatmaps
+To plot the heatmaps in R, the following steps should be taken:
 1. (If not already done): 1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' in R.
 2. Follow either step 1a **or** 1b:
 
    a. Have executed the simulations in the file '[Perform_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_1.R)'.
 
    b. Load the content of the file 'Simulation1_Complete.RData' in R. Note that this file is not available on GitHub due to storage limits.
-3. Run the code in the file '(Plot_Simulation_1_Heatmaps.R)[[https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1_Heatmaps.R)]' to create the desired plots.
+3. Run the code in the file '[Plot_Simulation_1_Heatmaps.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1_Heatmaps.R)' to create the desired plots.
 
 
 # 2. Instructions to reproduce Simulation study 2 using the best approach (Chapter 5)
