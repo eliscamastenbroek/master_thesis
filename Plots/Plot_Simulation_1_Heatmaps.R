@@ -20,6 +20,7 @@
 ## -- toevoegen van RData --                                                                    ##
 ##                                                                                              ##
 ## Finally, to create the heatmaps, a working directory should be specified in line X.          ##
+## The plots will be saved in this directory.                                                   ##
 ##################################################################################################
 
 # Load packages
