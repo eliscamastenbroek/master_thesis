@@ -350,7 +350,7 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
       
       # Create model name without missing covariates to retrieve the model files created earlier
       model_name2 <- model_name
-      for (j incov_problem) {
+      for (j in cov_problem) {
         model_name2 <- gsub(j, "null", model_name2)
       }
       if (length(cov_problem) == 2) {
