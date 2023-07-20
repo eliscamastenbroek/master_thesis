@@ -3,7 +3,7 @@
 ## for the simulation study in Chapter 5 using the best approach (i.e. with direct effects and  ##
 ## parameter restrictions).                                                                     ##
 ##                                                                                              ##
-## To create most plots, the following objects are required:                                    ##
+## To run the code, the following objects are required:                                         ##
 ##    - plot_df (data.frame): Data frame with results to plot the PPEs, the entropy R2, and     ##
 ##      the mean summed bias                                                                    ##
 ##    - plot_ME (data.frame): Data frame with results to plot the expected value of the MEPEs   ##
