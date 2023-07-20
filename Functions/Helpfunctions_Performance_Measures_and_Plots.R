@@ -1,6 +1,6 @@
 ################### Helpfunctions_Performance_Measures_and_Plots.R ############################### 
-## This file contains the functions needed to compute the performance measures and creating the ## 
-## plots in Chapters 4 and 5:                                                                   ##
+## This file contains the functions needed to compute the performance measures and to create    ## 
+## the plots in Chapters 4 and 5:                                                               ##
 ##    - create_ME_matrix                                                                        ##                                                                          
 ##    - get_entropy                                                                             ## 
 ##    - get_proportions                                                                         ##
