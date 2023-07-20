@@ -15,6 +15,7 @@ library(dplyr)
 library(tidyverse)
 library(RColorBrewer)
 library(scales)
+library(data.table)
 
 ###################################################################################################
 ## Compute the entropy R2 of the LC models (Section 6.3.1)                                       ##
@@ -36,17 +37,17 @@ get_entropy(LC_2018_recoded)
 ## Compute the standard deviation of tree-MILC's PPEs (Section 6.3.2)                            ##
 ###################################################################################################
 
-sqrt(get_var_PPEs_treeMILC(treeMILC_2016_restricted))
-sqrt(get_var_PPEs_treeMILC(treeMILC_2017_restricted))
-sqrt(get_var_PPEs_treeMILC(treeMILC_2018_restricted))
+sqrt(get_variance_treeMILC_PPEs(treeMILC_2016_restricted))
+sqrt(get_variance_treeMILC_PPEs(treeMILC_2017_restricted))
+sqrt(get_variance_treeMILC_PPEs(treeMILC_2018_restricted))
 
-sqrt(get_var_PPEs_treeMILC(treeMILC_2016_ok))
-sqrt(get_var_PPEs_treeMILC(treeMILC_2017_ok))
-sqrt(get_var_PPEs_treeMILC(treeMILC_2018_ok))
+sqrt(get_variance_treeMILC_PPEs(treeMILC_2016_ok))
+sqrt(get_variance_treeMILC_PPEs(treeMILC_2017_ok))
+sqrt(get_variance_treeMILC_PPEs(treeMILC_2018_ok))
 
-sqrt(get_var_PPEs_treeMILC(treeMILC_2016_recoded))
-sqrt(get_var_PPEs_treeMILC(treeMILC_2017_recoded))
-sqrt(get_var_PPEs_treeMILC(treeMILC_2018_recoded))
+sqrt(get_variance_treeMILC_PPEs(treeMILC_2016_recoded))
+sqrt(get_variance_treeMILC_PPEs(treeMILC_2017_recoded))
+sqrt(get_variance_treeMILC_PPEs(treeMILC_2018_recoded))
 
 ##################################################################################################
 ## Obtain results for population proportion estimates (Section 6.3.3)                           ##
