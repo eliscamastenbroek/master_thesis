@@ -42,9 +42,7 @@ perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1
 
 ### Instructions to plot the results (except for the heatmaps):
 1. Follow either step 1a **or** 1b:
-
    a. Run the code in the file '[Prepare_Simulation_Results_for_Plotting.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Prepare_Simulation_Results_for_Plotting.R)' to prepare the data for plotting. Note that this part requires that the simulation in the file '[Perform_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_1.R)' has been executed.
-
    b. Load the contents of the file '[Simulation1_Reduced.RData](https://github.com/eliscamastenbroek/master_thesis/blob/main/RData/Simulation1_Reduced.RData)' into R.
 2. Run the code in the file '[Plot_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1.R)' to create the desired plots.
 
