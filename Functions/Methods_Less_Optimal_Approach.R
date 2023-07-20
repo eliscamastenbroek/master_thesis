@@ -162,20 +162,21 @@ perform_lc <- function(iteration, ind, cov_ok, cov_problem, N, ME, dat = NULL, f
   # Read model output
   model_output <- read.delim(filepath_output, sep = "\t", dec = ",")
   
-  # Check if no warning was given
-  model_lst <- paste(readLines(paste0(folder, "LC_", model_name, "_script.lst")), collapse = "\n")
-  if (grepl("WARNING", model_lst, fixed = TRUE, useBytes = TRUE)) {
-    to_return <- append(to_return, list("Error"))
-  } else {
-    to_return <- append(to_return, list("Good"))
-  }
-  
   # Rename some columns and add data frame to return list
   setnames(model_output, old = c("Cluster.1", "Cluster.2", "Cluster.3", "Cluster."), new = c("p1", "p2", "p3", "cluster"))
   to_return <- append(to_return, list(model_output))
   
   # Make sure clusters are assigned the right names
   to_return <- fix_cluster_assignment(type = "LC", results = to_return)
+
+  # Check if no warning was given
+  model_lst <- paste(readLines(paste0(folder, "LC_", model_name, "_script.lst")), collapse = "\n")
+  if (grepl("WARNING", model_lst, fixed = TRUE, useBytes = TRUE)) {
+    to_return <- append(to_return, list("Error"))
+  } else {
+    to_return <- append(to_return, list("Good"))
+  }  
+  
   return(to_return)
 }
 
