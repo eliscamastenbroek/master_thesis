@@ -1,4 +1,4 @@
-################################# Perform_Simulation1.R ##########################################
+################################ Perform_Simulation_1.R ##########################################
 ## This file contains the code that is required to perform the simulation study without missing ##
 ## covariates as described in Chapter 4. The file is divided into three parts:                  ##
 ##   1. Functions 'simulate_data' and 'create_subset' to simulate data.                         ##
