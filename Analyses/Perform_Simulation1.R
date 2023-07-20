@@ -3,10 +3,14 @@
 ## covariates as described in Chapter 4. The file is divided into three parts:                  ##
 ##   1. Functions 'simulate_data' and 'create_subset' to simulate data.                         ##
 ##   2. Perform the simulation study.                                                           ##
-##   3. Get the results of the simulation study.                                                ## 
-## Note that to run the code, the functions in the files 'Helpfunctions_General.R',             ##
+##   3. Get the results of the simulation study.                                                ##
+##                                                                                              ##
+## To run the code, the functions in the files 'Helpfunctions_General.R',                       ##
 ## 'Helpfunctions_Simulations.R', 'Methods_BestApproach.R', and                                 ##
-## 'Helpfunctions_Performance_Measures_and_Plots.R' are required (see README.md).               ##
+## 'Helpfunctions_Performance_Measures_and_Plots.R' are required.                               ##
+##                                                                                              ##
+## In addition, in line 24, a working directory should be set, and in lines 213, 218, 223, the  ## 
+## argument 'folder' should be specified (see README.md).                                       ##
 ##################################################################################################
 
 # Load packages
