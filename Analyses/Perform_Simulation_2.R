@@ -1,4 +1,4 @@
-################################# Perform_Simulation2.R ##########################################
+################################# Perform_Simulation_2.R #########################################
 ## This file contains the code that is required to perform the simulation study without missing ##
 ## covariates as described in Chapter 5. The file is divided into three parts:                  ##
 ##   1. Functions 'simulate_data' and 'create_subset' to simulate data.                         ##
@@ -7,9 +7,11 @@
 ##                                                                                              ##
 ## Note that depending on whether the functions from the file 'Methods_LessOptimalApproach.R'   ##
 ## or the file 'Methods_BestApproach.R' are loaded, missing covariates are included using       ##
-## either the less optimal approach (see Section 5.1) or the best approach (see Section X)      ##
-## with direct effects and parameter restrictions. In addition, to run the code, the functions  ##
-## in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R', and                   ##
+## either the less optimal approach (see Section 5.1.1) or the best approach                    ##
+## (see Section 5.1.2) with direct effects and parameter restrictions. 
+
+## In addition, to run the code, the functions in the files 'Helpfunctions_General.R',          ##
+## 'Helpfunctions_Simulations.R', and                                                           ##
 ## 'Helpfunctions_Performance_Measures_and_Plots.R' are required (see README.md).               ## 
 ##################################################################################################
 
