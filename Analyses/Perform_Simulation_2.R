@@ -8,11 +8,17 @@
 ## Note that depending on whether the functions from the file 'Methods_LessOptimalApproach.R'   ##
 ## or the file 'Methods_BestApproach.R' are loaded, missing covariates are included using       ##
 ## either the less optimal approach (see Section 5.1.1) or the best approach                    ##
-## (see Section 5.1.2) with direct effects and parameter restrictions. 
-
-## In addition, to run the code, the functions in the files 'Helpfunctions_General.R',          ##
-## 'Helpfunctions_Simulations.R', and                                                           ##
-## 'Helpfunctions_Performance_Measures_and_Plots.R' are required (see README.md).               ## 
+## (see Section 5.1.2) with direct effects and parameter restrictions.                          ##
+##                                                                                              ##
+## To run the code:                                                                             ##
+##    - In line 32, a working directory should be set.                                          ##
+##    - In lines 236, 240, 244, the argument 'folder' should be specified.                      ##
+##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R',    ##
+##      'Helpfunctions_Performance_Measures_and_Plots.R' should be loaded.                      ##
+##    - The functions in the file 'Methods_LessOptimalApproach.R' OR 'Methods_BestApproach.R'   ##
+##      should be loaded.                                                                       ##
+##    - The files 'exampleDat_1000.dat' and 'exampleDat_10000.dat' should be in the             ##
+##      working directory.                                                                      ##
 ##################################################################################################
 
 # Initialisations
@@ -23,7 +29,7 @@ library(data.table)
 options(dplyr.summarise.inform = FALSE)  
 
 # Set working directory
-setwd("F:/Documents/Thesis/Simulatie/Simulatie_8_met_twee_cov") 
+setwd("your_working_directory_here") 
 
 ##################################################################################################
 ## Simulate a data set                                                                          ##
@@ -227,15 +233,15 @@ for(l in iteration){
           }
           
           ## Perform LC, LCT and tree-MILC
-          LC <- perform_lc(l, i, cov_ok, n, j, k, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_8_met_twee_cov\\LC\\")
+          LC <- perform_lc(l, i, cov_ok, n, j, k, folder="your_folder_here")
           LC_models <- append(LC_models, list(LC))
           print(paste0("LC model ", name, " complete."))
           
-          LCT <- perform_lct(l, i, cov_ok, n, j, k, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_8_met_twee_cov\\LCT\\")
+          LCT <- perform_lct(l, i, cov_ok, n, j, k, folder="your_folder_here")
           LCT_models <- append(LCT_models, list(LCT))
           print(paste0("LCT model ", name, " complete."))
           
-          treeMILC <- perform_treeMILC(l, i, cov_ok, n, j, k, folder="F:\\Documents\\Thesis\\Simulatie\\Simulatie_8_met_twee_cov\\treeMILC\\")
+          treeMILC <- perform_treeMILC(l, i, cov_ok, n, j, k, folder="your_folder_here")
           treeMILC_models  <- append(treeMILC_models , list(treeMILC))
           
           #Keep track of errors
