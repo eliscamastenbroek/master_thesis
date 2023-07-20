@@ -3,7 +3,7 @@
 ## 6.3-6.4).                                                                                     ##
 ##                                                                                               ##
 ## Note that to run the code, the models in the file 'Perform_Real_Data_Analyses.R' should have  ##
-## been created. Alternatively, the file 'Real_Data_Analyses.RDAta' can be loaded.               ##         
+## been created. Alternatively, the file 'Real_Data_Analyses.RData' can be loaded.               ##         
 ##                                                                                               ##
 ## In addition, to create the heatmaps, the functions in the files                               ##
 ## 'Helpfunctions_General.R', 'Helpfunctions_Real_Data.R' and                                    ##
