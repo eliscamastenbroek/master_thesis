@@ -1,4 +1,4 @@
-################################### Methods_RealData.R ###########################################
+################################## Methods_Real_Data.R ###########################################
 ## This file contains the functions that are required to perform LC and tree-MILC analysis on   ##
 ## real data from the ER and the LFS (see Chapter 6):                                           ##
 ##    - perform_lc                                                                              ##
