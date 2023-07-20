@@ -42,9 +42,11 @@ perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1
 
 ### Instructions to plot the results (except for the heatmaps):
 1. Follow either step 1a **or** 1b:
+   
    a. Run the code in the file '[Prepare_Simulation_Results_for_Plotting.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Prepare_Simulation_Results_for_Plotting.R)' to prepare the data for plotting. Note that this part requires that the simulation in the file '[Perform_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_1.R)' has been executed.
+   
    b. Load the contents of the file '[Simulation1_Reduced.RData](https://github.com/eliscamastenbroek/master_thesis/blob/main/RData/Simulation1_Reduced.RData)' into R.
-2. Run the code in the file '[Plot_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1.R)' to create the desired plots.
+3. Run the code in the file '[Plot_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1.R)' to create the desired plots.
 
 ### Instructions to plot the heatmaps:
 1. (If not already loaded): Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
@@ -76,8 +78,27 @@ perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1
 4. Run the code in the file '[Plot_Simulation_2_Best_Approach_Heatmaps.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_2_Best_Approach_Heatmaps.R)' to create the desired plots.
 
 # 3. Instructions to reproduce Simulation study 2 using the less optimal approach (Section 5.1.1)
-To reproduce the second simulation study, the following steps should be taken:
-1. Load the functions in the files X into the global environment.
-2. Follow steps 2-X as described above in 2. Instructions to reproduce Simulation study 2 using the best approach (Chapter 5).
+
+### Instructions to reproduce the simulation study:
+1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Methods_Less_Optimal_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Less_Optimal_Approach.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
+2. Open the file '[Perform_Simulation_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_2_.R)'.
+3. Change the working directory in line 32.
+4. Change the argument _folder = ""_ in lines 236, 240, 244 to where you would like to store the model results.
+5. Execute the rest of the code. Note that this takes approximately 5 days.
+
+### Instructions to plot the results (except for the heatmaps):
+Nog afmaken.
 
 # 4. Instructions to reproduce the analyses on real data fomr the ER and the LFS (Chapter 6)
+
+(Note that the data from the ER and the LFS is not publicly available.)
+
+### Instructions to reproduce the analyses:
+1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Real_Data.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/[Helpfunctions_Real_Data.R)', and '[Methods_Real_Data.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Real_Data.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
+2. Open the file '[Perform_Real_Data_Analyses.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Real_Data_Analyses.R)'.
+3. Change the working directory in line 19.
+4. Change the argument _folder = ""_ in lines 82-103 to where you would like to store the model results.
+5. Execute the rest of the code. Note that this may take a few hours.
+
+6. ### Instructions to plot the results (except for the heatmaps):
+Nog afmaken.
