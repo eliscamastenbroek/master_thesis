@@ -192,7 +192,7 @@ create_subset <- function(iteration, ind, cov_ok, cov_problem, N, ME) {
 ind <- c(2, 3)
 N <- c(1000,10000)
 ME <- c(1:4)
-iteration <- c(1)
+iteration <- c(1:50)
 cov_problem <- c("NULL", "baanduur", "baanduur-SBIgroep")
 
 ## Create lists to store results in
