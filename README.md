@@ -23,7 +23,7 @@ To perform the analyses and plot the results, the following R packages were used
 To reproduce the first simulation study in R, the following steps should be taken:
 1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Methods_Best_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Best_Approach.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' in R.
 2. Open the file '[Perform_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_1.R)'.
-3. Change the working directory in this file.
+3. Change the working directory in line 24.
 4. Change the argument _folder = ""_ in lines 213, 218, and 223 to where you would like to store the model results.
 5. Execute the rest of the code. Note that this takes approximately 5 days.
 
