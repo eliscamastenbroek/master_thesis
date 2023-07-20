@@ -5,12 +5,12 @@
 ##   2. Perform the simulation study.                                                           ##
 ##   3. Get the results of the simulation study.                                                ##
 ##                                                                                              ##
-## To run the code, the functions in the files 'Helpfunctions_General.R',                       ##
-## 'Helpfunctions_Simulations.R', 'Methods_BestApproach.R', and                                 ##
-## 'Helpfunctions_Performance_Measures_and_Plots.R' are required.                               ##
-##                                                                                              ##
-## In addition, in line 24, a working directory should be set, and in lines 213, 218, 223, the  ## 
-## argument 'folder' should be specified (see README.md).                                       ##
+## To run the code:                                                                             ##
+##    - In line 24, a working directory should be set.                                          ##
+##    - In lines 213, 218, 223, the argument 'folder' should be specified.                      ##
+##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R',    ##
+##      'Helpfunctions_Performance_Measures_and_Plots.R', and 'Methods_BestApproach.R'          ##
+##      should be loaded.                                                                       ##
 ##################################################################################################
 
 # Load packages
