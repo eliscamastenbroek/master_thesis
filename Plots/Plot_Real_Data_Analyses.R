@@ -2,8 +2,8 @@
 ## This file obtains the results of the real data analyses and plots the results (see Section    ##
 ## 6.3-6.4).                                                                                     ##
 ##                                                                                               ##
-## Note that to run the code, the file 'Perform_Real_Data_Analyses.R' should have been           ##
-## executed. Alternatively, the content of the file 'Real_Data_Analyses.RDAta' should be loaded. ##
+## Note that to run the code, the models in the file 'Perform_Real_Data_Analyses.R' should have  ##
+## been created. Alternatively, the file 'Real_Data_Analyses.RDAta' can be loaded.               ##         
 ##                                                                                               ##
 ## In addition, to create the heatmaps, the functions in the files                               ##
 ## 'Helpfunctions_General.R', 'Helpfunctions_Real_Data.R' and                                    ##
