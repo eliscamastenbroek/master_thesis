@@ -1,8 +1,13 @@
-######################################## Plot_Real_Data.R ######################################### 
+################################### Plot_Real_Data_Analyses.R ##################################### 
 ## This file obtains the results of the real data analyses and plots the results (see Section    ##
-## 6.3-6.4). Note that to create the heatmaps, the functions in the files                        ##
+## 6.3-6.4).                                                                                     ##
+##                                                                                               ##
+## Note that to run the code, the file 'Perform_Real_Data_Analyses.R' should have been           ##
+## executed. Alternatively, the content of the file 'Real_Data_Analyses.RDAta' should be loaded. ##
+##                                                                                               ##
+## In addition, to create the heatmaps, the functions in the files                               ##
 ## 'Helpfunctions_General.R', 'Helpfunctions_Real_Data.R' and                                    ##
-## 'Helpfunctions_Performance_Measures_and_Plots.R' are required.                                ## 
+## 'Helpfunctions_Performance_Measures_and_Plots.R' should be loaded.                            ## 
 ###################################################################################################
 
 library(ggplot2)
