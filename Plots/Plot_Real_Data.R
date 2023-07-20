@@ -1,7 +1,9 @@
 ######################################## Plot_Real_Data.R ######################################### 
-## This file obtains the results of the real data analyses and plots the results (see Section   ##
-## 6.3-6.4).                                                                                    ##                      
-##################################################################################################
+## This file obtains the results of the real data analyses and plots the results (see Section    ##
+## 6.3-6.4). Note that to create the heatmaps, the functions in the files                        ##
+## 'Helpfunctions_General.R', 'Helpfunctions_Real_Data.R' and                                    ##
+## 'Helpfunctions_Performance_Measures_and_Plots.R' are required.                                ## 
+###################################################################################################
 
 library(ggplot2)
 library(dplyr)
@@ -221,7 +223,7 @@ HMM_ME.2018 <- list(ER.2018, LFS.2018)
 ## Obtain ME probability estimates for the LC and the tree-MILC models (Section 6.3.4 and 6.4)   ##                                                          ##
 ###################################################################################################
 
-## 1=Permanent, 2=Other, 3=Flexible
+## Note that 1 = Permanent, 2 = Other, and 3 = Flexible.
 
 # ME probability matrices for (best) approach with direct effects and parameter restrictions (Section 6.1-6.3)
 get_ME(LC_2016_restricted)
