@@ -1,8 +1,8 @@
 ################################### Plot_Simulation_1.R ########################################## 
 ## This file contains the code that is required to create the plots for the simulation study    ##
-## in Chapter 4.                                                                                ##
+## in Chapter 4 (except for the heatmaps).                                                      ##
 ##                                                                                              ##
-## To create most plots, the following objects are required:                                    ##
+## To create the plots, the following objects are required:                                     ##
 ##    - plot_df (data.frame): Data frame with results to plot the PPEs, the entropy R2, and     ##
 ##      the mean summed bias                                                                    ##
 ##    - plot_ME (data.frame): Data frame with results to plot the expected value of the MEPEs   ##
@@ -12,18 +12,10 @@
 ##    1) Performing the simulation study in the file 'Perform_Simulation_1.R' and preparing the ##
 ##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
 ##    2) Loading the RData in the file 'Simulation1_Reduced.RData'.                             ##
-##                                                                                              ##
-## Note that to create the heatmaps, the following objects are required in addition:            ##
-##    - LC_models (list): List containing the (detailed) model results for LC analysis          ##
-##    - LCT_models (list): List containing the (detailed) model results for LCT analysis        ##
-##    - treeMILC_models (list): List containing the (detailed) model results for tree-MILC      ## 
-## --- toevoegen van RData ---                                                                  ##
 ##################################################################################################
 
 # Load packages
 library(ggplot2)
-library(RColorBrewer)
-library(scales)
 library(dplyr)
 
 # Define which colours to use in the plots
@@ -143,29 +135,3 @@ plot_df %>% ggplot(aes(x=indicator, y=diag, fill=type)) +
   labs(y= "Mean summed bias", x = "Number of indicators") +
   facet_wrap(~ ME, ncol=5, labeller=label_value) +
   theme(legend.position="top")
-
-##################################################################################################
-## Create plots for heatmaps                                                                    ##
-##################################################################################################
-
-# Simulation study 1
-ind <- 2:4
-
-for (j in c(1000, 10000)) {
-    for (k in ind) {
-      if (k == 2) {
-        cov_ok <- "q"
-      } else {
-        cov_ok <- NULL
-      }
-      
-      # Plot bias and variance for 10%, 20%, and 30% ME
-      bias1 <- get_ME_heatmap(LC_models, LCT_models, treeMILC_models, LC_results, 1, k, cov_ok, NULL, j)
-      variance1 <- get_ME_heatmap(LC_models, LCT_models, treeMILC_models, LC_results, 2, k, cov_ok, NULL, j)
-      
-      # Plot bias and variance for realistic 7% ME
-      bias2 <- get_ME_heatmap_realistic(LC_models, LCT_models, treeMILC_models, LC_results, 1, k, cov_ok, NULL, j)
-      variance2 <- get_ME_heatmap_realistic(LC_models, LCT_models, treeMILC_models, LC_results, 1, k, cov_ok, NULL, j)
-   
-    }  
-}
