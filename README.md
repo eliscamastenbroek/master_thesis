@@ -11,12 +11,11 @@ For this project, the following software was used:
 - R version 4.1.3
 - Latent GOLD 6.0
 
-To perform the analyses, the following R packages were used:
+To perform the analyses and plot the results, the following R packages were used:
 - data.table 1.14.8
 - dplyr 1.1.2
-
-To plot the results, the following R packages were used:
 - ggplot2 3.4.2
+- reshape2 1.4.4
 - RColorBrewer 1.1-3
 - scales 1.2.1
 
