@@ -18,6 +18,7 @@ To perform the analyses and plot the results, the following R packages were used
 - reshape2 1.4.4
 - RColorBrewer 1.1-3
 - scales 1.2.1
+- tidyverse 2.0.0
 
 # 1. Instructions to reproduce and/or plot Simulation study 1 (Chapter 4)
 
