@@ -5,7 +5,7 @@ Employment Register (ER) and the Labour Force Survey (LFS) using LC, LCT and tre
 
 In this README.md file, instructions are provided to reproduce the results of the two simulation studies (see Chapters 4-5) and the analyses of the real data (see Chapter 6). Note that the real data from the ER and the LFS is not publicly available.
 
-General remark: The sample size is referred to as _n_ throughout the thesis, but as _N_ throughout the code. Similarly, the missing covariates in Chapter 5 are referred to as _Z_1_ and _Z_2_ throughout the thesis, but as _baanduur_ and _SBIgroep_ throughout the code.
+General remark: The sample size is referred to as _n_ throughout the thesis, but as _N_ throughout the code. Similarly, the missing covariates in Chapter 5 are referred to as Z<sub>Z</sub> and _Z_2_ throughout the thesis, but as _baanduur_ and _SBIgroep_ throughout the code.
 
 # Software requirements
 For this project, the following software was used:
@@ -59,8 +59,6 @@ perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1
 
 # 2. Instructions to reproduce Simulation study 2 using the best approach (Chapter 5)
 
-Note that in the code, the missing covariates are  
-
 ### Instructions to reproduce the simulation study:
 1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Methods_Best_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Best_Approach.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
 2. Open the file '[Perform_Simulation_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_2_.R)'.
@@ -96,7 +94,7 @@ Nog afmaken.
 
 # 4. Instructions to reproduce the analyses on real data fomr the ER and the LFS (Chapter 6)
 
-(Note that the data from the ER and the LFS is not publicly available.)
+Note that the data from the ER and the LFS is not publicly available.
 
 ### Instructions to reproduce the analyses:
 1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Real_Data.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/[Helpfunctions_Real_Data.R)', and '[Methods_Real_Data.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Real_Data.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
