@@ -1,20 +1,19 @@
-############################# Plot_Simulation_2_BestApproach.R ################################### 
  This file contains the code that is required to create the plots for the simulation study    
-## in Chapter 5. To create most plots, the following objects are required:                      ##
-##    - plot_df (data.frame): Data frame with results to plot the PPEs, the entropy R2, and     ##
-##      the mean summed bias                                                                    ##
-##    - plot_ME (data.frame): Data frame with results to plot the expected value of the MEPEs   ##
-##    - plot_rmse_ME (data.frame): Data frame with results to plot the RMSE of the MEPEs        ##
-## These objects can be obtained by either:                                                     ##
-##    1) Performing the simulation study in the file 'Perform_Simulation2.R' and preparing the  ##
-##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
-##    2) Loading the RData in the file 'Simulation2_Reduced.RData'.                             ##
-## Note that to create the heatmaps, the following objects are required in addition:            ##
-##    - LC_models (list): List containing the (detailed) model results for LC analysis          ##
-##    - LCT_models (list): List containing the (detailed) model results for LCT analysis        ##
-##    - treeMILC_models (list): List containing the (detailed) model results for tree-MILC      ## 
-## --- toevoegen van RData ---                                                                  ##
-##################################################################################################
+ in Chapter 5. To create most plots, the following objects are required:                      
+    - plot_df (data.frame): Data frame with results to plot the PPEs, the entropy R2, and     
+      the mean summed bias                                                                    
+    - plot_ME (data.frame): Data frame with results to plot the expected value of the MEPEs   
+    - plot_rmse_ME (data.frame): Data frame with results to plot the RMSE of the MEPEs        
+ These objects can be obtained by either:                                                     
+    1) Performing the simulation study in the file 'Perform_Simulation2.R' and preparing the  
+       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      
+    2) Loading the RData in the file 'Simulation2_Reduced.RData'.                             
+ Note that to create the heatmaps, the following objects are required in addition:            
+    - LC_models (list): List containing the (detailed) model results for LC analysis          
+    - LCT_models (list): List containing the (detailed) model results for LCT analysis        
+    - treeMILC_models (list): List containing the (detailed) model results for tree-MILC       
+ --- toevoegen van RData ---                                                                  
+
 
 ```{r}
 # Load packages
@@ -42,6 +41,7 @@ levels(plot_rmse_ME$C) <- c("None","Z1","Z1 and Z2")
 
 # Create plots for PPEs (i.e. expected value and RMSE)                                        
 
+```{r}
 # Adjust n to create plots for either n=1,000 or n=10,000
 n = 1000
 
@@ -82,11 +82,12 @@ plot_df[plot_df$N==1000 & plot_df$Contract=="Permanent",] %>% ggplot(aes(x=indic
   theme(legend.position="top") +
   guides(fill = guide_legend(direction = "horizontal"))  +
   theme(legend.position="top")
+```
 
-##################################################################################################
-## Create plots for MEPEs (i.e. expected value and RMSE)                                        ##
-##################################################################################################
 
+# Create plots for MEPEs (i.e. expected value and RMSE)                                        
+
+```{r}
 # Expected value (n=n)
 plot_ME[plot_ME$N==n,] %>% ggplot(aes(x=indicator, y=ME1, fill=type)) +
   geom_bar(stat='identity', position='dodge') +
@@ -124,11 +125,12 @@ plot_rmse_ME[plot_rmse_ME$N==1000 & plot_rmse_ME$Contract=="Permanent",] %>% ggp
   guides(fill = guide_legend(direction = "horizontal")) +
   theme(legend.position="top") +
   facet_grid(C ~ ME,labeller=label_both)
+```
 
-##################################################################################################
-## Plot entropy R2                                                                              ##
-##################################################################################################
 
+# Plot entropy R2                                                                              
+
+```{r}
 #Entropy R2 (all)
 plot_df[plot_df$type!="tree-MILC",] %>% ggplot(aes(x=indicator, y=entropy, fill=type)) +
   geom_bar(stat='identity', position='dodge') +
@@ -144,6 +146,7 @@ plot_df[plot_df$type!="tree-MILC" & plot_df$N==1000 & plot_df$ME=="30%",] %>% gg
   labs(y= "Mean entropy R-Squared", x = "Number of indicators") +
   facet_wrap(~ C, ncol=4, labeller=label_both) +
   theme(legend.position="top")
+```
 
 ##################################################################################################
 ## Plot mean summed bias                                                                        ##
