@@ -61,7 +61,7 @@ perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1
 
 ### Instructions to reproduce the simulation study:
 1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Methods_Best_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Best_Approach.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
-2. Open the file '[Perform_Simulation_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_2_.R)'.
+2. Open the file '[Perform_Simulation_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_2.R)'.
 3. Change the working directory in line 32.
 4. Change the argument _folder = ""_ in lines 236, 240, 244 to where you would like to store the model results.
 5. Execute the rest of the code. Note that this takes approximately 5 days.
