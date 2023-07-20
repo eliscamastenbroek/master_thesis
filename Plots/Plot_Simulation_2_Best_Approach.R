@@ -1,6 +1,7 @@
-############################# Plot_Simulation_2_BestApproach.R ################################### 
-## This file contains the code that is required to create the plots for the simulation study    ##
-## in Chapter 5 using the best approach (i.e. with direct effects and parameter restrictions).  ##
+############################# Plot_Simulation_2_Best_Approach.R ################################## 
+## This file contains the code that is required to create the plots (except for the heatmaps)   ##
+## for the simulation study in Chapter 5 using the best approach (i.e. with direct effects and  ##
+## parameter restrictions).                                                                     ##
 ##                                                                                              ##
 ## To create most plots, the following objects are required:                                    ##
 ##    - plot_df (data.frame): Data frame with results to plot the PPEs, the entropy R2, and     ##
@@ -12,18 +13,10 @@
 ##    1) Performing the simulation study in the file 'Perform_Simulation2.R' and preparing the  ##
 ##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
 ##    2) Loading the RData in the file 'Simulation2_Reduced.RData'.                             ##
-##                                                                                              ##
-## Note that to create the heatmaps, the following objects are required in addition:            ##
-##    - LC_models (list): List containing the (detailed) model results for LC analysis          ##
-##    - LCT_models (list): List containing the (detailed) model results for LCT analysis        ##
-##    - treeMILC_models (list): List containing the (detailed) model results for tree-MILC      ## 
-## --- toevoegen van RData ---                                                                  ##
 ##################################################################################################
 
 # Load packages
 library(ggplot2)
-library(RColorBrewer)
-library(scales)
 library(dplyr)
 
 # Define which colours to use in the plots
@@ -157,31 +150,3 @@ plot_df %>% ggplot(aes(x=indicator, y=diag, fill=type)) +
   labs(y= "Mean summed bias", x = "Number of indicators") +
   facet_grid(N + C ~ ME,labeller=label_both) +
   theme(legend.position="top")
-
-##################################################################################################
-## Create plots for heatmaps                                                                    ##
-##################################################################################################
-
-ind <- 2:3
-cov_problem <- c(NULL,"baanduur", "baanduur-SBIgroep")
-
-for (j in c(1000, 10000)) {
-  for (m in cov_problem) {
-    for (k in ind) {
-      if (k == 2) {
-        cov_ok <- "q"
-      } else {
-        cov_ok <- NULL
-      }
-      
-      # Plot bias and variance for 10%, 20%, and 30% ME
-      bias1 <- get_ME_heatmap(LC_models, LCT_models, treeMILC_models, LC_results, 1, k, cov_ok, m, j)
-      variance1 <- get_ME_heatmap(LC_models, LCT_models, treeMILC_models, LC_results, 2, k, cov_ok, m, j)
-      
-      # Plot bias and variance for realistic 7% ME
-      bias2 <- get_ME_heatmap_realistic(LC_models, LCT_models, treeMILC_models, LC_results, 1, k, cov_ok, m, j)
-      variance2 <- get_ME_heatmap_realistic(LC_models, LCT_models, treeMILC_models, LC_results, 1, k, cov_ok, m, j)
-      
-    }  
-  }
-}
