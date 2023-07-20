@@ -1,12 +1,12 @@
 ################################ Perform_Simulation_1.R ##########################################
 ## This file contains the code that is required to perform the simulation study without missing ##
 ## covariates as described in Chapter 4. The file is divided into three parts:                  ##
-##   1. Functions 'simulate_data' and 'create_subset' to simulate data.                         ##
-##   2. Perform the simulation study.                                                           ##
-##   3. Get the results of the simulation study.                                                ##
+##   1. Defining the functions 'simulate_data' and 'create_subset' to simulate data.            ##
+##   2. Performing the simulation study.                                                        ##
+##   3. Obtaining the results of the simulation study.                                          ##
 ##                                                                                              ##
 ## To run the code:                                                                             ##
-##    - In line 24, a working directory should be set.                                          ##
+##    - In line 24, a working directory should be specified.                                    ##
 ##    - In lines 213, 218, 223, the argument 'folder' should be specified.                      ##
 ##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R',    ##
 ##      'Helpfunctions_Performance_Measures_and_Plots.R', and 'Methods_BestApproach.R'          ##
