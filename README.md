@@ -101,5 +101,7 @@ Nog afmaken.
 4. Change the argument _folder = ""_ in lines 82-103 to where you would like to store the model results.
 5. Execute the rest of the code. Note that this may take a few hours.
 
-6. ### Instructions to plot the results (except for the heatmaps):
-Nog afmaken.
+6. ### Instructions to obtain and plot the results:
+1. (If not already loaded): Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Real_Data.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/[Helpfunctions_Real_Data.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
+2. (If the models in the file '[Perform_Real_Data_Analyses.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Real_Data_Analyses.R)' were not created): Load the content of the file 'Real_Data_Analyses.RData' in R. Note that this file is not publicly available.
+3. Run the code in the file '[Plot_Real_Data_Analyses.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Real_Data_Analyses.R)' to obtain the results and to create the desired plots.
