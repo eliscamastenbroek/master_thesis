@@ -168,7 +168,7 @@ perform_lc <- function(iteration, ind, cov_ok, cov_problem, N, ME, dat = NULL, f
   
   # Make sure clusters are assigned the right names
   to_return <- fix_cluster_assignment(type = "LC", results = to_return)
-
+  
   # Check if no warning was given
   model_lst <- paste(readLines(paste0(folder, "LC_", model_name, "_script.lst")), collapse = "\n")
   if (grepl("WARNING", model_lst, fixed = TRUE, useBytes = TRUE)) {
@@ -276,6 +276,14 @@ perform_lct <- function(iteration, ind, cov_ok = NULL, cov_problem = NULL, N, ME
   
   # Make sure clusters are assigned the right names
   to_return <- fix_cluster_assignment(type = "LCT", results = to_return)
+  
+  # Check if no warning was given
+  model_lst <- paste(readLines(paste0(folder, "LCT_", model_name, "_step2_script.lst")), collapse = "\n")
+  if (grepl("WARNING", model_lst, fixed = TRUE, useBytes = TRUE)) {
+    to_return <- append(to_return, list("Error"))
+  } else {
+    to_return <- append(to_return, list("Good"))
+  }
   return(to_return)
 }
 
@@ -321,7 +329,7 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
   
   # Create list to store the results for each bootstrap sample in
   bootstrap_results <- list()
-  
+
   # For each bootstrap sample
   for (i in 1:M) {
     dat <- dat_org
@@ -368,7 +376,7 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
       parameters <- suppressWarnings(fread(parameters_path, sep = "\t", dec = ","))[, 1:4]
       names(parameters) <- c("term1", "term2", "term3", "coef")
       parameters$coef <- as.numeric(parameters$coef)
-      str <- "{"
+      start_val <- "{"
       
       # Add all parameters to a string
       for (k in 1:nrow(parameters)) {
@@ -380,7 +388,7 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
       
       # Estimate extra LC model with obtained parameters as starting values
       output_path <- paste0(folder, "tree_MILC_", model_name, "_boot", i, "_dat_org_posteriors.dat")
-      script <- generate_script("LC", ind, cov_ok, NULL, model_name, N, filepath_input = dat_org_path, filepath_output = output_path, str)
+      script <- generate_script("LC", ind, cov_ok, NULL, model_name, N, filepath_input = dat_org_path, filepath_output = output_path, start_val)
       script_path <- paste0(folder, "tree_MILC_", model_name, "_boot", i, "_dat_org_posteriors.lgs")
       writeLines(script, script_path)
       shell(paste0('"C:/Program Files/LatentGOLDnet6.0/lg60.exe" ', script_path, ' /b'))
@@ -417,10 +425,9 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
     
     # Import model output
     model2_output <- as.data.frame(fread(paste0(folder, boot_name, "_step2_output.dat"), dec = ","))
-    
     # Check if no warning was given
     model_lst <- paste(readLines(paste0(folder, boot_name, "_step2_script.lst")), collapse = "\n")
-    if (grepl("WARNING", model_lst, fixed = TRUE)) {
+    if (grepl("WARNING", model_lst)) {
       to_return <- append(to_return, list("Error"))
       to_return <- append(to_return, list("Error"))
       return(to_return)
@@ -450,5 +457,6 @@ perform_treeMILC <- function(iteration, ind, cov_ok, cov_problem, N, ME, M = 5, 
   
   # Add results to final output list
   to_return <- append(to_return, list(bootstrap_results))
+  to_return <- append(to_return, list("Good"))
   return(to_return)
 }
