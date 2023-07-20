@@ -1,6 +1,14 @@
 ############################# Perform_Real_Data_Analyses.R ####################################### 
 ## This file reads in data from the ER and the LFS, creates the right subsets, and performs     ##  
 ## LC and tree-MILC analysis on the data (see Chapter 6).                                       ## 
+##                                                                                              ##
+## To run the code:                                                                             ##
+##    - In line 19, a working directory should be set.                                          ##
+##    - In lines 82-103, the 'folder' arguments should be specified (i.e, a path to where the   ##
+##      model results should be stored).                                                        ##
+##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Real_Data.R',      ##
+##      'Helpfunctions_Performance_Measures_and_Plots.R', and 'Methods_Real_Data.R'             ##
+##      should be loaded.                                                                       ##
 ##################################################################################################
 
 ## Load packages and set working directory
