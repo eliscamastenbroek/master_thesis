@@ -22,17 +22,6 @@ library(dplyr)
 # Define which colours to use in the plots
 colours <- c(LC = "#F8766D", LCT = "#00BA38", "tree-MILC" = "#619CFF") 
 
-# Prepare data for plotting
-all_results$cov_problem <- factor(all_results$cov_problem) # Rename the values of cov_problem to Z1, Z2 etc.
-all_results$cov_problem <- relevel(all_results$cov_problem, "null")
-levels(all_results$cov_problem) <- c("None","Z1","Z1 and Z2")
-names(plot_df)[which(names(plot_df) == "cov_problem")] <- "C" # Change column names to label the variables correctly in the plots
-names(plot_ME)[which(names(plot_ME) == "cov_problem")] <- "C"
-names(plot_rmse_ME)[which(names(plot_rmse_ME) == "cov_problem")] <- "C"
-plot_rmse_ME$C <- factor(plot_rmse_ME$C) # Rename the values of cov_problem to Z1, Z2 etc.
-plot_rmse_ME$C <- relevel(plot_rmse_ME$C, "null")
-levels(plot_rmse_ME$C) <- c("None","Z1","Z1 and Z2")
-
 ##################################################################################################
 ## Create plots for PPEs (i.e. expected value and RMSE)                                         ##
 ##################################################################################################
