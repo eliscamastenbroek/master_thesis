@@ -31,6 +31,18 @@ library(scales)
 library(dplyr)
 
 ##################################################################################################
+## Prepare data for plotting in general                                                         ##
+##################################################################################################
+
+# Rename the values of cov_problem to Z1, Z2 etc.
+all_results$cov_problem <- factor(all_results$cov_problem) 
+all_results$cov_problem <- relevel(all_results$cov_problem, "null")
+levels(all_results$cov_problem) <- c("None","Z1","Z1 and Z2")
+
+# Change column names to label the variables correctly in the plots
+names(all_results)[which(names(all_results) == "cov_problem")] <- "C" 
+
+##################################################################################################
 ## Prepare data to plot population proportion estimates (PPEs) (i.e. expected value and RMSE)   ##                                                                    ##
 ##################################################################################################
 
@@ -76,7 +88,7 @@ plot_df[plot_df$Contract == "Flexible" & plot_df$ME == "30%", ]$mline <- ME_matr
 ##################################################################################################
 
 # Create data frame that contains the expected value of MEPEs for Y1 and Y3 in conditions with a realistic 7% ME
-plot_rmse_ME2 <- plot_df[!is.na(plot_df$ME2), c("indicator","cov_ok","cov_problem","N","ME","id","type","ME2","sd_ME2","Contract","mline")]
+plot_rmse_ME2 <- plot_df[!is.na(plot_df$ME2), c("indicator","cov_ok","C","N","ME","id","type","ME2","sd_ME2","Contract","mline")]
 levels(plot_rmse_ME2$ME)[1] <- "Real. 7% (ind. 2)"
 plot_rmse_ME2[plot_rmse_ME2$Contract == "Permanent" & plot_rmse_ME2$ME == "Real. 7% (ind. 2)", ]$mline <- ME_matrix4b[1, 1] 
 plot_rmse_ME2[plot_rmse_ME2$Contract == "Other" & plot_rmse_ME2$ME == "Real. 7% (ind. 2)", ]$mline <- ME_matrix4b[2, 2] 
@@ -84,7 +96,7 @@ plot_rmse_ME2[plot_rmse_ME2$Contract == "Flexible" & plot_rmse_ME2$ME == "Real. 
 names(plot_rmse_ME2)[8:9] <- c("ME1","sd_ME1")
 
 # Create data frame that contains the expected value of MEPEs for Y2 and Y4 in conditions with a realistic 7% ME
-plot_rmse_ME1 <- plot_df[, c("indicator","cov_ok","cov_problem","N","ME","id","type","ME1","sd_ME1","Contract","mline")]
+plot_rmse_ME1 <- plot_df[, c("indicator","cov_ok","C","N","ME","id","type","ME1","sd_ME1","Contract","mline")]
 levels(plot_rmse_ME1$ME)[1] <- "Real. 7% (ind. 1)"
 plot_rmse_ME1[plot_rmse_ME1$Contract == "Permanent" & plot_rmse_ME1$ME == "Real. 7% (ind. 1)", ]$mline <- ME_matrix4a[1, 1] 
 plot_rmse_ME1[plot_rmse_ME1$Contract == "Other" & plot_rmse_ME1$ME == "Real. 7% (ind. 1)", ]$mline <- ME_matrix4a[2, 2] 
@@ -117,16 +129,24 @@ plot_rmse_ME <- rbind(LC_ME_rmse, LCT_ME_rmse, treeMILC_ME_rmse)
 plot_rmse_ME$ME <- as.numeric(plot_rmse_ME$ME)
 plot_rmse_ME$ind <- as.numeric(plot_rmse_ME$ind)
 
+# Rename the values of cov_problem to Z1, Z2 etc.
+plot_rmse_ME$cov_problem <- factor(plot_rmse_ME$cov_problem) 
+plot_rmse_ME$cov_problem <- relevel(plot_rmse_ME$cov_problem, "null")
+levels(plot_rmse_ME$cov_problem) <- c("None","Z1","Z1 and Z2")
+
+# Change column names to label the variables correctly in the plots
+names(plot_rmse_ME)[which(names(plot_rmse_ME) == "cov_problem")] <- "C" 
+
 # Combine indicators Y1/Y3 and Y2/Y4
 plot_rmse_ME[plot_rmse_ME$ME == 4 & (plot_rmse_ME$ind == 1 | plot_rmse_ME$ind == 3), ]$ind <- 1
 plot_rmse_ME[plot_rmse_ME$ME == 4 & (plot_rmse_ME$ind == 2 | plot_rmse_ME$ind == 4), ]$ind <- 2
 
 # Compute mean RMSE over all indicators
 plot_rmse_ME_not4 <- plot_rmse_ME[plot_rmse_ME$ME != 4, ] 
-plot_rmse_ME_not4 <- as.data.frame(plot_rmse_ME_not4 %>% group_by(indicator, cov_ok, cov_problem, N, ME, id, Contract, type) %>% summarise_at(c("rmse"), mean))
+plot_rmse_ME_not4 <- as.data.frame(plot_rmse_ME_not4 %>% group_by(indicator, cov_ok, C, N, ME, id, Contract, type) %>% summarise_at(c("rmse"), mean))
 plot_rmse_ME_not4$ind <- NA
 plot_rmse_ME_4 <- plot_rmse_ME[plot_rmse_ME$ME == 4, ] 
-plot_rmse_ME_4 <- as.data.frame(plot_rmse_ME_4 %>% group_by(indicator, cov_ok, cov_problem, N, ME, id, ind, Contract, type) %>% summarise_at(c("rmse"), mean))
+plot_rmse_ME_4 <- as.data.frame(plot_rmse_ME_4 %>% group_by(indicator, cov_ok, C, N, ME, id, ind, Contract, type) %>% summarise_at(c("rmse"), mean))
 plot_rmse_ME <- rbind(plot_rmse_ME_4, plot_rmse_ME_not4)
 rm(plot_rmse_ME_4, plot_rmse_ME_not4)
 
