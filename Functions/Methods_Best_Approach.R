@@ -2,7 +2,6 @@
 ## This file contains the functions required to perform LC, LCT and tree-MILC analysis in       ##
 ## Chapter 4 and in Chapter 5 (while using the best approach to include missing covariates)     ##
 ## (see Section 5.1.2). The current file contains the following functions:                      ##
-##    - generate_script                                                                         ##
 ##    - perform_lc                                                                              ##
 ##    - perform_lct                                                                             ##
 ##    - perform_treeMILC                                                                        ##
