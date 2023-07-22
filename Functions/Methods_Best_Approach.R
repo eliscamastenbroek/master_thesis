@@ -2,10 +2,289 @@
 ## This file contains the functions required to perform LC, LCT and tree-MILC analysis in       ##
 ## Chapter 4 and in Chapter 5 (while using the best approach to include missing covariates)     ##
 ## (see Section 5.1.2). The current file contains the following functions:                      ##
+##    - generate_script                                                                         ##
+##    - generate_script_treeMILC_extra                                                          ##
 ##    - perform_lc                                                                              ##
 ##    - perform_lct                                                                             ##
 ##    - perform_treeMILC                                                                        ##
 ##################################################################################################
+
+##################################################################################################
+## Generate a Latent Gold script for to estimate an LC model. This function can be used to      ##  
+## estimate regular LC models, as well as LC models in LCT and tree-MILC analysis.              ##                         
+## @param type (string): What type of model (e.g. "LC" for regular LC and "LCT" for LCT step 2) ## 
+## @param ind (int): Number of indicators                                                       ##
+## @param cov_ok (vector): Vector with the names of non-missing covariates                      ##
+## @param cov_problem (vector): Vector with the names of missing covariates                     ##
+## @param N (int): Size of data set                                                             ##
+## @param model_name (string): Name of the model                                                ##
+## @param filepath_input (string): Path to input data set                                       ##
+## @param filepath_output (string): Path where model output should be stored                    ##
+## @returns (string): A string containing a Latent Gold script                                  ##
+##################################################################################################
+
+generate_script <- function(type, ind, cov_ok, cov_problem, N, model_name, dat, filepath_input, filepath_output) {
+  
+  # Create vectors with characters to use for restrictions later on
+  letters <- c("aa", "bb", "cc", "dd", "ee", "ff", "gg", "hh", "ii", "jj")
+  letters2 <- c("kk", "ll", "mm", "nn", "oo", "pp", "qq", "rr", "ss", "tt")
+  letters_count <- letters2_count <- 0 # Keep track of which letters have been used
+  
+  script_part1 <- paste0("version = 6.0\ninfile '", filepath_input, "' \n\nmodel title '")
+  
+  # Let the number of sets of starting values depend on the size of the data set
+  if (N < 10000) {
+    sets <- 3200
+  } else {
+    sets <- 100
+  }
+  
+  script_part2 <- paste0("';
+    options
+    algorithm
+        tolerance=1e-08 emtolerance=0.01 emiterations=10000000 nriterations=10000000;
+    startvalues
+        seed=1 sets=", sets, " tolerance=1e-05 iterations=100;
+    bayes
+        categorical=1 variances=1 latent=1 poisson=1;
+    missing includeall;
+    output
+        parameters=")
+  
+  script_part3 <- paste0("first standarderrors profile reorderclasses iterationdetails;
+        outfile '", filepath_output, "' classification keep=id;
+    variables\n") 
+  
+  # Adjust the number of clusters depending on what type of analysis is performed
+  if (type == "LC") {
+    latent_var <- paste0("\n\tlatent Cluster nominal 3;
+    equations\n")
+  } else {
+    latent_var <- paste0("\n\tlatent Cluster nominal 2;
+    equations\n")
+  }
+  
+  # For LCT step 2, use posterior probabilities from step 1 as weights 
+  if (type == "LCT") {
+    caseweight <- "caseweight p1;\n"
+  } else {
+    caseweight <- ""
+  }
+  
+  # Adjust equations depending on the number of indicators
+  if (ind == 2) {
+    dep_ind <- "\tdependent Y1 nominal, Y2 nominal;"
+    dep_ind_eq2 <- "\n\tY2 <- 1 | Cluster;"
+  } else if (ind == 3) {
+    dep_ind <- "\tdependent Y1 nominal, Y2 nominal, Y3 nominal;"
+    dep_ind_eq2 <- "\n\tY2 <- 1 | Cluster;\n\tY3 <- 1 | Cluster;"
+  } else if (ind == 4) {
+    dep_ind <- "\tdependent Y1 nominal, Y2 nominal, Y3 nominal, Y4 nominal;"
+    dep_ind_eq2 <- "\n\tY2 <- 1 | Cluster;\n\tY3 <- 1 | Cluster;\n\tY4 <- 1 | Cluster;"
+  }
+  
+  # Adjust equations depending on which covariates to include (if any)
+  cov <- c(cov_ok, cov_problem)
+  restrictions1 <- restrictions2 <- ""
+  dep_cov <- ifelse(is.null(cov), "", "\n\tindependent ")
+  dep_ind_eq1 <- "\n\tY1 <- 1 | Cluster"
+  
+  if (!is.null(cov)) {
+    for (i in 1:length(cov)) {
+      if (i == 1) {
+        dep_cov <- paste0(dep_cov, " ", cov[i], " nominal")
+      } else {
+        dep_cov <- paste0(dep_cov, ", ", cov[i], " nominal")
+      }
+    }
+    dep_cov <- paste0(dep_cov, ";")
+  }
+  latent_var_eq <- "\tCluster <- 1"
+  
+  if (!is.null(cov_ok)) {
+    for (i in 1:length(cov_ok)) {
+      latent_var_eq <- paste(latent_var_eq, "+", cov_ok[i])
+    }
+  }
+  
+  # Specify restrictions
+  if (!is.null(cov_problem)) {
+    for (i in 1:length(cov_problem)) {
+      letters_count <- letters_count + 1
+      which_col <- which(colnames(dat) == cov_problem[i])
+      num_cats <- length(levels(factor(dat[, which_col])))
+      dep_ind_eq1 <- paste0(dep_ind_eq1, " + (", letters[i], "~ful) 1 | ", cov_problem[i])
+      latent_var_eq <- paste0(latent_var_eq, " + (", letters2[i], ") ", cov_problem[i])
+      
+      # Specify the first restriction (see Section 5.1)
+      for (j in 1:num_cats) {
+        if (j != num_cats) {
+          restrictions2 <- paste0(restrictions2, "\n\t", letters[i], "[", j, ",] = 0;")
+        } else {
+          restrictions2 <- paste0(restrictions2, "\n\t", letters[i], "[", j, ",1] = -100;")
+          restrictions2 <- paste0(restrictions2, "\n\t", letters[i], "[", j, ",2] = 0;")
+          restrictions2 <- paste0(restrictions2, "\n\t", letters[i], "[", j, ",3] = -100;")
+        }
+      }   
+      
+      # Specify the second restriction (see Section 5.1)
+      if (length(cov_problem) > 1 & (i > 1)) {
+        par2 <- (num_cats - 1) * 2
+        par1 <- par2 - 1
+        if (type == "LC") {
+          restrictions1 <- paste0(restrictions1, paste0("\n\t", letters2[i], "[1,", par1, "] = 0; ", letters2[i], "[1,", par2, "] = 0;"))
+        } else {
+          restrictions1 <- paste0(restrictions1, paste0("\n\t", letters2[i], "[1,", num_cats - 1, "] = 0;"))
+        }
+      }
+    }
+  }
+  
+  latent_var_eq <- paste0(latent_var_eq, ";")
+  dep_ind_eq1 <- paste0(dep_ind_eq1, ";")
+  
+  # Combine all parts of the script
+  script <- paste0(script_part1, model_name, script_part2, script_part3, caseweight, dep_ind, dep_cov,
+                   latent_var, latent_var_eq, dep_ind_eq1, dep_ind_eq2, restrictions1, restrictions2, "\nend model")
+  
+  return(script)
+}
+
+##################################################################################################
+## Generate a Latent Gold script to estimate an extra model in tree-MILC analysis to obtain     ##
+## posterior probabilities for response patterns that were not present in the                   ##
+## bootstrap sample. This is done by estimating an LC model on the original data set while      ##
+## using the logit parameters from the previous model as starting values and setting the number ## 
+## of EM- and NR-iterations to 0.                                                               ## 
+## @param ind (int): Number of indicators                                                       ##
+## @param cov_ok (vector): Vector with the names of non-missing covariates                      ##
+## @param cov_problem (vector): Vector with the names of missing covariates                     ##
+## @param N (int): Size of data set                                                             ## 
+## @param model_name (string): Name of the model                                                ##
+## @param filepath_input (string): Path to input data set                                       ##
+## @param filepath_output (string): Path where model output should be stored                    ##
+## @param par (data.frame): Data frame with logit parameters as estimated by the previous model ## 
+## @returns (string): A string containing a Latent Gold script                                  ##
+##################################################################################################
+
+generate_script_treeMILC_extra <- function(ind, cov_ok, cov_problem, model_name, dat, filepath_input, filepath_output, par) {
+  
+  # Create vectors with characters to use for restrictions later on
+  pars <- c("aa", "bb", "cc", "dd", "ee", "ff", "gg", "hh", "ii", "jj")
+  pars_count <- 0
+  
+  script_part1 <- paste0("version = 6.0\ninfile '", filepath_input, "' \n\nmodel title '")
+  script_part2 <- paste0("';
+    options
+    algorithm
+        tolerance=1e-08 emtolerance=0.01 emiterations=0 nriterations=0;
+    startvalues
+        seed=1 sets=100 tolerance=1e-05 iterations=100;
+    bayes
+        categorical=1 variances=1 latent=1 poisson=1;
+    missing includeall;
+    output
+    	parameters=")
+  script_part3 <- paste0("first standarderrors profile reorderclasses iterationdetails;
+    	outfile '", filepath_output, "' classification keep=id;
+    variables\n")
+  
+  latent_var <- paste0("\n\tlatent Cluster nominal 3;
+    equations\n")
+  
+  # Adjust equations depending on which covariates to include (if any)
+  cov <- c(cov_ok, cov_problem)
+  restrictions <- restrictions2 <- ""
+  latent_var_eq <- "\tCluster <- (zz) 1"
+  dep_cov <- ifelse(is.null(cov), "", "\n\tindependent ")
+  dep_ind_eq1 <- "\n\tY1 <- (jj) 1 | Cluster"
+  
+  # Specify restrictions
+  if (!is.null(cov_problem)) {
+    for (i in 1:length(cov_problem)) {
+      pars_count <- pars_count + 1
+      which_col <- which(colnames(dat) == cov_problem[i])
+      num_cats <- length(levels(factor(dat[, which_col])))
+      dep_ind_eq1 <- paste0(dep_ind_eq1, " + (", pars[i], "~ful) 1 | ", cov_problem[i]) #Specify second restriction (see Section 5.1)
+      
+      for (j in 1:num_cats) {
+        if (j != num_cats) {
+          restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",] = 0;") #Specify first restriction (see Section 5.1)
+        } else {
+          restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",1] = -100;")
+          restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",2] = 0;")
+          restrictions2 <- paste0(restrictions2, "\n\t", pars[i], "[", j, ",3] = -100;")
+        }
+      }   
+    }
+  }
+  
+  if (!is.null(cov)) {
+    for (i in 1:length(cov)) {
+      if (i == 1) {
+        dep_cov <- paste0(dep_cov, " ", cov[i], " nominal")
+      } else {
+        dep_cov <- paste0(dep_cov, ", ", cov[i], " nominal")
+      }
+    }
+    dep_cov <- paste0(dep_cov, ";")
+  }  
+  
+  # Specify start values
+  restrictions <- paste0(restrictions, "\n\tzz[1,1] ~= ", par[1, ]$coef, ";\n")
+  restrictions <- paste0(restrictions, "\tzz[1,2] ~= ", par[2, ]$coef, ";\n")
+  df_counter <- 2
+  if (!is.null(cov)) {
+    for (i in 1:length(cov)) {
+      which_col <- which(colnames(dat) == cov[i])
+      num_cats <- length(levels(factor(dat[, which_col])))
+      pars_count <- pars_count + 1
+      latent_var_eq <- paste0(latent_var_eq, " + (", pars[pars_count], ") ", cov[i])
+      par2 <- (num_cats - 1) * 2
+      for (j in 1:par2) {
+        df_counter <- df_counter + 1
+        if (par[df_counter, ]$coef == 0) {
+          restrictions <- paste0(restrictions, "\t", pars[pars_count], "[1,", j, "] = ", par[df_counter, ]$coef, ";\n")
+        } else {
+          restrictions <- paste0(restrictions, "\t", pars[pars_count], "[1,", j, "] ~= ", par[df_counter, ]$coef, ";\n")
+        }
+      }
+    }
+  }
+  
+  # Adjust equations depending on the number of indicators
+  if (ind == 2) {
+    dep_ind <- "\tdependent Y1 nominal, Y2 nominal;"
+    dep_ind_eq2 <- "\n\tY2 <- (kk) 1 | Cluster;"
+  } else if (ind == 3) {
+    dep_ind <- "\tdependent Y1 nominal, Y2 nominal, Y3 nominal;"
+    dep_ind_eq2 <- "\n\tY2 <- (kk) 1 | Cluster;\n\tY3 <- (ll) 1 | Cluster;"
+  } else if (ind == 4) {
+    dep_ind <- "\tdependent Y1 nominal, Y2 nominal, Y3 nominal, Y4 nominal;"
+    dep_ind_eq2 <- "\n\tY2 <- (kk) 1 | Cluster;\n\tY3 <- (ll) 1 | Cluster;\n\tY4 <- (mm) 1 | Cluster;"
+  }
+  
+  # Continue specifying start values
+  all_indicators <- c("Y1", "Y2", "Y3", "Y4")
+  indicators_parname <- c("jj", "kk", "ll", "mm")
+  for (i in 1:ind) {
+    df_counter <- grep(all_indicators[i], par$term1)[1]
+    restrictions <- paste0(restrictions, "\t", indicators_parname[i], "[1,1] ~= ", par[df_counter, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\t", indicators_parname[i], "[1,2] ~= ", par[df_counter + 1, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\t", indicators_parname[i], "[2,1] ~= ", par[df_counter + 2, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\t", indicators_parname[i], "[2,2] ~= ", par[df_counter + 3, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\t", indicators_parname[i], "[3,1] ~= ", par[df_counter + 4, ]$coef, ";\n")
+    restrictions <- paste0(restrictions, "\t", indicators_parname[i], "[3,2] ~= ", par[df_counter + 5, ]$coef, ";\n")
+  }
+  
+  latent_var_eq <- paste0(latent_var_eq, ";")
+  dep_ind_eq1 <- paste0(dep_ind_eq1, ";")
+  
+  # Combine all parts of the script
+  script <- paste0(script_part1, model_name, script_part2, script_part3, dep_ind, dep_cov,
+                   latent_var, latent_var_eq, dep_ind_eq1, dep_ind_eq2, restrictions, restrictions2, "\nend model")
+  return(script)
+}
 
 ##################################################################################################
 ## Perform LC analysis                                                                          ##
