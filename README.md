@@ -5,7 +5,7 @@ Employment Register (ER) and the Labour Force Survey (LFS) using LC, LCT and tre
 
 In this README.md file, instructions are provided to reproduce the results of the two simulation studies (see Chapters 4-5) and the analyses of the real data (see Chapter 6). Note that the real data from the ER and the LFS is not publicly available.
 
-General remark: The sample size is referred to as _n_ throughout the thesis, but as _N_ throughout the code. Similarly, the covariates _Z<sub>1</sub>_, _Z<sub>2</sub>_ and _Q_ in the thesis are referred to as _baanduur_, _SBIgroep_ and _q_ throughout the code.
+General remark: The sample size is referred to as _n_ throughout the thesis, but as _N_ throughout the code. Similarly, the covariates _Z<sub>1</sub>_, _Z<sub>2</sub>_, and _Q_ in the thesis are referred to as _baanduur_, _SBIgroep_, and _q_ throughout the code.
 
 # Software requirements
 For this project, the following software was used:
