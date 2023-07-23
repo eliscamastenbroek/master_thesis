@@ -9,9 +9,11 @@ General remark: The sample size is referred to as _n_ throughout the thesis, but
 
 # Software requirements
 For this project, the following software was used:
-- RStudio 2022.02.01
-- R version 4.1.3
-- Latent GOLD 6.0
+| **Software** | **Version** |
+|--------------|-------------|
+| RStudio      | 2022.02.01  |
+| R            | 4.1.3       |
+| Latent GOLD  | 6.0         |
 
 To perform the analyses and plot the results, the following R packages were used:
 - data.table 1.14.8
