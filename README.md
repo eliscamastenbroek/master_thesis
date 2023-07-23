@@ -35,24 +35,6 @@ To perform the analyses and plot the results, the following R packages are requi
 4. Change the argument _folder = ""_ in lines 213, 218, and 223 to where you would like to store the model results. Make sure to end the folder name with a "/".
 5. Execute the rest of the code. Note that this takes approximately 5 days.
 
-### Estimating individual models:
-The functions _perform_lc_, _perform_lct_ and _perform_treeMILC_ in the files above can also be used to estimate individual models. This requires that the functions in the files as mentioned in step 1 above are loaded into R. For example, the following lines can be used to estimate LC, LCT and tree-MILC models with two indicators and the (non-missing) covariate "q" using a data set of n=1,000 with 10% ME that is generated with the seed 1:
-
-#### LC
-```{r}
-perform_lc(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here/")
-```
-
-#### LCT
-```{r}
-perform_lct(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here/")
-```
-
-#### tree-MILC
-```{r}
-perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here/")
-```
-
 ### Instructions to plot the results (except for the heatmaps):
 1. Follow either step 1a **or** 1b:
    
@@ -117,3 +99,23 @@ Note that the data from the ER and the LFS is not publicly available.
 1. (If not already loaded): Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Real_Data.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/[Helpfunctions_Real_Data.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
 2. (If the models in the file '[Perform_Real_Data_Analyses.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Real_Data_Analyses.R)' were not created): Load the content of the file 'Real_Data_Analyses.RData' in R. Note that this file is not publicly available.
 3. Run the code in the file '[Plot_Real_Data_Analyses.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Real_Data_Analyses.R)' to obtain the results and to create the desired plots.
+
+# 5. Instructions to estimate individual models:
+The functions _perform_lc_, _perform_lct_ and _perform_treeMILC_ in the files above can also be used to estimate individual models. This requires that the functions in the files as mentioned in step 1 above are loaded into R. For example, the following lines can be used to estimate LC, LCT and tree-MILC models with two indicators and the (non-missing) covariate "q" using a data set of n=1,000 with 10% ME that is generated with the seed 1:
+
+#### LC
+```{r}
+perform_lc(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here/")
+```
+
+#### LCT
+```{r}
+perform_lct(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here/")
+```
+
+#### tree-MILC
+```{r}
+perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here/")
+```
+
+
