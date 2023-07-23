@@ -48,13 +48,13 @@ perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1
    
    a. Run the code in the file '[Prepare_Simulation_Results_for_Plotting.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Prepare_Simulation_Results_for_Plotting.R)' to prepare the data for plotting. Note that this part requires that the simulation in the file '[Perform_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_1.R)' has been executed.
    
-   b. Load the contents of the file '[Simulation1_Reduced.RData](https://github.com/eliscamastenbroek/master_thesis/blob/main/RData/Simulation1_Reduced.RData)' into R.
+   b. Load the contents of the file '[Simulation_1_Reduced.RData](https://github.com/eliscamastenbroek/master_thesis/blob/main/RData/Simulation_1_Reduced.RData)' into R.
 3. Run the code in the file '[Plot_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1.R)' to create the desired plots.
 
 ### Instructions to plot the heatmaps:
 1. (If not already loaded): Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
-2. (If the simulation in the file '[Perform_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_1.R)' has not been executed): Load the content of the file 'Simulation1_Complete.RData' in R. Note that this file is not available on GitHub due to storage limits.
-3. Specify a working directory in line X to store the plots in.
+2. (If the simulation in the file '[Perform_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_1.R)' has not been executed): Load the content of the file 'Simulation_1_Complete.RData' in R. Note that this file only available in the folder 'Stage_Elisca ' at CBS and not on GitHub due to storage limits.
+3. Specify a working directory in line 33 to store the plots in.
 4. Run the code in the file '[Plot_Simulation_1_Heatmaps.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1_Heatmaps.R)' to create the desired plots.
 
 # 2. Instructions to reproduce Simulation study 2 using the best approach (Chapter 5)
@@ -71,7 +71,7 @@ perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1
 
    a. Run the code in the file '[Prepare_Simulation_Results_for_Plotting.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Prepare_Simulation_Results_for_Plotting.R)' to prepare the data for plotting. Note that this part requires that the simulation in the file '[Perform_Simulation_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_2.R)' has been executed.
 
-   b. Load the contents of the file '[Simulation2_Reduced.RData](https://github.com/eliscamastenbroek/master_thesis/blob/main/RData/Simulation2_Reduced.RData)' into R.
+   b. Load the contents of the file '[Simulation_2_Reduced.RData](https://github.com/eliscamastenbroek/master_thesis/blob/main/RData/Simulation_2_Reduced.RData)' into R.
 2. Run the code in the file '[Plot_Simulation_2_Best_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_2_Best_Approach.R)' to create the desired plots.
 
 ### Instructions to plot the heatmaps:
