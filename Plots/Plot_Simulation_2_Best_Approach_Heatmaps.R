@@ -7,17 +7,19 @@
 ##      the mean summed bias                                                                    ##
 ##    - plot_ME (data.frame): Data frame with results to plot the expected value of the MEPEs   ##
 ##    - plot_rmse_ME (data.frame): Data frame with results to plot the RMSE of the MEPEs        ##
-##                                                                                              ##
-## These objects can be obtained by either:                                                     ##
-##    1) Performing the simulation study in the file 'Perform_Simulation2.R' and preparing the  ##
-##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
-##    2) Loading the RData in the file 'Simulation2_Reduced.RData'.                             ##
-##                                                                                              ##
-## Note that to create the heatmaps, the following objects are required in addition:            ##
 ##    - LC_models (list): List containing the (detailed) model results for LC analysis          ##
 ##    - LCT_models (list): List containing the (detailed) model results for LCT analysis        ##
 ##    - treeMILC_models (list): List containing the (detailed) model results for tree-MILC      ## 
-## --- toevoegen van RData ---                                                                  ##
+##                                                                                              ##
+## These objects can be obtained by either:                                                     ##
+##    1) Performing the simulation study in the file 'Perform_Simulation_2.R' and preparing the ##
+##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
+##    2) Loading the RData in the file 'Simulation_2_Complete.RData'. Note that due to          ##
+##       storage limits in GitHub, this file is only available in the folder 'Stage_Elisca'     ##
+##       at CBS.                                                                                ##
+##                                                                                              ##
+## Finally, to create the heatmaps, a working directory should be specified in line 33. The     ##
+## plots will be saved in this directory.                                                       ##
 ##################################################################################################
 
 # Load packages
