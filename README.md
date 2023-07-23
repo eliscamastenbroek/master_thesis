@@ -26,7 +26,7 @@ To perform the analyses and plot the results, the following R packages are requi
 | scales       | 1.2.1       |
 | tidyverse    | 2.0.0       |
 
-# 1. Instructions to reproduce and/or plot Simulation study 1 (Chapter 4)
+# 1. Instructions to reproduce and plot the results of Simulation study 1 (Chapter 4)
 
 ### Instructions to reproduce the simulation study:
 1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Methods_Best_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Best_Approach.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
@@ -62,7 +62,7 @@ perform_treeMILC(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1
 3. Specify a working directory in line 36 to store the plots in.
 4. Run the code in the file '[Plot_Simulation_1_Heatmaps.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_1_Heatmaps.R)' to create the desired plots.
 
-# 2. Instructions to reproduce Simulation study 2 using the best approach (Chapter 5)
+# 2. Instructions to reproduce and plot the result of Simulation study 2 using the best approach (Chapter 5)
 
 ### Instructions to reproduce the simulation study:
 1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Methods_Best_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Best_Approach.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
