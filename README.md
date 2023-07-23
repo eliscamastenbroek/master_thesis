@@ -37,10 +37,15 @@ To perform the analyses and plot the results, the following R packages are requi
 
 ### Estimating individual models:
 The functions _perform_lc_, _perform_lct_ and _perform_treeMILC_ in the files above can also be used to estimate individual models. For example, the following lines can be used to estimate LC, LCT and tree-MILC models with two indicators and the (non-missing) covariate "q" using a data set of n=1,000 with 10% ME that is generated with the seed 1:
+
+#### LC
 ```{r}
 #LC
 perform_lc(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here/")
+```
 
+#### LCT
+```{r}
 #LCT
 perform_lct(iteration = 1, ind = 2, cov_ok = "q", cov_problem = NULL, N = 1000, ME = 1, folder="your_folder_here/")
 
