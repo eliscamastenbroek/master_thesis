@@ -61,12 +61,11 @@ for (j in c(1000, 10000)) {
       # Plot bias for models with a realistic 7% ME
       heatmap <- get_ME_heatmap_realistic(LC_models, LCT_models, treeMILC_models, LC_results, 1, k, cov_ok, NULL, j)
       filename <- paste0(name, "_Bias_7.pdf")
-      ggsave(plot = heatmap, width = 3.9, height = 3, dpi = 300, filename = filename)
+      ggsave(plot = heatmap, width = 3.4, height = 3, dpi = 300, filename = filename)
 
       # Plot variance for models with a realistic 7% ME
       heatmap <- get_ME_heatmap_realistic(LC_models, LCT_models, treeMILC_models, LC_results, 1, k, cov_ok, NULL, j)
       filename <- paste0(name, "_Variance_7.pdf")
-      ggsave(plot = heatmap, width = 3.9, height = 3, dpi = 300, filename = filename)
-
+      ggsave(plot = heatmap, width = 3.4, height = 3, dpi = 300, filename = filename)
     }  
 }
