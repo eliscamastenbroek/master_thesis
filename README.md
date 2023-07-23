@@ -8,21 +8,23 @@ In this README.md file, instructions are provided to reproduce the results of th
 General remark: The sample size is referred to as _n_ throughout the thesis, but as _N_ throughout the code. Similarly, the covariates _Z<sub>1</sub>_, _Z<sub>2</sub>_, and _Q_ in the thesis are referred to as _baanduur_, _SBIgroep_, and _q_ throughout the code.
 
 # Software requirements
-For this project, the following software was used:
+For this project, the following software is required:
 | **Software** | **Version** |
 |--------------|-------------|
 | RStudio      | 2022.02.01  |
 | R            | 4.1.3       |
 | Latent GOLD  | 6.0         |
 
-To perform the analyses and plot the results, the following R packages were used:
-- data.table 1.14.8
-- dplyr 1.1.2
-- ggplot2 3.4.2
-- reshape2 1.4.4
-- RColorBrewer 1.1-3
-- scales 1.2.1
-- tidyverse 2.0.0
+To perform the analyses and plot the results, the following R packages are required:
+| **Package**  | **Version** |
+|--------------|-------------|
+| data.table   | 1.14.8      |
+| dplyr        | 1.1.2       |
+| ggplot2      | 3.4.2       |
+| reshape2     | 1.4.4       |
+| RColorBrewer | 1.1-3       |
+| scales       | 1.2.1       |
+| tidyverse    | 2.0.0       |
 
 # 1. Instructions to reproduce and/or plot Simulation study 1 (Chapter 4)
 
