@@ -13,14 +13,12 @@
 ##    - LCT_models (list): List containing the (detailed) model results for LCT analysis        ##
 ##    - treeMILC_models (list): List containing the (detailed) model results for tree-MILC      ## 
 ##                                                                                              ##
-## These objects can be obtained by either:                                                     ##
-##    1) Performing the simulation study in the file 'Perform_Simulation_1.R' and preparing the ##
-##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
-##    2) Loading the RData in the file 'Simulation1_Complete.RData'.                            ##
-## -- toevoegen van RData --                                                                    ##
+## Note that the latter three objects can only be obtained by performing the simulation study   ##
+## in the file 'Perform_Simulation_1.R' and preparing the data for plotting using the file      ##
+## 'Prepare_Simulation_Results_for_Plotting.R'.                                                 ##
 ##                                                                                              ##
-## Finally, to create the heatmaps, a working directory should be specified in line X.          ##
-## The plots will be saved in this directory.                                                   ##
+## Finally, to create the heatmaps, a working directory should be specified in line 30. The     ##
+## plots will be saved in this directory.                                                       ##
 ##################################################################################################
 
 # Load packages
