@@ -35,6 +35,7 @@ To perform the analyses and plot the results, the following R packages are requi
 4. Change the argument _folder = ""_ in lines 213, 218, and 223 to where you would like to store the model results. Make sure to end the folder name with a "/".
 5. Execute the rest of the code. Note that this takes approximately 5 days.
 
+### Estimating individual models:
 The functions _perform_lc_, _perform_lct_ and _perform_treeMILC_ in the files above can also be used to estimate individual models. For example, the following lines can be used to estimate LC, LCT and tree-MILC models with two indicators and the (non-missing) covariate "q" using a data set of n=1,000 with 10% ME that is generated with the seed 1:
 ```{r}
 #LC
