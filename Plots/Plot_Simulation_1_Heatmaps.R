@@ -20,7 +20,7 @@
 ##       storage limits in GitHub, this file is only available in the folder 'Stage_Elisca'     ##
 ##       at CBS.                                                                                ##
 ##                                                                                              ##
-## Finally, to create the heatmaps, a working directory should be specified in line 34. The     ##
+## Finally, to create the heatmaps, a working directory should be specified in line 35. The     ##
 ## plots will be saved in this directory.                                                       ##
 ##################################################################################################
 
@@ -30,7 +30,8 @@ library(RColorBrewer)
 library(scales)
 library(dplyr)
 library(tidyverse)
-
+library(reshape2)
+    
 setwd("your_working_directory_here")
 
 ind <- 2:4
