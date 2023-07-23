@@ -130,8 +130,8 @@ plot_df[plot_df$type!="tree-MILC" & plot_df$N==1000,] %>% ggplot(aes(x=indicator
 ##################################################################################################
 
 plot_df %>% ggplot(aes(x=indicator, y=diag, fill=type)) +
-  geom_bar(stat='identity', position='dodge') +
-  scale_fill_manual(name="", values=colours) +
-  labs(y= "Mean summed bias", x = "Number of indicators") +
-  facet_wrap(~ ME, ncol=5, labeller=label_value) +
-  theme(legend.position="top")
+    geom_bar(stat='identity', position='dodge') +
+    scale_fill_manual(name="", values=colours) +
+    labs(y= "Mean summed bias", x = "Number of indicators") +
+    facet_grid(N ~ ME, labeller=label_both) +
+    theme(legend.position="top")
