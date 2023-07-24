@@ -53,25 +53,25 @@ To perform the analyses and plot the results, the following R packages are requi
 # 2. Instructions to reproduce and plot the result of Simulation study 2 using the best approach (Chapter 5)
 
 ### Instructions to reproduce the simulation study:
-1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Methods_Best_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Best_Approach.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
-2. Open the file '[Perform_Simulation_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_2.R)'.
+1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', '[Methods_Simulation_Studies.R]([https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Simulation_Studies.R])',  '[Simulate_Data_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Simulate_Data_1.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
+2. Open the file '[Perform_Simulation_Study_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_Study_2.R)'.
 3. Change the working directory in line 32.
-4. Change the argument _folder = ""_ in lines 236, 240, 244 to where you would like to store the model results. Make sure to end the folder name with a "/".
+4. Change the argument _folder = ""_ in lines 83, 87, and 91 to where you would like to store the model results. Make sure to end the folder name with a "/".
 5. Execute the rest of the code. Note that this takes approximately 5 days.
 
 ### Instructions to plot the results (except for the heatmaps):
 1. Follow either step 1a **or** 1b:
 
-   a. Run the code in the file '[Prepare_Simulation_Results_for_Plotting.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Prepare_Simulation_Results_for_Plotting.R)' to prepare the data for plotting. Note that this part requires that the simulation in the file '[Perform_Simulation_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_2.R)' has been executed.
+   a. Run the code in the file '[Prepare_Simulation_Results_for_Plotting.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Prepare_Simulation_Results_for_Plotting.R)' to prepare the data for plotting. Note that this part requires that the simulation in the file '[Perform_Simulation_Study_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_Study_2.R)' has been executed.
 
    b. Load the contents of the file '[Simulation_2_Reduced.RData](https://github.com/eliscamastenbroek/master_thesis/blob/main/RData/Simulation_2_Reduced.RData)' into R.
-2. Run the code in the file '[Plot_Simulation_2_Best_Approach.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_2_Best_Approach.R)' to create the desired plots.
+2. Run the code in the file '[Plot_Simulation_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_2.R)' to create the desired plots.
 
 ### Instructions to plot the heatmaps:
 1. (If not already loaded): Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
-2. (If the simulation in the file '[Perform_Simulation_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_2.R)' has not been executed): Load the content of the file 'Simulation2_Complete.RData' in R. Note that this file only available in the folder 'Stage_Elisca ' at CBS due to storage limits on GitHub.
-3. Specify a working directory in line 36 to store the plots in.
-4. Run the code in the file '[Plot_Simulation_2_Best_Approach_Heatmaps.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_2_Best_Approach_Heatmaps.R)' to create the desired plots.
+2. (If the simulation in the file '[Perform_Simulation_Study_2.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_Study_2.R)' has not been executed): Load the content of the file 'Simulation_2_Complete.RData' in R. Note that this file only available in the folder 'Stage_Elisca ' at CBS due to storage limits on GitHub.
+3. Specify a working directory in line 37 to store the plots in.
+4. Run the code in the file '[Plot_Simulation_2_Heatmaps.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Plots/Plot_Simulation_2_Heatmaps.R)' to create the desired plots.
 
 # 3. Instructions to reproduce Simulation study 2 using the less optimal approach (Section 5.1.1)
 
