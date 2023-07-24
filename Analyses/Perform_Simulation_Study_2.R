@@ -1,29 +1,29 @@
-##################################################################################################
-## This file contains the code that is required to perform the simulation study without missing ##
-## covariates as described in Chapter 5. The file is divided into three parts:                  ##
-##   1. Functions 'simulate_data' and 'create_subset' to simulate data.                         ##
-##   2. Perform the simulation study.                                                           ##
-##   3. Get the results of the simulation study.                                                ## 
+#################################### Perform_Simulation_Study_2.R ################################
+## This file contains the code that is required to perform the simulation study with missing    ##
+## covariates as described in Chapter 5. In the first part, the simulation study is performed.  ##
+## In the second part, the results of the simulation study are obtained.                        ##
 ##                                                                                              ##
-## Note that depending on whether the functions from the file 'Methods_LessOptimalApproach.R'   ##
-## or the file 'Methods_BestApproach.R' are loaded, missing covariates are included using       ##
-## either the less optimal approach (see Section 5.1.1) or the best approach                    ##
-## (see Section 5.1.2) with direct effects and parameter restrictions.                          ##
+## Note that depending on whether the functions from the file                                   ##
+## 'Methods_Initial_Analysis_Approach_2.R' or the file 'Methods_Simulation_Studies.R' are       ##
+## loaded, missing covariates are included using either the second approach (see Section 5.1.2) ##
+## or the third (and best) approach (see Section 5.1.3).                                        ##
 ##                                                                                              ##
 ## To run the code:                                                                             ##
 ##    - In line 32, a working directory should be set.                                          ##
 ##    - In lines 236, 240, 244, the argument 'folder' should be specified.                      ##
 ##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R',    ##
-##      'Helpfunctions_Performance_Measures_and_Plots.R' should be loaded.                      ##
+##      'Helpfunctions_Performance_Measures_and_Plots.R', and 'Simulate_Data_1.R' should be     ##
+##      loaded.                                                                                 ##
 ##    - The functions in the file 'Methods_LessOptimalApproach.R' OR 'Methods_BestApproach.R'   ##
 ##      should be loaded.                                                                       ##
-##    - The files 'exampleDat_1000.dat' and 'exampleDat_10000.dat' should be in the             ##
+##    - The files 'exampleDat_1000.dat' and 'exampleDat_10000.dat' are required to be in the    ##
 ##      working directory.                                                                      ##
 ##################################################################################################
 
 # Initialisations
 library(dplyr)
 library(data.table)
+library(stringr)
 
 # Ignore redundant warnings from dplyr
 options(dplyr.summarise.inform = FALSE)  
@@ -114,7 +114,7 @@ for(l in iteration){
 }
 
 ##################################################################################################
-## 3. Get results of the simulation study                                                       ##
+## Get results of the simulation study                                                          ##
 ##################################################################################################
 
 ## True proportions in simulated data
