@@ -4,24 +4,6 @@
 ##                                                                                              ##
 ## Note that the code in this file requires that the code in the file                           ##
 ## 'Perform_Simulation_Study_1.R' or 'Perform_Simulation_Study_2.R' has been executed.          ##
-##                                                                                              ##
-## In other words, the code assumes that the following objects are in the global environment:   ##
-##    - all_results (data.frame): Data frame containing the results of the simulation study     ##
-##    - true_proportions (numeric): Vector containing the true proportions                      ##
-##    - ME_matrix1 (matrix): Matrix with the true ME probabilities for 10% ME                   ##
-##    - ME_matrix2 (matrix): Matrix with the true ME probabilities for 20% ME                   ##
-##    - ME_matrix3 (matrix): Matrix with the true ME probabilities for 30% ME                   ##
-##    - ME_matrix4 (matrix): Matrix with the true ME probabilities for a realistic 7% ME        ##
-##    - LC_models (list): List containing the (detailed) model results for LC analysis          ##
-##    - LCT_models (list): List containing the (detailed) model results for LCT analysis        ##
-##    - treeMILC_models (list): List containing the (detailed) model results for tree-MILC      ## 
-##    - LC_results (data.frame): Data frame containing the model results for LC analysis        ##
-##    - LCT_results (data.frame): Data frame containing the model results for LC analysis       ##
-##    - treeMILC_results (data.frame): Data frame containing the model results for treeMILC     ##
-##    - LC_summary (data.frame): Data frame containing the model results for LC analysis        ##
-##    - LCT_summary (data.frame): Data frame containing the model results for LC analysis       ##
-##    - treeMILC_summary (data.frame): Data frame containing the model results for treeMILC     ##
-##    - get_rmse_ME (function): Function that computes the RMSE of the ME probabilities         ##
 ##################################################################################################
 
 # Load packages
