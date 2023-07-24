@@ -8,7 +8,7 @@
 ##    - In lines 68, 73, 78, the argument 'folder' should be specified.                         ##
 ##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R',    ##
 ##      'Helpfunctions_Performance_Measures_and_Plots.R', 'Methods_BestApproach.R', and         ##
-##      'Simulate_Data_1.R ' should be loaded.                                                  ##
+##      'Simulate_Data_1.R' should be loaded.                                                   ##
 ##################################################################################################
 
 # Load packages
