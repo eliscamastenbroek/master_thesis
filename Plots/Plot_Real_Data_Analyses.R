@@ -1,7 +1,6 @@
 ################################### Plot_Real_Data_Analyses.R ##################################### 
-## This file obtains the results of the real data analyses and plots the results (see Section    ##
-## 6.3-6.4).                                                                                     ##
-##                                                                                              ##
+## This file obtains the results of the real data analyses in Chapter 6 and plots the results.   ## 
+##                                                                                               ##
 ## Note that to run the code, the models in the file 'Perform_Real_Data_Analyses.R' should have  ##
 ## been created. Alternatively, the file 'Real_Data_Analyses.RData' can be loaded.               ##         
 ##                                                                                               ##
