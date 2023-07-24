@@ -1,9 +1,9 @@
 ######################## Prepare_Simulation_Results_for_Plotting.R ############################### 
 ## This file contains the code that is required to prepare the results of both simulation       ##
-## studies in Chapters 4-5 for plotting.                                                        ##
+## studies (and the initial analyses) in Chapters 4-5 for plotting.                             ##
 ##                                                                                              ##
-## Note that the code in this file requires that the code in the file 'Perform_Simulation_1.R'  ##
-## or 'Perform_Simulation_2.R' has been executed.                                               ##
+## Note that the code in this file requires that the code in the file                           ##
+## 'Perform_Simulation_Study_1.R' or 'Perform_Simulation_Study_2.R' has been executed.          ##
 ##                                                                                              ##
 ## In other words, the code assumes that the following objects are in the global environment:   ##
 ##    - all_results (data.frame): Data frame containing the results of the simulation study     ##
