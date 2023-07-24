@@ -1,8 +1,8 @@
-################################## Methods_Best_Approach.R #######################################
+############################ Methods_Simulation_Approach_3.R #####################################
 ## This file contains the functions required to perform LC, LCT and tree-MILC analysis in       ##
-## Chapter 4 and in Chapter 5 using the third approach to include missing covariates (see       ##
-## Section 5.1.3). The current file contains the following functions:                           ##
-##    - generate_script                                                                         ##
+## Chapter 4 and in Chapter 5 using the third (and best) approach to include missing covariates ##
+## see Section 5.1.3). The current file contains the following functions:                       ##
+##    - generate_script                                                                          ##
 ##    - generate_script_treeMILC_extra                                                          ##
 ##    - perform_lc                                                                              ##
 ##    - perform_lct                                                                             ##
@@ -10,7 +10,7 @@
 ##################################################################################################
 
 ##################################################################################################
-## Generate a Latent Gold script for to estimate an LC model. This function can be used to      ##  
+## Generate a Latent Gold script to estimate an LC model. This function can be used to          ##  
 ## estimate regular LC models, as well as LC models in LCT and tree-MILC analysis.              ##                         
 ## @param type (string): What type of model (e.g. "LC" for regular LC and "LCT" for LCT step 2) ## 
 ## @param ind (int): Number of indicators                                                       ##
