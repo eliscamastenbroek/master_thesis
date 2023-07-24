@@ -1,6 +1,6 @@
-############################# Plot_Simulation_2_Approach_3_Heatmaps.R #############################
+################################## Plot_Simulation_Heatmaps.R ###################################
 ## This file contains the code that is required to create the heatmaps for the simulation study ##
-## in Chapter 4.                                                                                ##
+## in Chapter 5.                                                                                ##
 ##                                                                                              ##
 ## Note that to create the heatmaps, the functions in the files 'Helpfunctions_General.R',      ##
 ## 'Helpfunctions_Simulations.R' and 'Helpfunctions_Performance_Measures_and_Plots.R' are       ## 
