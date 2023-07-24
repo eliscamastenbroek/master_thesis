@@ -31,7 +31,7 @@ To perform the analyses and plot the results, the following R packages are requi
 
 ### Instructions to reproduce the simulation study:
 1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', '[Methods_Simulation_Studies.R]([https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Simulation_Studies.R])',  '[Simulate_Data_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Simulate_Data_1.R)' '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
-2. Open the file '[Perform_Simulation_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_1.R)'.
+2. Open the file '[Perform_Simulation_Study_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Analyses/Perform_Simulation_Study_1.R)'.
 3. Change the working directory in line 23.
 4. Change the argument _folder = ""_ in lines 67, 72, and 77 to where you would like to store the model results. Make sure to end the folder name with a "/".
 5. Execute the rest of the code. Note that this takes approximately 5 days.
