@@ -6,7 +6,7 @@
 ##                                                                                               ##
 ## In addition, to create the heatmaps, the functions in the files                               ##
 ## 'Helpfunctions_General.R', 'Helpfunctions_Real_Data.R' and                                    ##
-## 'Helpfunctions_Performance_Measures_and_Plots.R' should be loaded.                            ## 
+## 'Helpfunctions_Performance_Measures_and_Plots.R' are required.                                ## 
 ###################################################################################################
 
 library(ggplot2)
