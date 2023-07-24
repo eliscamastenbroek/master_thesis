@@ -7,8 +7,8 @@
 ##    - Specify a working directory in line 23.                                                 ##
 ##    - Specify the argument 'folder' in lines 67, 72, 77.                                      ##
 ##    - Make sure the functions in the files 'Helpfunctions_General.R',                         ##
-##      'Helpfunctions_Simulations.R',, 'Helpfunctions_Performance_Measures_and_Plots.R',       ##
-##      'Methods_BestApproach.R', and 'Simulate_Data_1.R' are loaded.                           ##
+##      'Helpfunctions_Simulations.R', 'Helpfunctions_Performance_Measures_and_Plots.R',        ##
+##      'Methods_Simulation_Studies.R', and 'Simulate_Data_1.R' are loaded.                     ##
 ##################################################################################################
 
 # Load packages
