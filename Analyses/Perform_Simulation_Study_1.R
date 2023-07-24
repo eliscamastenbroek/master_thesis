@@ -4,11 +4,11 @@
 ## In the second part, the results of the simulation study are obtained.                        ##
 ##                                                                                              ##
 ## To run the code:                                                                             ##
-##    - In line 24, a working directory should be specified.                                    ##
-##    - In lines 68, 73, 78, the argument 'folder' should be specified.                         ##
-##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R',    ##
-##      'Helpfunctions_Performance_Measures_and_Plots.R', 'Methods_BestApproach.R', and         ##
-##      'Simulate_Data_1.R' should be loaded.                                                   ##
+##    - Specify a working directory in line 23.                                                 ##
+##    - Specify the argument 'folder' in lines 67, 72, 77.                                      ##
+##    - Make sure the functions in the files 'Helpfunctions_General.R',                         ##
+##      'Helpfunctions_Simulations.R',, 'Helpfunctions_Performance_Measures_and_Plots.R',       ##
+##      'Methods_BestApproach.R', and 'Simulate_Data_1.R' are loaded.                           ##
 ##################################################################################################
 
 # Load packages
