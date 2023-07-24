@@ -9,9 +9,10 @@
 ##    - plot_rmse_ME (data.frame): Data frame with results to plot the RMSE of the MEPEs        ##
 ##                                                                                              ##
 ## These objects can be obtained by either:                                                     ##
-##    1) Performing the simulation study in the file 'Perform_Simulation_1.R' and preparing the ##
-##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
-##    2) Loading the RData in the file 'Simulation1_Reduced.RData'.                             ##
+##    1) Performing the simulation study in the file 'Perform_Simulation_Study_1.R' and         ##
+##       preparing the data for plotting using the file                                         ##
+##       'Prepare_Simulation_Results_for_Plotting.R', or:                                       ##
+##    2) Loading the RData in the file 'Simulation_1_Reduced.RData'.                            ##
 ##################################################################################################
 
 # Load packages
