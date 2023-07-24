@@ -1,4 +1,4 @@
-############################# Helpfunctions_Simulations.R ######################################## 
+##################################################################################################
 ## This file contains a number of (help) functions that are required to perform the             ##
 ## simulation study without missing covariates (see Chapter 4) and with missing covariates (see ##
 ## Chapter 5). This file contains the following functions:                                      ##                                                                              ##
