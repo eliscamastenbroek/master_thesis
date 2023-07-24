@@ -109,6 +109,67 @@ generate_script <- function(type, ind, cov_ok, cov_problem, N, model_name, filep
 }
 
 ##################################################################################################
+## Perform LC analysis                                                                          ##
+## @param iteration (int): Iteration number                                                     ## 
+## @param ind (int): Number of indicators                                                       ## 
+## @param cov_ok (vector): Vector with the names of non-missing covariates                      ##
+## @param cov_problem (vector): Vector with the names of missing covariates                     ##
+## @param N (int): Size of data set                                                             ## 
+## @param ME (int): Amount of measurement error (1=10%, 2=20%, 3=30%, 4=realistic)              ##
+## @param folder (string): Folder to save files in                                              ##
+## @returns (list): A list that consists of:                                                    ## 
+##  [[1]] Data frame with an overview of model parameters (iteration, ind, cov, N, ME)          ##
+##  [[2]] Data frame with model results (posterior probabilities for each observation)          ##
+##  [[3]] Character indicating whether the model is "Good" or whether there was an "Error"     ## 
+##################################################################################################
+
+perform_lc <- function(iteration, ind, cov_ok, cov_problem, N, ME, dat = NULL, folder) {
+    
+    # Store model information
+    to_return <- store_model_info(iteration, ind, cov_ok, cov_problem, N, ME)
+    model_name <- to_return[[1]]$id
+    
+    # Write data set to file
+    if (is.null(dat)) {
+        dat <- create_subset(iteration, ind, cov_ok, cov_problem, N, ME)
+    } else {
+        dat <- dat
+    }
+    
+    filepath_input <- paste0(folder, "LC_", model_name, "_data.dat")
+    fwrite(dat, file = filepath_input, sep = "\t")
+    
+    # Create Latent Gold script for LC
+    filepath_output <- paste0(folder, paste0("LC_", model_name, "_output.dat"))
+    script <- generate_script("LC", ind, cov_ok, cov_problem, N, dat = dat, model_name, filepath_input, filepath_output)
+    script_path <- paste0(folder, "LC_", model_name, "_script.lgs")
+    writeLines(script, script_path)
+    
+    # Execute Latent Gold script
+    shell(paste0('"C:/Program Files/LatentGOLDnet6.0/lg60.exe" ', script_path, ' /b'))
+    
+    # Read model output
+    model_output <- as.data.frame(fread(filepath_output, dec = ","))
+    
+    # Rename some columns and add data frame to return list
+    setnames(model_output, old = c("Cluster#1", "Cluster#2", "Cluster#3", "Cluster#"), new = c("p1", "p2", "p3", "cluster"))
+    to_return <- append(to_return, list(model_output))
+    
+    # Make sure clusters are assigned the right names
+    to_return <- fix_cluster_assignment(type = "LC", results = to_return)
+    
+    # Check if no warning was given
+    model_lst <- paste(readLines(paste0(folder, "LC_", model_name, "_script.lst")), collapse = "\n")
+    if (grepl("WARNING", model_lst, fixed = TRUE, useBytes = TRUE)) {
+        to_return <- append(to_return, list("Error"))
+    } else {
+        to_return <- append(to_return, list("Good"))
+    }
+    
+    return(to_return)
+}
+
+##################################################################################################
 ## Perform LCT analysis                                                                         ##
 ## @param iteration (int): Iteration number                                                     ## 
 ## @param ind (int): Number of indicators                                                       ## 
