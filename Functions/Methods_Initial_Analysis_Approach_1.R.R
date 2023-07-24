@@ -1,7 +1,7 @@
 ############################ Methods_Initial_Analysis_Approach_1.R ###############################
-## This file contains the functions required to perform LCT and tree-MILC analysis using        ##
-## the first approach to include missing covariates in Chapter 5 (see Section 5.1.1). This      ##
-## file contains the following functions:                                                       ##
+## This file contains the functions required to perform the initial analysis in Section 5.1.1.  ##
+## This analysis involves performing LCT and tree-MILC analysis using the first approach to     ## 
+## include missing covariates in Chapter 5. This file contains the following functions:         ##
 ##    - generate_script                                                                         ##
 ##    - perform_lc                                                                              ##
 ##    - perform_lct                                                                             ##
