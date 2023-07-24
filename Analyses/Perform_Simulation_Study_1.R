@@ -1,4 +1,4 @@
-################################ Perform_Simulation_1.R ##########################################
+##################################################################################################
 ## This file contains the code that is required to perform the simulation study without missing ##
 ## covariates as described in Chapter 4. In the first part, the simulation study is performed.  ##
 ## In the second part, the results of the simulation study are obtained.                        ##
