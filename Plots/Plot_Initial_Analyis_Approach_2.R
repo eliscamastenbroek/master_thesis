@@ -1,14 +1,15 @@
-######################## Plot_Simulation_2_Less_Optimal_Approach.R ############################### 
-## This file contains the code that is required to create the plot (except for the heatmaps)    ##
-## for the simulation study in Chapter 5 using the less optimal approach (see Section 5.1.1).   ##
+############################### Plot_Initial_Analyis_Approach_2.R ################################ 
+## This file contains the code that is required to create the plot for the initial analysis     ##
+## using the second approach in Chapter 5 (see Section 5.1.2).                                  ##
 ##                                                                                              ##
 ## To run the code, the following object is required:                                           ##
 ##    - plot_df (data.frame): Data frame with results to plot the PPEs                          ##
 ##                                                                                              ##
 ## This object can be obtained by either:                                                       ##
-##    1) Performing the simulation study in the file 'Perform_Simulation_2.R' and preparing the ##
-##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
-##    2) Loading the RData in the file 'Simulation_2_Less_Optimal_Approach_Reduced.RData'.      ##
+##    1) Performing the initial analysis in the file 'Plot_Initial_Analyis_Approach_2.R' and    ##
+##       preparing the data for plotting using the file                                         ##
+##       'Prepare_Simulation_Results_for_Plotting.R', or:                                       ##
+##    2) Loading the RData in the file 'Plot_Initial_Analyis_Approach_2_Reduced.RData'.         ##
 ##################################################################################################
 
 # Load packages
