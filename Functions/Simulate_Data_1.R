@@ -1,4 +1,4 @@
-##################################################################################################
+##################################### Simulate_Data_1.R ##########################################
 ## This file contains two functions that are required to perform the first simulation study     ##
 ## (see Chapter 4):                                                                             ##
 ##    - simulate_data: Function to simulate a data set                                          ##
