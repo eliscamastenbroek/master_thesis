@@ -1,7 +1,7 @@
-############################# Plot_Simulation_2_Best_Approach.R ################################## 
+################################ Plot_Simulation_2_Approach_3.R ################################## 
 ## This file contains the code that is required to create the plots (except for the heatmaps)   ##
-## for the simulation study in Chapter 5 using the best approach (i.e. with direct effects and  ##
-## parameter restrictions).                                                                     ##
+## for the simulation study in Chapter 5 using the approach with direct effects and             ##
+## parameter restrictions.                                                                      ##
 ##                                                                                              ##
 ## To run the code, the following objects are required:                                         ##
 ##    - plot_df (data.frame): Data frame with results to plot the PPEs, the entropy R2, and     ##
@@ -10,9 +10,10 @@
 ##    - plot_rmse_ME (data.frame): Data frame with results to plot the RMSE of the MEPEs        ##
 ##                                                                                              ##
 ## These objects can be obtained by either:                                                     ##
-##    1) Performing the simulation study in the file 'Perform_Simulation2.R' and preparing the  ##
-##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
-##    2) Loading the RData in the file 'Simulation2_Reduced.RData'.                             ##
+##    1) Performing the simulation study in the file 'Perform_Simulation_Study_2.R' and         ##
+##       preparing the data for plotting using the file                                         ##
+##       'Prepare_Simulation_Results_for_Plotting.R', or:                                       ##
+##    2) Loading the RData in the file 'Simulation_2_Reduced.RData'.                            ##
 ##################################################################################################
 
 # Load packages
