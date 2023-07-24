@@ -9,15 +9,15 @@
 ## or the third (and best) approach (see Section 5.1.3).                                        ##
 ##                                                                                              ##
 ## To run the code:                                                                             ##
-##    - In line 32, a working directory should be set.                                          ##
-##    - In lines 236, 240, 244, the argument 'folder' should be specified.                      ##
-##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R',    ##
-##      'Helpfunctions_Performance_Measures_and_Plots.R', and 'Simulate_Data_2.R' should be     ##
-##      loaded.                                                                                 ##
-##    - The functions in the file 'Methods_LessOptimalApproach.R' OR 'Methods_BestApproach.R'   ##
-##      should be loaded.                                                                       ##
-##    - The files 'exampleDat_1000.dat' and 'exampleDat_10000.dat' are required to be in the    ##
-##      working directory.                                                                      ##
+##    - Set a working directory in line 32.                                                     ##
+##    - Specify the argument 'folder' in lines 83, 87, 91.                                      ##
+##    - Make sure the functions in the files 'Helpfunctions_General.R',                         ##
+##      'Helpfunctions_Simulations.R', 'Helpfunctions_Performance_Measures_and_Plots.R',        ##
+##      and 'Simulate_Data_2.R' are loaded.                                                     ##
+##    - Make sure that the functions in the files 'Methods_Simulation_Studies.R ' OR            ##
+##      'Methods_Initial_Analysis_Approach_2.R'                                                 ##
+##    - Make sure that the files 'exampleDat_1000.dat' and 'exampleDat_10000.dat' are           ##
+##      in the working directory.                                                               ##
 ##################################################################################################
 
 # Initialisations
