@@ -12,7 +12,7 @@
 ##    - In line 32, a working directory should be set.                                          ##
 ##    - In lines 236, 240, 244, the argument 'folder' should be specified.                      ##
 ##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R',    ##
-##      'Helpfunctions_Performance_Measures_and_Plots.R', and 'Simulate_Data_1.R' should be     ##
+##      'Helpfunctions_Performance_Measures_and_Plots.R', and 'Simulate_Data_2.R' should be     ##
 ##      loaded.                                                                                 ##
 ##    - The functions in the file 'Methods_LessOptimalApproach.R' OR 'Methods_BestApproach.R'   ##
 ##      should be loaded.                                                                       ##
