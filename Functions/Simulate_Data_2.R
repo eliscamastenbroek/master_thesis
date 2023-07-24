@@ -1,4 +1,4 @@
-##################################### Simulate_Data_2.R ######$$##################################
+##################################### Simulate_Data_2.R ##########################################
 ## This file contains two functions that are required to perform the second simulation study    ##
 ## (including the initial analyses) (see Chapter 5):                                            ##
 ##    - simulate_data: Function to simulate a data set                                          ##
