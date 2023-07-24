@@ -6,7 +6,7 @@
 ##    - Specify a working directory in line 22.                                                 ##
 ##    - Make sure that the files 'exampleDat_1000.txt' and 'exampleDat_10000.txt' are in        ##
 ##      this working directory.                                                                 ##
-##    - Specify the argument 'folder' in lines 24-5.                                           ##
+##    - Specify the argument 'folder' in lines 24-5.                                            ##
 ##    - Make sure the functions in the files X are loaded.                                      ##
 ##################################################################################################
 
