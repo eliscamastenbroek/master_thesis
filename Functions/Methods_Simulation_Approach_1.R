@@ -1,4 +1,4 @@
-##################################################################################################
+############################ Methods_Simulation_Approach_1.R #####################################
 ## This file contains the functions required to perform LCT and tree-MILC analysis using        ##
 ## the first approach to include missing covariates in Chapter 5 (see Section 5.1.1). This      ##
 ## file contains the following functions:                                                       ##
