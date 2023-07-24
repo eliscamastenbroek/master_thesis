@@ -4,16 +4,17 @@
 ## In the second part, the results of the simulation study are obtained.                        ##
 ##                                                                                              ##
 ## To run the code:                                                                             ##
-##    - In line 22, a working directory should be specified.                                    ##
-##    - In lines 66, 71, 76, the argument 'folder' should be specified.                         ##
+##    - In line 24, a working directory should be specified.                                    ##
+##    - In lines 68, 73, 78, the argument 'folder' should be specified.                         ##
 ##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Simulations.R',    ##
-##      'Helpfunctions_Performance_Measures_and_Plots.R', and 'Methods_BestApproach.R'          ##
-##      should be loaded.                                                                       ##
+##      'Helpfunctions_Performance_Measures_and_Plots.R', 'Methods_BestApproach.R', and         ##
+##      'Simulate_Data_1.R ' should be loaded.                                                  ##
 ##################################################################################################
 
 # Load packages
 library(dplyr)
 library(data.table)
+library(stringr)
 
 # Ignore redundant warnings from dplyr 
 options(dplyr.summarise.inform = FALSE) 
