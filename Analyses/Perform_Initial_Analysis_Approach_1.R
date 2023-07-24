@@ -1,13 +1,15 @@
-##################################################################################################
+############################### Perform_Initial_Analysis_Approach_1.R ############################
 ## This file contains the code that is required to perform the initial analysis using the       ##
 ## first approach to include missing covariates as described in Chapter 5.                      ##
 ##                                                                                              ##
 ## To run the code:                                                                             ##
-##    - Specify a working directory in line 22.                                                 ##
+##    - Specify a working directory in line 23.                                                 ##
 ##    - Make sure that the files 'exampleDat_1000.txt' and 'exampleDat_10000.txt' are in        ##
-##      this working directory.                                                                 ##
-##    - Specify the argument 'folder' in lines 24-5.                                            ##
-##    - Make sure the functions in the files X are loaded.                                      ##
+##      the working directory.                                                                  ##
+##    - Specify the argument 'folder' in lines 26-26.                                           ##
+##    - Make sure that the functions in the files 'Helpfunctions_General.R',                    ##
+##      'Helpfunctions_Simulations.R', 'Helpfunctions_Performance_Measures_and_Plots.R',        ##
+##      'Methods_BestApproach.R', and 'Simulate_Data_2.R' are loaded.                           ##
 ##################################################################################################
 
 # Load packages
