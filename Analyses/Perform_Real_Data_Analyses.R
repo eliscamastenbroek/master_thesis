@@ -3,12 +3,12 @@
 ## LC and tree-MILC analysis on the data (see Chapter 6).                                       ## 
 ##                                                                                              ##
 ## To run the code:                                                                             ##
-##    - In line 19, a working directory should be set.                                          ##
-##    - In lines 82-103, the 'folder' arguments should be specified (i.e, a path to where the   ##
+##    - Set a working directory in line 19.                                                     ##
+##    - Specify the 'folder ' arguments in lines 82-103 (i.e, a path to where the               ##
 ##      model results should be stored).                                                        ##
-##    - The functions in the files 'Helpfunctions_General.R', 'Helpfunctions_Real_Data.R',      ##
-##      'Helpfunctions_Performance_Measures_and_Plots.R', and 'Methods_Real_Data.R'             ##
-##      should be loaded.                                                                       ##
+##    - Make sure that the functions in the files 'Helpfunctions_General.R',                    ##
+##      'Helpfunctions_Real_Data.R', 'Helpfunctions_Performance_Measures_and_Plots.R', and      ##
+##      'Methods_Real_Data.R' should be loaded.                                                 ##
 ##################################################################################################
 
 ## Load packages and set working directory
