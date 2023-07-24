@@ -14,13 +14,14 @@
 ##    - treeMILC_models (list): List containing the (detailed) model results for tree-MILC      ## 
 ##                                                                                              ##
 ## These objects can be obtained by either:                                                     ##
-##    1) Performing the simulation study in the file 'Perform_Simulation_1.R' and preparing the ##
-##       data for plotting using the file 'Prepare_Simulation_Results_for_Plotting.R', or:      ##
+##    1) Performing the simulation study in the file 'Perform_Simulation_Study_1.R' and         ##
+##       preparing the data for plotting using the file                                         ##
+##       'Prepare_Simulation_Results_for_Plotting.R', or:                                       ##
 ##    2) Loading the RData in the file 'Simulation_1_Complete.RData'. Note that due to          ##
 ##       storage limits in GitHub, this file is only available in the folder 'Stage_Elisca'     ##
 ##       at CBS.                                                                                ##
 ##                                                                                              ##
-## Finally, to create the heatmaps, a working directory should be specified in line 36. The     ##
+## Finally, to create the heatmaps, a working directory should be specified in line 37. The     ##
 ## plots will be saved in this directory.                                                       ##
 ##################################################################################################
 
