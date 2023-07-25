@@ -11,7 +11,7 @@
 ##      'Methods_Real_Data.R' should be loaded.                                                 ##
 ##################################################################################################
 
-## Load packages and set working directory
+## Load packages and set working directory 
 library(haven)     
 library(data.table) 
 
