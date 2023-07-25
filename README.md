@@ -27,7 +27,9 @@ To perform the analyses and plot the results, the following R packages are requi
 | tidyverse    | 2.0.0       |
 | stringr      | 1.5.0       |
 
-# 1. Instructions to reproduce and plot the results of Simulation study 1 (Chapter 4)
+# Instructions to reproduce and plot the results
+
+## Simulation study 1 (Chapter 4)
 
 ### Instructions to reproduce the simulation study:
 1. Load the functions in the files '[Helpfunctions_General.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_General.R)', '[Helpfunctions_Simulations.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Simulations.R)', '[Methods_Simulation_Studies.R]([https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Methods_Simulation_Studies.R])',  '[Simulate_Data_1.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Simulate_Data_1.R)', and '[Helpfunctions_Performance_Measures_and_Plots.R](https://github.com/eliscamastenbroek/master_thesis/blob/main/Functions/Helpfunctions_Performance_Measures_and_Plots.R)' into R.
