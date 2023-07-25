@@ -11,7 +11,7 @@
 ##      'Methods_Simulation_Studies.R', and 'Simulate_Data_1.R' are loaded.                     ##
 ##################################################################################################
 
-# Load packages
+# Load packages 
 library(dplyr)
 library(data.table)
 library(stringr)
