@@ -5,7 +5,7 @@
 ## To run the code:                                                                             ##
 ##    - Specify a working directory in line 23.                                                 ##
 ##    - Make sure that the files 'exampleDat_1000.txt' and 'exampleDat_10000.txt' are in        ##
-##      the working directory.                                                                   ##
+##      the working directory.                                                                  ##
 ##    - Specify the argument 'folder' in lines 26 and 27.                                       ##
 ##    - Make sure that the functions in the files 'Helpfunctions_General.R',                    ##
 ##      'Helpfunctions_Simulations.R', 'Helpfunctions_Performance_Measures_and_Plots.R',        ##
