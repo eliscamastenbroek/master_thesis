@@ -32,7 +32,7 @@ options(dplyr.summarise.inform = FALSE)
 setwd("your_working_directory_here") 
 
 #####################################################################################################
-## 2. Perform simulation study 2                                                                   ##
+## Perform simulation study 2                                                                      ##
 #####################################################################################################
 
 ## Specification of simulation conditions
