@@ -1,4 +1,4 @@
-# Introduction
+# Introduction 
 
 This GitHub repository contains the R code that is used for the MSc thesis 'Correcting for measurement error in the
 Employment Register and the Labour Force Survey using three latent variable models' by Elisca Mastenbroek ([link to thesis](https://github.com/eliscamastenbroek/master_thesis/blob/main/MSc_thesis.pdf)).
