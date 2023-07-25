@@ -15,7 +15,7 @@
 ## @param results (list): Results of one particular LC, LCT or tree-MILC model                  ##
 ## @returns (list): Same as input, but with corrected cluster assignments (if necessary)        ##
 ##################################################################################################
-
+ 
 fix_cluster_assignment <- function(type = NULL, results) {
   
   # Get list of measurement error matrices (i.e. one per indicator)
